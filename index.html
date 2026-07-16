@@ -787,6 +787,20 @@
             </div>
           </div>
           <hr class="text-muted opacity-25">
+          <!-- ปุ่มอัปเดตเวอร์ชัน -->
+          <div class="d-flex align-items-center justify-content-between px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="forceAppUpdate()">
+            <div class="d-flex align-items-center gap-3">
+              <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2F7A4F,#1f5637);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <i class="fa-solid fa-rotate" style="color:#fff;font-size:1rem;" id="updateIcon"></i>
+              </div>
+              <div style="text-align:left;">
+                <div style="font-size:0.9rem;font-weight:700;color:var(--section-title);">อัปเดตเป็นเวอร์ชันล่าสุด</div>
+                <div style="font-size:0.75rem;color:var(--metric-label-color);">ล้างแคช &amp; โหลดใหม่ · <span id="appVersionLabel">-</span></div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:0.85rem;"></i>
+          </div>
+          <hr class="text-muted opacity-25">
           <button class="btn btn-outline-danger w-100 fw-bold py-2 mt-2" onclick="_signOut()">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> ออกจากระบบ (Logout)
           </button>
@@ -2084,10 +2098,31 @@
   </script>
 
   <!-- ======= PWA: Service Worker Registration ======= -->
-  <!-- APP BUILD: 2026-07-16 (v5) -->
+  <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-07-16-v5';
+    window.APP_BUILD = '2026-07-16-v6';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
+    // แสดงเลขเวอร์ชันในหน้าตั้งค่า
+    (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
+    // ─── อัปเดตแอป: ยกเลิก Service Worker + ลบ cache ทั้งหมด + โหลดใหม่แบบข้ามแคช ───
+    window.forceAppUpdate = async function() {
+      var icon = document.getElementById('updateIcon');
+      if (icon) icon.classList.add('fa-spin');
+      try {
+        if ('serviceWorker' in navigator) {
+          var regs = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(function(r){ return r.unregister(); }));
+        }
+        if (window.caches) {
+          var keys = await caches.keys();
+          await Promise.all(keys.map(function(k){ return caches.delete(k); }));
+        }
+      } catch (e) { console.warn('[UPDATE] error:', e); }
+      // เติม query กันแคชของ browser/CDN แล้ว reload
+      var u = new URL(window.location.href);
+      u.searchParams.set('_v', Date.now());
+      window.location.replace(u.toString());
+    };
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('sw.js')
