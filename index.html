@@ -7,14 +7,14 @@
   <title>Pro Trading Journal</title>
 
   <!-- ======= PWA Meta Tags ======= -->
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#921C1E">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Pro Journal">
   <meta name="description" content="บันทึกการเทรดส่วนตัว วิเคราะห์ด้วย AI ใช้ได้ทุกอุปกรณ์">
   <meta name="application-name" content="Pro Trading Journal">
-  <meta name="msapplication-TileColor" content="#0f172a">
+  <meta name="msapplication-TileColor" content="#131317">
 
   <!-- Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -35,738 +35,256 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
-    /* ══════════════════════════════════════════════════════════
-       PRO TRADING JOURNAL — LUXURY MOBILE-FIRST DESIGN v3
-    ══════════════════════════════════════════════════════════ */
-
-    /* ── CSS Variables (Light / Dark) ──────────────────────── */
+    /* ══ PRO TRADING JOURNAL — AP THAILAND REDESIGN ══ */
     :root {
-      --bg-body: linear-gradient(160deg, #f0f4ff 0%, #f8fafc 50%, #eef2ff 100%);
-      --color-body: #1e293b;
-      --navbar-bg: rgba(255,255,255,0.88);
-      --navbar-border: rgba(148,163,184,0.15);
-      --navbar-shadow: 0 1px 12px rgba(15,23,42,0.06);
-      --nav-label-primary: #1e293b;
-      --nav-label-secondary: #94a3b8;
-      --nav-icon-color: #94a3b8;
-      --card-bg: rgba(255,255,255,0.92);
-      --card-border: rgba(226,232,240,0.7);
-      --card-shadow: 0 4px 24px rgba(148,163,184,0.12), 0 1px 4px rgba(0,0,0,0.04);
-      --input-bg: #f8fafc;
-      --input-border: #e2e8f0;
-      --input-color: #1e293b;
-      --input-focus-bg: #fff;
-      --form-label: #374151;
-      --section-title: #1e293b;
-      --calendar-bg: rgba(255,255,255,0.95);
-      --calendar-border: rgba(226,232,240,0.7);
-      --calendar-header-bg: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      --calendar-header-border: #e2e8f0;
-      --cal-cell-bg: #fff;
-      --cal-cell-empty: #fafafa;
-      --cal-cell-today: linear-gradient(135deg, #eff6ff, #e0e7ff);
-      --cal-date-color: #94a3b8;
-      --cal-cell-border: rgba(226,232,240,0.6);
-      --cal-count-bg: linear-gradient(135deg, #f1f5f9, #e8ecf1);
-      --cal-count-border: rgba(226,232,240,0.8);
-      --cal-count-color: #64748b;
-      --table-th-bg: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      --table-th-border: #e2e8f0;
-      --table-th-color: #475569;
-      --table-td-border: rgba(241,245,249,0.8);
-      --stat-list-border: rgba(226,232,240,0.6);
-      --quote-box-bg: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(59,130,246,0.08));
-      --quote-box-color: #475569;
-      --confluence-box-bg: linear-gradient(135deg, #f8fafc, #f1f5f9);
-      --confluence-box-border: #e2e8f0;
-      --god-rule-bg: linear-gradient(135deg, #fff5f5, #fff0f0);
-      --god-rule-border: rgba(239,68,68,0.25);
-      --discipline-box-bg: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-      --discipline-box-border: rgba(16,185,129,0.25);
-      --upload-box-bg: #f8fafc;
-      --upload-box-border: #cbd5e1;
-      --switch-label-color: #374151;
-      --metric-mae-bg: linear-gradient(135deg, #fff5f5, #fff1f1);
-      --metric-mfe-bg: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-      --metric-r-bg: linear-gradient(135deg, #eff6ff, #f0f9ff);
-      --metric-label-color: #64748b;
-      --discipline-ring-border: #eee;
-      --discipline-ring-bg: #fff;
-      --scrollbar-thumb: #cbd5e1;
-      --row-hover: linear-gradient(135deg, #f8fafc, #f0f4ff);
+      --brand:#921C1E; --brand-2:#6E1214; --profit:#2F7A4F; --loss:#B93033;
+      --ink:#131317; --muted:#70707A; --canvas:#F8F7F3; --border:#E4E1D8; --ap-warn:#B5791A;
+      --bg-body:#F8F7F3; --color-body:#131317;
+      --topbar-bg:rgba(248,247,243,.82);
+      --card-bg:#FFFFFF; --card-border:#E4E1D8;
+      --card-shadow:0 2px 4px rgba(20,14,14,.06),0 1px 2px rgba(20,14,14,.04);
+      --shadow-md:0 8px 20px rgba(20,14,14,.10),0 2px 4px rgba(20,14,14,.05);
+      --input-bg:#FFFFFF; --input-border:#C9C6BC; --input-color:#131317; --input-focus-bg:#fff;
+      --form-label:#4A4A52; --section-title:#131317;
+      --calendar-bg:#fff; --calendar-border:#E4E1D8; --calendar-header-bg:#F2F0EA; --calendar-header-border:#E4E1D8;
+      --cal-cell-bg:#fff; --cal-cell-empty:#F2F0EA; --cal-cell-today:#FAEBEB; --cal-date-color:#9C9CA4; --cal-cell-border:#EDEAE2;
+      --cal-count-bg:#F2F0EA; --cal-count-border:#E4E1D8; --cal-count-color:#70707A;
+      --table-th-bg:#F2F0EA; --table-th-border:#E4E1D8; --table-th-color:#4A4A52; --table-td-border:#EDEAE2;
+      --stat-list-border:#EDEAE2;
+      --quote-box-bg:#F2F0EA; --quote-box-color:#4A4A52;
+      --confluence-box-bg:#F8F7F3; --confluence-box-border:#E4E1D8;
+      --god-rule-bg:#FAEBEB; --god-rule-border:rgba(146,28,30,.28);
+      --discipline-box-bg:#E8F1EC; --discipline-box-border:rgba(47,122,79,.30);
+      --upload-box-bg:#F8F7F3; --upload-box-border:#C9C6BC;
+      --switch-label-color:#4A4A52;
+      --metric-mae-bg:#FAEBEB; --metric-mfe-bg:#E8F1EC; --metric-r-bg:#F2F0EA;
+      --metric-label-color:#70707A;
+      --discipline-ring-border:#E4E1D8; --discipline-ring-bg:#fff;
+      --scrollbar-thumb:#C9C6BC; --row-hover:#F8F7F3;
     }
-
     [data-theme="dark"] {
-      --bg-body: linear-gradient(160deg, #0b0f1a 0%, #0f172a 50%, #0b0e1e 100%);
-      --color-body: #e2e8f0;
-      --navbar-bg: rgba(15,23,42,0.92);
-      --navbar-border: rgba(255,255,255,0.06);
-      --navbar-shadow: 0 1px 12px rgba(0,0,0,0.4);
-      --nav-label-primary: #e2e8f0;
-      --nav-label-secondary: #64748b;
-      --nav-icon-color: #64748b;
-      --card-bg: rgba(30,41,59,0.92);
-      --card-border: rgba(255,255,255,0.07);
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.3), 0 1px 4px rgba(0,0,0,0.2);
-      --input-bg: #1e293b;
-      --input-border: #334155;
-      --input-color: #e2e8f0;
-      --input-focus-bg: #263248;
-      --form-label: #94a3b8;
-      --section-title: #e2e8f0;
-      --calendar-bg: rgba(30,41,59,0.95);
-      --calendar-border: rgba(255,255,255,0.07);
-      --calendar-header-bg: linear-gradient(135deg, #1e293b, #263248);
-      --calendar-header-border: #334155;
-      --cal-cell-bg: #1e293b;
-      --cal-cell-empty: #161e2e;
-      --cal-cell-today: linear-gradient(135deg, #1e3a5f, #1e2a4a);
-      --cal-date-color: #475569;
-      --cal-cell-border: rgba(255,255,255,0.05);
-      --cal-count-bg: linear-gradient(135deg, #263248, #1e293b);
-      --cal-count-border: rgba(255,255,255,0.06);
-      --cal-count-color: #64748b;
-      --table-th-bg: linear-gradient(135deg, #1e293b, #263248);
-      --table-th-border: #334155;
-      --table-th-color: #94a3b8;
-      --table-td-border: rgba(255,255,255,0.04);
-      --stat-list-border: rgba(255,255,255,0.06);
-      --quote-box-bg: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(59,130,246,0.14));
-      --quote-box-color: #94a3b8;
-      --confluence-box-bg: linear-gradient(135deg, #1e293b, #263248);
-      --confluence-box-border: #334155;
-      --god-rule-bg: linear-gradient(135deg, #2d1515, #2a1111);
-      --god-rule-border: rgba(239,68,68,0.3);
-      --discipline-box-bg: linear-gradient(135deg, #0f2d1e, #0b2618);
-      --discipline-box-border: rgba(16,185,129,0.3);
-      --upload-box-bg: #1e293b;
-      --upload-box-border: #334155;
-      --switch-label-color: #94a3b8;
-      --metric-mae-bg: linear-gradient(135deg, #2d1515, #2a1111);
-      --metric-mfe-bg: linear-gradient(135deg, #0f2d1e, #0b2618);
-      --metric-r-bg: linear-gradient(135deg, #0f1f3d, #0d1b38);
-      --metric-label-color: #94a3b8;
-      --discipline-ring-border: #334155;
-      --discipline-ring-bg: #1e293b;
-      --scrollbar-thumb: #334155;
-      --row-hover: linear-gradient(135deg, #1e293b, #263248);
+      --brand:#C6494B; --profit:#5CB585; --loss:#E0797B;
+      --ink:#F3F1EA; --muted:#A09E94; --canvas:#17140F; --border:rgba(255,255,255,.09); --ap-warn:#D9A44A;
+      --bg-body:#17140F; --color-body:#F3F1EA;
+      --topbar-bg:rgba(23,20,15,.82);
+      --card-bg:#221E18; --card-border:rgba(255,255,255,.09);
+      --card-shadow:0 2px 8px rgba(0,0,0,.45); --shadow-md:0 10px 26px rgba(0,0,0,.55);
+      --input-bg:#2B261F; --input-border:rgba(255,255,255,.16); --input-color:#F3F1EA; --input-focus-bg:#2B261F;
+      --form-label:#C9C6BC; --section-title:#F3F1EA;
+      --calendar-bg:#221E18; --calendar-border:rgba(255,255,255,.09); --calendar-header-bg:#2B261F; --calendar-header-border:rgba(255,255,255,.12);
+      --cal-cell-bg:#221E18; --cal-cell-empty:#1B1813; --cal-cell-today:rgba(146,28,30,.32); --cal-date-color:#70707A; --cal-cell-border:rgba(255,255,255,.07);
+      --cal-count-bg:#2B261F; --cal-count-border:rgba(255,255,255,.10); --cal-count-color:#A09E94;
+      --table-th-bg:#2B261F; --table-th-border:rgba(255,255,255,.12); --table-th-color:#C9C6BC; --table-td-border:rgba(255,255,255,.06);
+      --stat-list-border:rgba(255,255,255,.08);
+      --quote-box-bg:#2B261F; --quote-box-color:#C9C6BC;
+      --confluence-box-bg:#2B261F; --confluence-box-border:rgba(255,255,255,.10);
+      --god-rule-bg:rgba(146,28,30,.22); --god-rule-border:rgba(224,121,123,.40);
+      --discipline-box-bg:rgba(47,122,79,.20); --discipline-box-border:rgba(92,181,133,.40);
+      --upload-box-bg:#2B261F; --upload-box-border:rgba(255,255,255,.16);
+      --switch-label-color:#C9C6BC;
+      --metric-mae-bg:rgba(146,28,30,.20); --metric-mfe-bg:rgba(47,122,79,.20); --metric-r-bg:#2B261F;
+      --metric-label-color:#A09E94;
+      --discipline-ring-border:rgba(255,255,255,.12); --discipline-ring-bg:#221E18;
+      --scrollbar-thumb:#4A4A52; --row-hover:#2B261F;
     }
+    *,*::before,*::after{box-sizing:border-box;}
+    html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+    body{background:var(--bg-body);color:var(--color-body);font-family:'Prompt',sans-serif;font-size:14px;line-height:1.6;overflow-x:hidden;min-height:100vh;padding-bottom:92px;transition:background .3s,color .3s;}
+    a{color:var(--brand);text-decoration:none;} a:hover{color:var(--brand-2);}
+    ::-webkit-scrollbar{width:6px;height:6px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:99px;}
+    .container{padding-left:16px;padding-right:16px;max-width:680px;}
+    @media(min-width:768px){.container{padding-left:24px;padding-right:24px;max-width:820px;}}
 
-    /* ── Reset & Base ───────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-    body {
-      background: var(--bg-body);
-      background-attachment: fixed;
-      color: var(--color-body);
-      font-family: 'Prompt', sans-serif;
-      font-size: 14px;
-      line-height: 1.6;
-      overflow-x: hidden;
-      min-height: 100vh;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
+    /* ── Top bar ── */
+    .tj-topbar{position:sticky;top:0;z-index:1000;height:58px;background:var(--topbar-bg);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-bottom:1px solid var(--card-border);display:flex;align-items:center;margin-bottom:18px;}
+    .tj-topbar-inner{width:100%;max-width:680px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;}
+    .tj-brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;}
+    .tj-brand-mark{width:34px;height:34px;border-radius:0;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:3px 3px 0 rgba(146,28,30,.28);}
+    .tj-brand-text{display:flex;flex-direction:column;line-height:1.05;}
+    .tj-brand-text b{font-size:.82rem;font-weight:700;color:var(--ink);letter-spacing:.2px;}
+    .tj-brand-text span{font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+    .tj-topbar-actions{display:flex;gap:4px;}
+    .tj-icon-btn{width:40px;height:40px;border:none;background:transparent;color:var(--muted);border-radius:999px;font-size:1.05rem;cursor:pointer;transition:background .15s,color .15s;}
+    .tj-icon-btn:hover{background:rgba(146,28,30,.08);color:var(--brand);}
 
-    /* ── Scrollbar ─────────────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 99px; }
+    /* ── Bottom nav ── */
+    .tj-bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:1000;background:var(--topbar-bg);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border-top:1px solid var(--card-border);display:flex;justify-content:center;}
+    .tj-bottomnav-inner{width:100%;max-width:680px;display:flex;justify-content:space-around;align-items:center;padding:8px 8px calc(10px + env(safe-area-inset-bottom));}
+    .tj-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:.63rem;font-weight:600;cursor:pointer;background:none;border:none;text-decoration:none;font-family:'Prompt',sans-serif;transition:color .15s;}
+    .tj-nav-item i{font-size:1.18rem;}
+    .tj-nav-item.active,.tj-nav-item:hover{color:var(--brand);}
+    .tj-nav-fab{flex:none;width:54px;height:54px;border-radius:50%;background:#921C1E;color:#fff!important;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 18px rgba(146,28,30,.42);border:4px solid var(--canvas);cursor:pointer;text-decoration:none;transition:transform .15s;}
+    .tj-nav-fab i{font-size:1.35rem;}
+    .tj-nav-fab:hover{transform:translateY(-2px);color:#fff;}
 
-    /* ── Container ─────────────────────────────────────────── */
-    .container { 
-      padding-left: 14px; padding-right: 14px; 
-      max-width: 680px; /* ideal phone width column */
-    }
-    @media (min-width: 768px) {
-      .container { padding-left: 24px; padding-right: 24px; max-width: 900px; }
-    }
-    @media (min-width: 1200px) {
-      .container { max-width: 1140px; }
-    }
+    /* ── Page transitions ── */
+    .page-section{display:none;animation:pageIn .35s cubic-bezier(.16,1,.3,1);}
+    .page-section.active{display:block;}
+    @keyframes pageIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+    .nav-link{cursor:pointer;border:none;background:transparent;text-decoration:none;}
 
-    /* ══════════════════════════════════════════════════════════
-       NAVBAR — Icon-Based Top Bar (Tailwind-style)
-    ══════════════════════════════════════════════════════════ */
-    .navbar-custom {
-      background: var(--navbar-bg);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-bottom: 1px solid var(--navbar-border);
-      box-shadow: var(--navbar-shadow);
-      padding: 0;
-      height: 60px;
-      position: sticky; top: 0; z-index: 1000;
-      display: flex; align-items: center;
-      transition: background 0.3s ease;
-    }
-    .navbar-custom .container {
-      display: flex; align-items: center; justify-content: space-between;
-      height: 100%;
-    }
-    /* ── App Icon (logo) ── */
-    .nav-app-icon {
-      display: flex; align-items: center; gap: 10px;
-      cursor: pointer; text-decoration: none;
-      border-radius: 12px;
-      padding: 4px 8px 4px 4px;
-      transition: background 0.2s;
-    }
-    .nav-app-icon:hover { background: rgba(245,158,11,0.08); }
-    .nav-app-icon-img {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      background: #0B1623;
-      box-shadow: 0 2px 8px rgba(15,23,42,0.18);
-    }
-    .nav-app-label {
-      display: flex; flex-direction: column; line-height: 1.1;
-    }
-    .nav-app-label span:first-child {
-      font-size: 0.78rem; font-weight: 700; color: var(--nav-label-primary); letter-spacing: 0.3px;
-    }
-    .nav-app-label span:last-child {
-      font-size: 0.65rem; font-weight: 500; color: var(--nav-label-secondary); letter-spacing: 0.5px;
-    }
-    @media (max-width: 360px) { .nav-app-label { display: none; } }
+    /* ── Cards ── */
+    .card-stat{background:var(--card-bg)!important;border:1px solid var(--card-border)!important;border-radius:16px!important;box-shadow:var(--card-shadow)!important;transition:transform .2s,box-shadow .2s;}
+    .card-stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)!important;}
+    .stat-icon-badge{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin:0 auto 10px;background:rgba(146,28,30,.09)!important;}
+    .stat-icon-badge i{color:var(--brand)!important;}
 
-    /* ── Right icon buttons ── */
-    .nav-icons-right {
-      display: flex; align-items: center; gap: 4px;
-    }
-    .nav-icon-btn {
-      cursor: pointer;
-      width: 42px; height: 42px;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 12px;
-      background: transparent;
-      color: var(--nav-icon-color);
-      border: none;
-      transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
-      position: relative;
-      text-decoration: none;
-      font-size: 1.2rem;
-    }
-    .nav-icon-btn:hover {
-      background: rgba(99,102,241,0.08);
-      color: #6366f1;
-      transform: translateY(-1px);
-    }
-    .nav-icon-btn.active {
-      background: linear-gradient(135deg, rgba(59,130,246,0.14), rgba(99,102,241,0.10));
-      color: #3b82f6;
-    }
-    .nav-icon-btn.active::after {
-      content: '';
-      position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%);
-      width: 4px; height: 4px; border-radius: 50%;
-      background: #3b82f6;
-    }
-    .nav-icon-btn.btn-wallet {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #fff;
-      box-shadow: 0 3px 10px rgba(245,158,11,0.3);
-    }
-    .nav-icon-btn.btn-wallet:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 5px 16px rgba(245,158,11,0.4);
-      color: #fff;
-    }
-    .nav-divider {
-      width: 1px; height: 28px;
-      background: rgba(148,163,184,0.25);
-      margin: 0 3px;
-    }
+    /* ── Balance hero (AP red, hard-edged, layered paper) ── */
+    .balance-card{background:#921C1E!important;color:#fff!important;border:none!important;border-radius:0!important;overflow:visible!important;position:relative;box-shadow:12px 12px 0 rgba(146,28,30,.20),24px 24px 0 rgba(146,28,30,.09),0 10px 30px rgba(20,14,14,.14)!important;}
+    .balance-card::before,.balance-card::after,.balance-card .shimmer-line{display:none!important;}
+    .balance-card small,.balance-card .text-white-50{color:rgba(255,255,255,.72)!important;}
+    .balance-card .text-info,.balance-card .text-success,.balance-card .text-warning{color:rgba(255,255,255,.9)!important;}
+    .balance-card .trades-box{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:12px!important;padding:12px 18px;text-align:center;}
 
-    /* ── Tooltip labels (visible on hover desktop) ── */
-    .nav-icon-btn[title]:hover::before {
-      content: attr(title);
-      position: absolute; top: calc(100% + 6px); left: 50%;
-      transform: translateX(-50%);
-      background: #0f172a; color: #fff;
-      font-size: 0.68rem; font-weight: 600;
-      padding: 3px 8px; border-radius: 6px;
-      white-space: nowrap; pointer-events: none;
-      opacity: 0.92; z-index: 9999;
-      font-family: 'Prompt', sans-serif;
-    }
+    /* ── Metric cards ── */
+    .metric-card{border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid transparent;transition:transform .2s;}
+    .metric-card:hover{transform:translateY(-2px);}
+    .metric-card.metric-mae{background:var(--metric-mae-bg);border-color:rgba(185,48,51,.22);}
+    .metric-card.metric-mfe{background:var(--metric-mfe-bg);border-color:rgba(47,122,79,.24);}
+    .metric-card.metric-r{background:var(--metric-r-bg);border-color:var(--border);}
+    .metric-card .metric-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:8px;}
+    .metric-card.metric-mae .metric-icon{background:rgba(185,48,51,.12);color:var(--loss);}
+    .metric-card.metric-mfe .metric-icon{background:rgba(47,122,79,.14);color:var(--profit);}
+    .metric-card.metric-r .metric-icon{background:rgba(19,19,23,.08);color:var(--ink);}
+    .metric-card .metric-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--metric-label-color);margin-bottom:4px;text-align:center;}
+    .metric-card .metric-value{font-size:1.5rem;font-weight:800;text-align:center;letter-spacing:-.5px;}
+    .metric-card.metric-mae .metric-value{color:var(--loss);}
+    .metric-card.metric-mfe .metric-value{color:var(--profit);}
+    .metric-card.metric-r .metric-value{color:var(--ink)!important;}
 
-    /* Page transitions */
-    .page-section { display: none; animation: pageIn 0.35s cubic-bezier(0.16,1,0.3,1); }
-    .page-section.active { display: block; }
-    @keyframes pageIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+    /* stat values theme-safe */
+    #stat-winrate,#stat-expectancy{color:var(--ink)!important;}
+    #stat-pf{color:var(--profit)!important;}
+    #stat-mwin,.outcome-pill.mwin div{color:var(--ink)!important;}
 
-    /* legacy .nav-link compat (switchTab selector) */
-    .nav-link {
-      cursor: pointer; border: none; background: transparent;
-      text-decoration: none; display: inline-flex; align-items: center;
-    }
+    .discipline-ring{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;border:4px solid var(--discipline-ring-border);font-size:1.1rem;background:var(--discipline-ring-bg);}
 
-    /* ══════════════════════════════════════════════════════════
-       CARDS — Premium Glass Style
-    ══════════════════════════════════════════════════════════ */
-    .card-stat {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      box-shadow: var(--card-shadow);
-      transition: all 0.25s ease;
-      backdrop-filter: blur(10px);
-    }
-    .card-stat:hover {
-      box-shadow: 0 8px 32px rgba(99,102,241,0.12), 0 2px 8px rgba(0,0,0,0.06);
-      transform: translateY(-2px);
-      border-color: rgba(99,102,241,0.2);
-    }
+    /* ── Quote (no left accent) ── */
+    .quote-box{background:var(--quote-box-bg)!important;border:none!important;padding:14px 18px;border-radius:14px;font-style:italic;color:var(--quote-box-color)!important;margin-bottom:16px;text-align:center;font-weight:500;font-size:.9rem;}
 
-    /* ── Stat mini card icon badge ────────────────────────── */
-    .stat-icon-badge {
-      width: 40px; height: 40px; border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; margin: 0 auto 10px;
-    }
+    /* ── Calendar ── */
+    .calendar-container{background:var(--calendar-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);border:1px solid var(--calendar-border);width:100%;}
+    .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-weight:700;color:var(--metric-label-color);background:var(--calendar-header-bg);border-radius:10px 10px 0 0;padding:10px 0;font-size:.78rem;border-bottom:2px solid var(--calendar-header-border);}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--cal-cell-border);width:100%;}
+    .calendar-grid.monthly-view{grid-template-columns:repeat(4,1fr);}
+    @media(max-width:480px){.calendar-grid.monthly-view{grid-template-columns:repeat(3,1fr)!important;}}
+    .cal-cell{position:relative;min-height:72px;padding:5px 3px;background:var(--cal-cell-bg);border-right:1px solid var(--cal-cell-border);border-bottom:1px solid var(--cal-cell-border);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:background .15s;cursor:pointer;}
+    .cal-cell:hover{background:var(--row-hover);}
+    .cal-cell.empty{background:var(--cal-cell-empty);}
+    .cal-cell.today{background:var(--cal-cell-today);}
+    .cal-date{font-size:.72rem;font-weight:700;color:var(--cal-date-color);position:absolute;top:5px;left:7px;}
+    .cal-pnl{font-size:.8rem;font-weight:800;margin-top:14px;text-align:center;letter-spacing:-.3px;}
+    .cal-count{background:var(--cal-count-bg);border-radius:6px;padding:2px 8px;font-size:.62rem;color:var(--cal-count-color);font-weight:700;margin-top:4px;border:1px solid var(--cal-count-border);}
 
-    /* ══════════════════════════════════════════════════════════
-       BALANCE CARD — Ultra Premium Dark
-    ══════════════════════════════════════════════════════════ */
-    .balance-card {
-      background: linear-gradient(145deg, #0f172a 0%, #1e293b 40%, #0f2744 100%);
-      color: white;
-      border: none;
-      border-radius: 24px;
-      box-shadow: 0 24px 48px -8px rgba(15,23,42,0.55), inset 0 1px 0 rgba(255,255,255,0.06);
-      position: relative;
-      overflow: hidden;
-    }
-    .balance-card::before {
-      content: '';
-      position: absolute; top: -40%; left: -15%;
-      width: 340px; height: 340px;
-      background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 65%);
-      border-radius: 50%; pointer-events: none;
-    }
-    .balance-card::after {
-      content: '';
-      position: absolute; bottom: -40%; right: -10%;
-      width: 280px; height: 280px;
-      background: radial-gradient(circle, rgba(16,185,129,0.18) 0%, transparent 65%);
-      border-radius: 50%; pointer-events: none;
-    }
-    /* shimmer line */
-    .balance-card .shimmer-line {
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
-    }
-    .trades-box {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px;
-      padding: 12px 20px;
-      backdrop-filter: blur(8px);
-      text-align: center;
-    }
+    .stat-list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--stat-list-border);}
+    .stat-list-item:last-child{border-bottom:none;}
 
-    /* ══════════════════════════════════════════════════════════
-       METRIC CARDS — MAE / MFE / R-Multiple
-    ══════════════════════════════════════════════════════════ */
-    .metric-card {
-      border-radius: 18px;
-      padding: 16px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-      border: 1.5px solid transparent;
-      transition: all 0.25s ease;
-    }
-    .metric-card:hover { transform: translateY(-2px); }
-    .metric-card.metric-mae {
-      background: var(--metric-mae-bg);
-      border-color: rgba(239,68,68,0.2);
-      box-shadow: 0 4px 16px rgba(239,68,68,0.08);
-    }
-    .metric-card.metric-mfe {
-      background: var(--metric-mfe-bg);
-      border-color: rgba(16,185,129,0.2);
-      box-shadow: 0 4px 16px rgba(16,185,129,0.08);
-    }
-    .metric-card.metric-r {
-      background: var(--metric-r-bg);
-      border-color: rgba(59,130,246,0.2);
-      box-shadow: 0 4px 16px rgba(59,130,246,0.08);
-    }
-    .metric-card .metric-icon {
-      width: 34px; height: 34px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; margin-bottom: 8px;
-    }
-    .metric-card.metric-mae .metric-icon { background: rgba(239,68,68,0.1); color: #ef4444; }
-    .metric-card.metric-mfe .metric-icon { background: rgba(16,185,129,0.1); color: #10b981; }
-    .metric-card.metric-r   .metric-icon { background: rgba(59,130,246,0.1); color: #3b82f6; }
-    .metric-card .metric-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--metric-label-color); margin-bottom: 4px; text-align: center; }
-    .metric-card .metric-value { font-size: 1.5rem; font-weight: 800; text-align: center; letter-spacing: -0.5px; }
-    .metric-card.metric-mae .metric-value { color: #ef4444; }
-    .metric-card.metric-mfe .metric-value { color: #10b981; }
-    .metric-card.metric-r   .metric-value { color: #2563eb; }
+    /* ── Table ── */
+    .clickable-row{cursor:pointer;transition:background .15s;}
+    .clickable-row:hover td{background:var(--row-hover)!important;}
+    .table-light th{background:var(--table-th-bg)!important;border-bottom:2px solid var(--table-th-border)!important;color:var(--table-th-color)!important;font-weight:700;letter-spacing:.4px;font-size:.8rem;text-transform:uppercase;}
+    .table td{border-bottom:1px solid var(--table-td-border)!important;vertical-align:middle;color:var(--color-body);}
+    .table{color:var(--color-body);--bs-table-bg:transparent;}
 
-    /* ══════════════════════════════════════════════════════════
-       DISCIPLINE RING
-    ══════════════════════════════════════════════════════════ */
-    .discipline-ring {
-      width: 56px; height: 56px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; border: 4px solid var(--discipline-ring-border); font-size: 1.1rem;
-      background: var(--discipline-ring-bg);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+    /* ── Forms ── */
+    .form-control,.form-select{border-radius:10px!important;border:1.5px solid var(--input-border)!important;background:var(--input-bg)!important;color:var(--input-color)!important;padding:.65rem 1rem;font-size:.92rem;font-weight:500;transition:border-color .2s,box-shadow .2s;}
+    .form-control:focus,.form-select:focus{border-color:var(--brand)!important;box-shadow:0 0 0 3px rgba(146,28,30,.18)!important;background:var(--input-focus-bg)!important;outline:none;}
+    .form-control::placeholder{color:var(--muted);opacity:.7;}
+    .form-label{font-weight:600;color:var(--form-label)!important;margin-bottom:6px;font-size:.88rem;}
+    .god-rule-box{background:var(--god-rule-bg);border:1.5px solid var(--god-rule-border);border-radius:16px;padding:18px;}
+    .discipline-box{background:var(--discipline-box-bg);border:1.5px solid var(--discipline-box-border);border-radius:16px;padding:18px;}
+    .confluence-box{background:var(--confluence-box-bg);padding:18px;border-radius:16px;border:1.5px solid var(--confluence-box-border);}
+    .upload-box{border:2px dashed var(--upload-box-border);border-radius:16px;padding:16px;background:var(--upload-box-bg);transition:border-color .2s;}
+    .upload-box:hover{border-color:var(--brand);}
+    .form-switch .form-check-input{width:2.8em;height:1.4em;cursor:pointer;}
+    .form-switch .form-check-input:checked{background-color:var(--brand);border-color:var(--brand);}
+    .form-switch .form-check-label{cursor:pointer;padding-left:12px;padding-top:3px;color:var(--switch-label-color);font-weight:600;}
+    .form-check-input:checked{background-color:var(--brand);border-color:var(--brand);}
 
-    /* ══════════════════════════════════════════════════════════
-       QUOTE BOX
-    ══════════════════════════════════════════════════════════ */
-    .quote-box {
-      background: var(--quote-box-bg);
-      border-left: 3px solid #6366f1;
-      padding: 14px 16px;
-      border-radius: 14px;
-      font-style: italic;
-      color: var(--quote-box-color);
-      margin-bottom: 16px;
-      text-align: center;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
+    /* ── Buttons (AP pill) ── */
+    .btn{border-radius:999px!important;font-weight:600;transition:transform .15s,background .15s,box-shadow .15s;}
+    .btn-primary{background:var(--brand)!important;border:none!important;color:#fff!important;box-shadow:0 2px 4px rgba(20,14,14,.08)!important;}
+    .btn-primary:hover{background:var(--brand-2)!important;transform:translateY(-1px);color:#fff!important;}
+    .btn-warning,.btn-dark{background:var(--ink)!important;border:none!important;color:var(--canvas)!important;}
+    .btn-warning:hover,.btn-dark:hover{transform:translateY(-1px);color:var(--canvas)!important;opacity:.92;}
+    .btn-outline-primary{border:1.5px solid var(--brand)!important;color:var(--brand)!important;background:transparent!important;}
+    .btn-outline-primary:hover{background:rgba(146,28,30,.08)!important;color:var(--brand)!important;}
+    .btn-outline-secondary{border:1.5px solid var(--border)!important;color:var(--muted)!important;background:transparent!important;}
+    .btn-outline-secondary:hover{background:var(--row-hover)!important;color:var(--ink)!important;}
+    .btn-outline-success{border:1.5px solid var(--profit)!important;color:var(--profit)!important;background:transparent!important;}
+    .btn-outline-danger{border:1.5px solid var(--loss)!important;color:var(--loss)!important;background:transparent!important;}
 
-    /* ══════════════════════════════════════════════════════════
-       CALENDAR
-    ══════════════════════════════════════════════════════════ */
-    .calendar-container {
-      background: var(--calendar-bg);
-      border-radius: 20px; padding: 16px;
-      box-shadow: var(--card-shadow);
-      border: 1px solid var(--calendar-border);
-      width: 100%;
-    }
-    .calendar-header {
-      display: grid; grid-template-columns: repeat(7,1fr);
-      text-align: center; font-weight: 700; color: var(--metric-label-color);
-      background: var(--calendar-header-bg);
-      border-radius: 12px 12px 0 0;
-      padding: 10px 0; font-size: 0.78rem;
-      border-bottom: 2px solid var(--calendar-header-border);
-      letter-spacing: 0.3px;
-    }
-    .calendar-grid {
-      display: grid; grid-template-columns: repeat(7,1fr);
-      border-left: 1px solid var(--cal-cell-border);
-      width: 100%;
-    }
-    .calendar-grid.monthly-view { grid-template-columns: repeat(4,1fr); }
-    @media (max-width: 480px) { .calendar-grid.monthly-view { grid-template-columns: repeat(3,1fr) !important; } }
-    .cal-cell {
-      position: relative; min-height: 72px; padding: 5px 3px;
-      background: var(--cal-cell-bg);
-      border-right: 1px solid var(--cal-cell-border);
-      border-bottom: 1px solid var(--cal-cell-border);
-      display: flex; flex-direction: column;
-      justify-content: center; align-items: center;
-      transition: background 0.15s;
-      cursor: pointer;
-    }
-    .cal-cell:hover { background: var(--row-hover); }
-    .cal-cell.empty { background: var(--cal-cell-empty); }
-    .cal-cell.today { background: var(--cal-cell-today); border-color: rgba(99,102,241,0.3); }
-    .cal-date { font-size: 0.72rem; font-weight: 700; color: var(--cal-date-color); position: absolute; top: 5px; left: 7px; }
-    .cal-pnl { font-size: 0.8rem; font-weight: 800; margin-top: 14px; text-align: center; letter-spacing: -0.3px; }
-    .cal-count {
-      background: var(--cal-count-bg);
-      border-radius: 6px; padding: 2px 8px;
-      font-size: 0.62rem; color: var(--cal-count-color);
-      font-weight: 700; margin-top: 4px;
-      border: 1px solid var(--cal-count-border);
-    }
+    /* ── Outcome pills ── */
+    .outcome-pill{flex:1;min-width:55px;padding:12px 8px;border-radius:12px;text-align:center;border:1.5px solid transparent;}
+    .outcome-pill.tp{background:var(--metric-mfe-bg);border-color:rgba(47,122,79,.25);}
+    .outcome-pill.sl,.outcome-pill.closs{background:var(--metric-mae-bg);border-color:rgba(185,48,51,.22);}
+    .outcome-pill.be{background:var(--metric-r-bg);border-color:rgba(181,121,26,.28);}
+    .outcome-pill.mwin{background:var(--calendar-header-bg);border-color:var(--border);}
 
-    /* ══════════════════════════════════════════════════════════
-       STAT LIST ITEMS (Setup/Session/Pair)
-    ══════════════════════════════════════════════════════════ */
-    .stat-list-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--stat-list-border);
-    }
-    .stat-list-item:last-child { border-bottom: none; }
+    .ai-insight-item{border-radius:14px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;border:1.5px solid transparent;}
+    .section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+    .section-header .icon-wrap{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;background:rgba(146,28,30,.09)!important;}
+    .section-header .icon-wrap i{color:var(--brand)!important;}
+    .section-header .title{font-weight:700;color:var(--section-title);font-size:.95rem;margin:0;}
 
-    /* ══════════════════════════════════════════════════════════
-       TABLE HISTORY
-    ══════════════════════════════════════════════════════════ */
-    .clickable-row { cursor: pointer; transition: all 0.15s; }
-    .clickable-row:hover td { background: var(--row-hover) !important; }
-    .table-light th {
-      background: var(--table-th-bg) !important;
-      border-bottom: 2px solid var(--table-th-border) !important;
-      color: var(--table-th-color); font-weight: 700; letter-spacing: 0.4px;
-      font-size: 0.8rem; text-transform: uppercase;
-    }
-    .table td { border-bottom: 1px solid var(--table-td-border) !important; vertical-align: middle; }
+    /* ── Bootstrap utility remaps ── */
+    .text-primary{color:var(--brand)!important;} .text-success{color:var(--profit)!important;}
+    .text-danger{color:var(--loss)!important;} .text-info{color:var(--ink)!important;}
+    .text-warning{color:var(--ap-warn)!important;} .text-muted{color:var(--muted)!important;}
+    .text-dark{color:var(--ink)!important;}
+    .bg-white{background:var(--card-bg)!important;} .bg-light{background:var(--calendar-header-bg)!important;}
+    .border,.border-bottom,.border-top{border-color:var(--border)!important;}
+    .badge.bg-success{background:var(--profit)!important;} .badge.bg-danger{background:var(--loss)!important;}
+    .badge.bg-warning{background:var(--ap-warn)!important;color:#fff!important;} .badge.bg-primary{background:var(--brand)!important;}
+    .badge.bg-secondary{background:var(--muted)!important;} .badge.bg-info{background:var(--ink)!important;color:#fff!important;}
+    .badge.bg-light{background:var(--calendar-header-bg)!important;color:var(--ink)!important;}
+    hr{border-color:var(--border)!important;}
+    small,.small{color:var(--muted);}
 
-    /* ══════════════════════════════════════════════════════════
-       FORMS & INPUTS
-    ══════════════════════════════════════════════════════════ */
-    .form-control, .form-select {
-      border-radius: 12px;
-      border: 1.5px solid var(--input-border);
-      background: var(--input-bg);
-      padding: 0.65rem 1rem;
-      font-size: 0.92rem; font-weight: 500; color: var(--input-color);
-      transition: all 0.2s;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #6366f1;
-      box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
-      background: var(--input-focus-bg);
-      outline: none;
-    }
-    .form-label { font-weight: 600; color: var(--form-label); margin-bottom: 6px; font-size: 0.88rem; }
+    /* ── Modals ── */
+    .modal-content{background:var(--card-bg)!important;color:var(--ink)!important;border:1px solid var(--card-border)!important;border-radius:20px!important;}
+    .modal-header{border-bottom-color:var(--border)!important;background:transparent!important;}
+    .modal-header.bg-warning,.modal-header.bg-light{background:var(--calendar-header-bg)!important;}
+    .modal-title{color:var(--ink)!important;}
+    .modal-footer{border-top-color:var(--border)!important;}
+    [data-theme="dark"] .btn-close{filter:invert(1) grayscale(100%) brightness(200%);}
+    .input-group-text{background:var(--calendar-header-bg)!important;border-color:var(--input-border)!important;color:var(--muted)!important;}
+    .list-group-item{background:var(--card-bg)!important;border-color:var(--border)!important;color:var(--ink)!important;}
+    .dropdown-menu{background:var(--card-bg)!important;border-color:var(--border)!important;}
+    .dropdown-item{color:var(--ink)!important;} .dropdown-item:hover{background:var(--row-hover)!important;}
+    .nav-tabs{border-bottom-color:var(--border)!important;}
+    .nav-tabs .nav-link{color:var(--muted)!important;} .nav-tabs .nav-link.active{background:var(--card-bg)!important;color:var(--ink)!important;border-color:var(--border) var(--border) var(--card-bg)!important;}
+    .fw-bold,h1,h2,h3,h4,h5,h6{color:var(--ink);}
+    .balance-card h1,.balance-card h5,.balance-card .fw-bold,.balance-card strong,.balance-card span{color:#fff;}
 
-    .god-rule-box {
-      background: var(--god-rule-bg);
-      border: 1.5px solid var(--god-rule-border);
-      border-left: 4px solid #ef4444;
-      border-radius: 16px; padding: 18px;
+    /* ── Print ── */
+    @media print{
+      @page{size:A4 portrait;margin:10mm;}
+      body{background:#fff!important;color:#000!important;font-size:12px!important;padding:0!important;}
+      .tj-topbar,.tj-bottomnav,.print-hide{display:none!important;}
+      *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+      .container{max-width:100%!important;width:100%!important;padding:0!important;margin:0!important;}
+      .card-stat{box-shadow:none!important;border:1px solid #ddd!important;page-break-inside:avoid!important;margin-bottom:12px!important;}
+      .balance-card{box-shadow:none!important;background:#921C1E!important;}
+      .row,.col-4,.col-6,.col-12{page-break-inside:avoid;}
+      .calendar-container{page-break-inside:avoid;border:1px solid #ddd!important;box-shadow:none!important;}
     }
-    .discipline-box {
-      background: var(--discipline-box-bg);
-      border: 1.5px solid var(--discipline-box-border);
-      border-left: 4px solid #10b981;
-      border-radius: 16px; padding: 18px;
-    }
-    .confluence-box {
-      background: var(--confluence-box-bg);
-      padding: 18px; border-radius: 16px;
-      border: 1.5px solid var(--confluence-box-border);
-    }
-    .upload-box {
-      border: 2px dashed var(--upload-box-border); border-radius: 16px;
-      padding: 16px; background: var(--upload-box-bg); transition: all 0.2s;
-    }
-    .upload-box:hover { border-color: #6366f1; background: rgba(99,102,241,0.06); }
-
-    .form-switch .form-check-input { width: 2.8em; height: 1.4em; cursor: pointer; }
-    .form-switch .form-check-label { cursor: pointer; padding-left: 12px; padding-top: 3px; color: var(--switch-label-color); font-weight: 600; }
-
-    /* ══════════════════════════════════════════════════════════
-       BUTTONS
-    ══════════════════════════════════════════════════════════ */
-    .btn { border-radius: 12px; font-weight: 600; transition: all 0.2s; }
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      border: none;
-      box-shadow: 0 6px 20px rgba(99,102,241,0.35);
-    }
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 28px rgba(99,102,241,0.45);
-      background: linear-gradient(135deg, #4f46e5, #4338ca);
-    }
-    .btn-warning {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      border: none; color: #fff;
-      box-shadow: 0 6px 20px rgba(245,158,11,0.35);
-    }
-    .btn-warning:hover { transform: translateY(-2px); color: #fff; box-shadow: 0 10px 28px rgba(245,158,11,0.45); }
-
-    /* ══════════════════════════════════════════════════════════
-       OUTCOME % PILLS
-    ══════════════════════════════════════════════════════════ */
-    .outcome-pill {
-      flex: 1; min-width: 55px;
-      padding: 12px 8px;
-      border-radius: 14px;
-      text-align: center;
-      border: 1.5px solid transparent;
-    }
-    .outcome-pill.tp  { background: rgba(16,185,129,0.07); border-color: rgba(16,185,129,0.2); }
-    .outcome-pill.sl  { background: rgba(239,68,68,0.07);  border-color: rgba(239,68,68,0.2); }
-    .outcome-pill.be  { background: rgba(245,158,11,0.07); border-color: rgba(245,158,11,0.2); }
-    .outcome-pill.mwin{ background: rgba(59,130,246,0.07); border-color: rgba(59,130,246,0.2); }
-    .outcome-pill.closs{ background: rgba(239,68,68,0.05); border-color: rgba(239,68,68,0.15); }
-
-    /* ══════════════════════════════════════════════════════════
-       AI INSIGHTS BOX
-    ══════════════════════════════════════════════════════════ */
-    .ai-insight-item {
-      border-radius: 14px; padding: 14px 16px;
-      display: flex; align-items: flex-start; gap: 12px;
-      border: 1.5px solid transparent;
-    }
-
-    /* ══════════════════════════════════════════════════════════
-       SECTION HEADERS
-    ══════════════════════════════════════════════════════════ */
-    .section-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 16px;
-    }
-    .section-header .icon-wrap {
-      width: 36px; height: 36px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.95rem;
-    }
-    .section-header .title { font-weight: 700; color: var(--section-title); font-size: 0.95rem; margin: 0; }
-
-    /* ══════════════════════════════════════════════════════════
-       MOBILE RESPONSIVE — true mobile-first
-    ══════════════════════════════════════════════════════════ */
-    @media (max-width: 480px) {
-      body { font-size: 13px; }
-      .container { padding-left: 12px; padding-right: 12px; }
-      .card-stat { border-radius: 16px; }
-      .balance-card { border-radius: 20px; }
-      #stat-balance { font-size: 2.6rem !important; }
-      #stat-pnl { font-size: 2.4rem !important; }
-      .cal-cell { min-height: 62px; }
-      .cal-pnl { font-size: 0.74rem; }
-      .metric-card .metric-value { font-size: 1.3rem; }
-    }
-
-    /* ══════════════════════════════════════════════════════════
-       PRINT
-    ══════════════════════════════════════════════════════════ */
-    @media print {
-      @page { size: A4 portrait; margin: 10mm; }
-      body { background-color: #fff !important; font-size: 12px !important; }
-      .navbar-custom, .print-hide { display: none !important; }
-      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .container { max-width: 100% !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
-      .card-stat { box-shadow: none !important; border: 1px solid #ddd !important; page-break-inside: avoid !important; margin-bottom: 12px !important; }
-      .quote-box { margin-bottom: 10px !important; padding: 8px !important; }
-      .row { page-break-inside: avoid; }
-      .col-4, .col-6, .col-12 { page-break-inside: avoid; }
-      .calendar-container { page-break-inside: avoid; border: 1px solid #ddd !important; box-shadow: none !important; }
-      h1#stat-balance { font-size: 2.5rem !important; }
-      h1#stat-pnl { font-size: 2.2rem !important; text-shadow: none !important; }
-      canvas#equityChart { max-height: 180px !important; width: 100% !important; }
-      .balance-card { background: #0f172a !important; }
-    }
-    /* ══════════════════════════════════════════════════════════
-       DARK MODE — Bootstrap Overrides
-    ══════════════════════════════════════════════════════════ */
-    [data-theme="dark"] .modal-content {
-      background: #1e293b;
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #e2e8f0;
-    }
-    [data-theme="dark"] .modal-header {
-      border-bottom-color: rgba(255,255,255,0.08);
-    }
-    [data-theme="dark"] .modal-footer {
-      border-top-color: rgba(255,255,255,0.08);
-    }
-    [data-theme="dark"] .modal-title { color: #e2e8f0; }
-    [data-theme="dark"] .btn-close {
-      filter: invert(1) grayscale(100%) brightness(200%);
-    }
-    [data-theme="dark"] .table {
-      color: #e2e8f0;
-      --bs-table-bg: transparent;
-      --bs-table-striped-bg: rgba(255,255,255,0.03);
-    }
-    [data-theme="dark"] .text-dark { color: #e2e8f0 !important; }
-    [data-theme="dark"] .text-muted { color: #64748b !important; }
-    [data-theme="dark"] .bg-white { background: #1e293b !important; }
-    [data-theme="dark"] .bg-light { background: #263248 !important; }
-    [data-theme="dark"] .border { border-color: rgba(255,255,255,0.08) !important; }
-    [data-theme="dark"] .border-bottom { border-bottom-color: rgba(255,255,255,0.08) !important; }
-    [data-theme="dark"] .card {
-      background: rgba(30,41,59,0.92);
-      border-color: rgba(255,255,255,0.07);
-      color: #e2e8f0;
-    }
-    [data-theme="dark"] .fw-bold, [data-theme="dark"] h5, [data-theme="dark"] h6, [data-theme="dark"] .h5, [data-theme="dark"] .h6 {
-      color: #e2e8f0;
-    }
-    [data-theme="dark"] .badge.bg-light { background: #334155 !important; color: #e2e8f0 !important; }
-    [data-theme="dark"] .nav-tabs { border-bottom-color: rgba(255,255,255,0.1); }
-    [data-theme="dark"] .nav-tabs .nav-link {
-      color: #94a3b8;
-    }
-    [data-theme="dark"] .nav-tabs .nav-link.active {
-      background: #1e293b;
-      border-color: rgba(255,255,255,0.1) rgba(255,255,255,0.1) #1e293b;
-      color: #e2e8f0;
-    }
-    [data-theme="dark"] .input-group-text {
-      background: #263248;
-      border-color: #334155;
-      color: #94a3b8;
-    }
-    [data-theme="dark"] small, [data-theme="dark"] .small { color: #64748b; }
-    [data-theme="dark"] hr { border-color: rgba(255,255,255,0.08); }
-    [data-theme="dark"] .list-group-item {
-      background: #1e293b;
-      border-color: rgba(255,255,255,0.07);
-      color: #e2e8f0;
-    }
-    [data-theme="dark"] .dropdown-menu {
-      background: #1e293b;
-      border-color: rgba(255,255,255,0.08);
-    }
-    [data-theme="dark"] .dropdown-item { color: #e2e8f0; }
-    [data-theme="dark"] .dropdown-item:hover { background: #263248; }
-    [data-theme="dark"] #_loginScreen > div {
-      background: #1e293b !important;
-    }
-    [data-theme="dark"] #_loginScreen > div h1 { color: #e2e8f0 !important; }
-
   </style>
 </head>
 <body>
 
-  <nav class="navbar-custom mb-4">
-    <div class="container px-3">
-
-      <!-- ── Left: App Icon + Label ── -->
-      <a class="nav-app-icon nav-link active" onclick="switchTab('dashboard')" title="หน้าหลัก">
-        <div class="nav-app-icon-img">
-          <!-- ใช้ SVG เดิมของแอพ (mouse icon) จาก manifest -->
-          <svg width="800px" height="800px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" style="width:24px;height:24px;display:block;">
-            <path d="M514.80064 517.48352m-485.03808 0a485.03808 485.03808 0 1 0 970.07616 0 485.03808 485.03808 0 1 0-970.07616 0Z" fill="#C8C6C4"/>
-            <path d="M777.24672 581.79584c0 51.23584-19.95264 99.40992-56.192 135.63904l-6.30272 6.30272c-74.78272 74.79296-196.48512 74.79296-271.27808 0L308.53632 588.8c-36.22912-36.224-56.18688-84.39296-56.18688-135.63392s19.95264-99.40992 56.18688-135.63904l6.30272-6.30272c74.79296-74.79296 196.49024-74.79296 271.2832 0l134.93248 134.93248c36.23936 36.22912 56.192 84.39808 56.192 135.63904z" fill="#FFFFFF"/>
-            <path d="M448.04096 435.82976c-8.48384 9.27744-22.52288 10.24512-31.35488 2.16576l-32.85504-30.04416c-8.832-8.07936-9.11872-22.14912-0.63488-31.42144 8.48384-9.27744 22.52288-10.24512 31.35488-2.16576l32.85504 30.04416c8.832 8.07424 9.11872 22.144 0.63488 31.42144z" fill="#928B82"/>
-          </svg>
-        </div>
-        <div class="nav-app-label">
-          <span>Pro Trading</span>
-          <span>Journal</span>
-        </div>
+  <header class="tj-topbar print-hide">
+    <div class="tj-topbar-inner">
+      <a class="tj-brand" onclick="switchTab('dashboard')">
+        <span class="tj-brand-mark"><i class="fa-solid fa-chart-line"></i></span>
+        <span class="tj-brand-text"><b>Pro Trading</b><span>Journal</span></span>
       </a>
-
-      <!-- ── Right: Action Icons ── -->
-      <div class="nav-icons-right">
-
-        <!-- บันทึกออเดอร์ -->
-        <a class="nav-icon-btn nav-link" onclick="switchTab('add-trade')" title="บันทึกออเดอร์">
-          <i class="fa-solid fa-circle-plus" style="color:#22c55e;"></i>
-        </a>
-
-        <!-- ประวัติ -->
-        <a class="nav-icon-btn nav-link" onclick="switchTab('history')" title="ประวัติ">
-          <i class="fa-solid fa-clock-rotate-left" style="color:#06b6d4;"></i>
-        </a>
-
-        <div class="nav-divider"></div>
-
-        <!-- จัดการทุน -->
-        <button class="nav-icon-btn btn-wallet" data-bs-toggle="modal" data-bs-target="#fundingModal" title="จัดการทุน">
-          <i class="fa-solid fa-wallet"></i>
-        </button>
-
-        <!-- ตั้งค่า -->
-        <a class="nav-icon-btn nav-link" data-bs-toggle="modal" data-bs-target="#settingsModal" title="ตั้งค่า / บัญชี">
-          <i class="fa-solid fa-gear"></i>
-        </a>
-
+      <div class="tj-topbar-actions">
+        <button class="tj-icon-btn" onclick="window.print()" title="พิมพ์รายงาน"><i class="fa-solid fa-print"></i></button>
+        <button class="tj-icon-btn" onclick="toggleDarkMode()" title="สลับธีม (Light / Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
       </div>
     </div>
-  </nav>
+  </header>
 
   <div class="container pb-5">
     
@@ -835,7 +353,7 @@
 
       <div class="row mb-4">
         <div class="col-12">
-          <div class="card card-stat p-4 p-md-5 text-center" style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);">
+          <div class="card card-stat p-4 p-md-5 text-center" style="background: linear-gradient(180deg, #ffffff 0%, #F8F7F3 100%);">
              <small class="text-muted text-uppercase fw-bold mb-2 d-block" style="letter-spacing: 2px; font-size: 0.9rem;">Net Profit / Loss (กำไรสุทธิ)</small>
              <h1 id="stat-pnl" class="display-3 fw-bold mb-0" style="letter-spacing: -1px;">0.00</h1>
           </div>
@@ -846,7 +364,7 @@
         <div class="col-12">
           <div class="card card-stat p-4">
             <div class="section-header">
-              <div class="icon-wrap" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-brain" style="color:#6366f1"></i></div>
+              <div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-brain" style="color:#1E1E24"></i></div>
               <h6 class="title">AI Performance Insights</h6>
             </div>
             <div id="ai-insights-container" class="d-flex flex-column gap-3">
@@ -860,30 +378,30 @@
       <div class="row g-3 mb-4 stat-4-grid">
         <div class="col-6 col-md-3">
           <div class="card card-stat p-3 text-center h-100">
-            <div class="stat-icon-badge" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-trophy" style="color:#6366f1"></i></div>
-            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-bottom:4px;">Win Rate</div>
-            <h3 id="stat-winrate" class="mb-0 fw-bold" style="color:#1e293b;font-size:1.4rem;">0%</h3>
+            <div class="stat-icon-badge" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-trophy" style="color:#1E1E24"></i></div>
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9C9CA4;margin-bottom:4px;">Win Rate</div>
+            <h3 id="stat-winrate" class="mb-0 fw-bold" style="color:#131317;font-size:1.4rem;">0%</h3>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card card-stat p-3 text-center h-100">
-            <div class="stat-icon-badge" style="background:rgba(6,182,212,0.1)"><i class="fa-solid fa-calculator" style="color:#06b6d4"></i></div>
-            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-bottom:4px;">Expectancy</div>
-            <h3 id="stat-expectancy" class="mb-0 fw-bold" style="color:#06b6d4;font-size:1.4rem;">0.00</h3>
-            <div style="font-size:0.62rem;color:#94a3b8;font-weight:600;">$/Trade</div>
+            <div class="stat-icon-badge" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-calculator" style="color:#1E1E24"></i></div>
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9C9CA4;margin-bottom:4px;">Expectancy</div>
+            <h3 id="stat-expectancy" class="mb-0 fw-bold" style="color:#1E1E24;font-size:1.4rem;">0.00</h3>
+            <div style="font-size:0.62rem;color:#9C9CA4;font-weight:600;">$/Trade</div>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card card-stat p-3 text-center h-100">
-            <div class="stat-icon-badge" style="background:rgba(16,185,129,0.1)"><i class="fa-solid fa-scale-balanced" style="color:#10b981"></i></div>
-            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-bottom:4px;">Profit Factor</div>
-            <h3 id="stat-pf" class="mb-0 fw-bold" style="color:#10b981;font-size:1.4rem;">0</h3>
+            <div class="stat-icon-badge" style="background:rgba(47,122,79,0.1)"><i class="fa-solid fa-scale-balanced" style="color:#2F7A4F"></i></div>
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9C9CA4;margin-bottom:4px;">Profit Factor</div>
+            <h3 id="stat-pf" class="mb-0 fw-bold" style="color:#2F7A4F;font-size:1.4rem;">0</h3>
           </div>
         </div>
         <div class="col-6 col-md-3">
           <div class="card card-stat p-3 d-flex flex-column align-items-center justify-content-center h-100">
-            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#94a3b8;margin-bottom:8px;">Discipline</div>
-            <div class="discipline-ring shadow-sm" id="stat-discipline" style="border-color:#10b981;color:#10b981;">100</div>
+            <div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#9C9CA4;margin-bottom:8px;">Discipline</div>
+            <div class="discipline-ring shadow-sm" id="stat-discipline" style="border-color:#2F7A4F;color:#2F7A4F;">100</div>
           </div>
         </div>
       </div>
@@ -893,15 +411,15 @@
         <div class="col-12">
           <div class="card card-stat p-4">
             <div class="section-header">
-              <div class="icon-wrap" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-bullseye" style="color:#6366f1"></i></div>
+              <div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-bullseye" style="color:#1E1E24"></i></div>
               <h6 class="title">สถิติการปิดออเดอร์ (Outcome %)</h6>
             </div>
             <div class="d-flex gap-2 flex-wrap">
-              <div class="outcome-pill tp"><div style="font-size:0.62rem;font-weight:800;color:#10b981;letter-spacing:0.5px;margin-bottom:4px;">TP</div><h4 id="stat-tp" class="mb-0 fw-bold" style="color:#10b981;font-size:1.05rem;">0.0%</h4></div>
-              <div class="outcome-pill sl"><div style="font-size:0.62rem;font-weight:800;color:#ef4444;letter-spacing:0.5px;margin-bottom:4px;">SL</div><h4 id="stat-sl" class="mb-0 fw-bold" style="color:#ef4444;font-size:1.05rem;">0.0%</h4></div>
-              <div class="outcome-pill be"><div style="font-size:0.62rem;font-weight:800;color:#f59e0b;letter-spacing:0.5px;margin-bottom:4px;">BE</div><h4 id="stat-be" class="mb-0 fw-bold" style="color:#f59e0b;font-size:1.05rem;">0.0%</h4></div>
-              <div class="outcome-pill mwin"><div style="font-size:0.62rem;font-weight:800;color:#3b82f6;letter-spacing:0.5px;margin-bottom:4px;">M.Win</div><h4 id="stat-mwin" class="mb-0 fw-bold" style="color:#3b82f6;font-size:1.05rem;">0.0%</h4></div>
-              <div class="outcome-pill closs"><div style="font-size:0.62rem;font-weight:800;color:#f87171;letter-spacing:0.5px;margin-bottom:4px;">Cut Loss</div><h4 id="stat-mloss" class="mb-0 fw-bold" style="color:#f87171;font-size:1.05rem;">0.0%</h4></div>
+              <div class="outcome-pill tp"><div style="font-size:0.62rem;font-weight:800;color:#2F7A4F;letter-spacing:0.5px;margin-bottom:4px;">TP</div><h4 id="stat-tp" class="mb-0 fw-bold" style="color:#2F7A4F;font-size:1.05rem;">0.0%</h4></div>
+              <div class="outcome-pill sl"><div style="font-size:0.62rem;font-weight:800;color:#B93033;letter-spacing:0.5px;margin-bottom:4px;">SL</div><h4 id="stat-sl" class="mb-0 fw-bold" style="color:#B93033;font-size:1.05rem;">0.0%</h4></div>
+              <div class="outcome-pill be"><div style="font-size:0.62rem;font-weight:800;color:#B5791A;letter-spacing:0.5px;margin-bottom:4px;">BE</div><h4 id="stat-be" class="mb-0 fw-bold" style="color:#B5791A;font-size:1.05rem;">0.0%</h4></div>
+              <div class="outcome-pill mwin"><div style="font-size:0.62rem;font-weight:800;color:#1E1E24;letter-spacing:0.5px;margin-bottom:4px;">M.Win</div><h4 id="stat-mwin" class="mb-0 fw-bold" style="color:#1E1E24;font-size:1.05rem;">0.0%</h4></div>
+              <div class="outcome-pill closs"><div style="font-size:0.62rem;font-weight:800;color:#CB5456;letter-spacing:0.5px;margin-bottom:4px;">Cut Loss</div><h4 id="stat-mloss" class="mb-0 fw-bold" style="color:#CB5456;font-size:1.05rem;">0.0%</h4></div>
             </div>
           </div>
         </div>
@@ -937,7 +455,7 @@
         <div class="col-12">
           <div class="card card-stat p-4">
             <div class="section-header">
-              <div class="icon-wrap" style="background:rgba(6,182,212,0.1)"><i class="fa-solid fa-chart-line" style="color:#06b6d4"></i></div>
+              <div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-line" style="color:#1E1E24"></i></div>
               <h6 class="title">Equity Curve (การเติบโตของพอร์ต)</h6>
             </div>
             <div style="position:relative;height:260px;width:100%;"><canvas id="equityChart"></canvas></div>
@@ -949,19 +467,19 @@
       <div class="row g-3 mb-4 perf-3-col">
         <div class="col-md-4">
           <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-crosshairs" style="color:#6366f1"></i></div><h6 class="title">Setup Performance</h6></div>
+            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-crosshairs" style="color:#1E1E24"></i></div><h6 class="title">Setup Performance</h6></div>
             <div id="setup-stats-container"></div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(245,158,11,0.1)"><i class="fa-solid fa-clock" style="color:#f59e0b"></i></div><h6 class="title">Session Performance</h6></div>
+            <div class="section-header"><div class="icon-wrap" style="background:rgba(181,121,26,0.1)"><i class="fa-solid fa-clock" style="color:#B5791A"></i></div><h6 class="title">Session Performance</h6></div>
             <div id="session-stats-container"></div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(16,185,129,0.1)"><i class="fa-solid fa-coins" style="color:#10b981"></i></div><h6 class="title">Pair Performance</h6></div>
+            <div class="section-header"><div class="icon-wrap" style="background:rgba(47,122,79,0.1)"><i class="fa-solid fa-coins" style="color:#2F7A4F"></i></div><h6 class="title">Pair Performance</h6></div>
             <div id="pair-stats-container"></div>
           </div>
         </div>
@@ -995,14 +513,14 @@
           <div id="rr-preview-box" class="mb-4 rounded-3 px-4 py-3 d-none" style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border:1.5px solid #bae6fd;">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
               <div class="text-center">
-                <div style="font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;">Risk (SL Distance)</div>
+                <div style="font-size:0.72rem;font-weight:700;color:#70707A;letter-spacing:0.5px;text-transform:uppercase;">Risk (SL Distance)</div>
                 <div id="rr-sl-dist" class="fw-bold text-danger" style="font-size:1rem;">—</div>
               </div>
               <div class="text-center">
-                <div style="font-size:0.72rem;font-weight:700;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;">Reward (TP Distance)</div>
+                <div style="font-size:0.72rem;font-weight:700;color:#70707A;letter-spacing:0.5px;text-transform:uppercase;">Reward (TP Distance)</div>
                 <div id="rr-tp-dist" class="fw-bold text-success" style="font-size:1rem;">—</div>
               </div>
-              <div class="text-center px-3 py-2 rounded-2" style="background:#0f172a;min-width:80px;">
+              <div class="text-center px-3 py-2 rounded-2" style="background:#131317;min-width:80px;">
                 <div style="font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:0.5px;">R:R Ratio</div>
                 <div id="rr-ratio" class="fw-bold text-warning" style="font-size:1.25rem;">—</div>
               </div>
@@ -1016,10 +534,10 @@
           </div>
 
           <!-- R-Multiple Preview -->
-          <div id="rmult-preview" class="mb-4 d-none rounded-3 px-4 py-3 text-center" style="background:#f0fdf4;border:1.5px solid #bbf7d0;">
-            <div style="font-size:0.75rem;font-weight:700;color:#64748b;letter-spacing:0.5px;text-transform:uppercase;">R-Multiple ที่ได้ (คำนวณอัตโนมัติ)</div>
-            <div id="rmult-value" class="fw-bold mt-1" style="font-size:1.6rem;color:#059669;">—</div>
-            <div style="font-size:0.75rem;color:#64748b;">R = Net P/L ÷ Risk$</div>
+          <div id="rmult-preview" class="mb-4 d-none rounded-3 px-4 py-3 text-center" style="background:#E8F1EC;border:1.5px solid #B7D4C2;">
+            <div style="font-size:0.75rem;font-weight:700;color:#70707A;letter-spacing:0.5px;text-transform:uppercase;">R-Multiple ที่ได้ (คำนวณอัตโนมัติ)</div>
+            <div id="rmult-value" class="fw-bold mt-1" style="font-size:1.6rem;color:#276B44;">—</div>
+            <div style="font-size:0.75rem;color:#70707A;">R = Net P/L ÷ Risk$</div>
           </div>
 
           <div class="row g-3 mb-4">
@@ -1175,13 +693,13 @@
 
           <!-- ── Tab Switcher ── -->
           <div class="d-flex gap-2" id="history-tab-switcher">
-            <button id="tab-btn-trades" onclick="switchHistoryTab('trades')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill active-history-tab" style="background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe;font-size:0.9rem;">
+            <button id="tab-btn-trades" onclick="switchHistoryTab('trades')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill active-history-tab" style="background:#F0EEE8;color:#131317;border:1.5px solid #C9C6BC;font-size:0.9rem;">
               <i class="fa-solid fa-chart-candlestick me-1"></i> การเทรด
-              <span id="tab-badge-trades" class="badge ms-1 rounded-pill" style="background:#2563eb;color:#fff;font-size:0.75rem;">0</span>
+              <span id="tab-badge-trades" class="badge ms-1 rounded-pill" style="background:#131317;color:#fff;font-size:0.75rem;">0</span>
             </button>
-            <button id="tab-btn-funding" onclick="switchHistoryTab('funding')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill" style="background:#f8fafc;color:#64748b;border:1.5px solid #e2e8f0;font-size:0.9rem;">
+            <button id="tab-btn-funding" onclick="switchHistoryTab('funding')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill" style="background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;">
               <i class="fa-solid fa-wallet me-1"></i> การเงิน
-              <span id="tab-badge-funding" class="badge ms-1 rounded-pill" style="background:#64748b;color:#fff;font-size:0.75rem;">0</span>
+              <span id="tab-badge-funding" class="badge ms-1 rounded-pill" style="background:#70707A;color:#fff;font-size:0.75rem;">0</span>
             </button>
           </div>
         </div>
@@ -1254,9 +772,9 @@
           </div>
           <hr class="text-muted opacity-25">
           <!-- Dark Mode Toggle -->
-          <div class="d-flex align-items-center justify-content-between px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(99,102,241,0.07)'" onmouseleave="this.style.background=''" onclick="toggleDarkMode()">
+          <div class="d-flex align-items-center justify-content-between px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="toggleDarkMode()">
             <div class="d-flex align-items-center gap-3">
-              <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1E1E24,#131317);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 <i class="fa-solid fa-moon" style="color:#fff;font-size:1rem;" id="darkModeIcon"></i>
               </div>
               <div style="text-align:left;">
@@ -1264,7 +782,7 @@
                 <div style="font-size:0.75rem;color:var(--metric-label-color);">Dark Mode</div>
               </div>
             </div>
-            <div id="darkModeTrack" style="width:52px;height:28px;border-radius:99px;background:#e2e8f0;position:relative;transition:background 0.3s;flex-shrink:0;">
+            <div id="darkModeTrack" style="width:52px;height:28px;border-radius:99px;background:#E4E1D8;position:relative;transition:background 0.3s;flex-shrink:0;">
               <div id="darkModeThumb" style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
             </div>
           </div>
@@ -1892,18 +1410,18 @@
       let dScore = data.disciplineScore;
       let dRing = document.getElementById('stat-discipline');
       dRing.innerText = dScore;
-      if(dScore >= 80) { dRing.style.borderColor = "#10b981"; dRing.style.color = "#10b981"; }
-      else if(dScore >= 50) { dRing.style.borderColor = "#f59e0b"; dRing.style.color = "#f59e0b"; }
-      else { dRing.style.borderColor = "#ef4444"; dRing.style.color = "#ef4444"; }
+      if(dScore >= 80) { dRing.style.borderColor = "#2F7A4F"; dRing.style.color = "#2F7A4F"; }
+      else if(dScore >= 50) { dRing.style.borderColor = "#B5791A"; dRing.style.color = "#B5791A"; }
+      else { dRing.style.borderColor = "#B93033"; dRing.style.color = "#B93033"; }
 
       const pnlEl = document.getElementById('stat-pnl');
       pnlEl.innerText = (data.totalPnl >= 0 ? "+$" : "-$") + Math.abs(data.totalPnl);
-      pnlEl.style.color = data.totalPnl >= 0 ? '#10b981' : '#ef4444'; 
+      pnlEl.style.color = data.totalPnl >= 0 ? '#2F7A4F' : '#B93033'; 
       
       let insightHtml = "";
       data.aiInsights.forEach(i => {
          let bgClass = i.type === 'danger' ? 'rgba(239, 68, 68, 0.08)' : (i.type==='warning'?'rgba(245, 158, 11, 0.08)':'rgba(16, 185, 129, 0.08)');
-         let borderClass = i.type === 'danger' ? '#ef4444' : (i.type==='warning'?'#f59e0b':'#10b981');
+         let borderClass = i.type === 'danger' ? '#B93033' : (i.type==='warning'?'#B5791A':'#2F7A4F');
          insightHtml += `<div class="p-3 rounded-3 d-flex align-items-start shadow-sm" style="background: ${bgClass}; border-left: 5px solid ${borderClass};"><div class="me-3 fs-5">${i.icon}</div><div class="text-dark lh-base fw-medium" style="font-size:0.95rem;">${i.text}</div></div>`;
       });
       document.getElementById('ai-insights-container').innerHTML = insightHtml;
@@ -1918,7 +1436,7 @@
     function renderEquityChart(labels, dataPoints) {
       const ctx = document.getElementById('equityChart').getContext('2d');
       if (equityChartInstance) { equityChartInstance.destroy(); }
-      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.color = '#9C9CA4';
       Chart.defaults.font.family = "'Prompt', sans-serif";
 
       // 1. คำนวณค่า Drawdown (หาจุดสูงสุดที่เคยทำได้ แล้วลบด้วยค่าปัจจุบัน)
@@ -1936,10 +1454,10 @@
             {
               label: 'Equity',
               data: dataPoints,
-              borderColor: '#3b82f6',
+              borderColor: '#1E1E24',
               backgroundColor: 'rgba(59, 130, 246, 0.1)',
               borderWidth: 3,
-              pointBackgroundColor: '#2563eb',
+              pointBackgroundColor: '#131317',
               pointRadius: 2,
               pointHoverRadius: 6,
               fill: true,
@@ -1949,7 +1467,7 @@
             {
               label: 'Drawdown',
               data: drawdownData,
-              borderColor: '#ef4444',
+              borderColor: '#B93033',
               backgroundColor: 'rgba(239, 68, 68, 0.08)',
               borderWidth: 2,
               pointRadius: 0, // ซ่อนจุดเพื่อให้ดูเป็น Curve ลึกแบบต่อเนื่อง
@@ -1989,7 +1507,7 @@
               type: 'linear',
               display: true,
               position: 'left',
-              grid: { color: '#f1f5f9' } 
+              grid: { color: '#F2F0EA' } 
             },
             y1: {
               type: 'linear',
@@ -1997,7 +1515,7 @@
               position: 'right',
               grid: { display: false }, // ปิด grid แกนขวาเพื่อไม่ให้เส้นตีกัน
               suggestedMax: 0, // บังคับให้ 0 อยู่ด้านบนสุดของสเกลฝั่งขวา Drawdown จะได้ห้อยลงมา
-              ticks: { color: '#ef4444' }
+              ticks: { color: '#B93033' }
             }
           }
         }
@@ -2051,7 +1569,7 @@
            let stat = monthlyStats[i];
            let pnlDisplay = stat.pnl > 0 ? `<div class="cal-pnl text-success">+${stat.pnl.toFixed(2)}</div>` : stat.pnl < 0 ? `<div class="cal-pnl text-danger">${stat.pnl.toFixed(2)}</div>` : `<div class="cal-pnl opacity-25">-</div>`;
            let countDisplay = stat.count > 0 ? `<div class="cal-count shadow-sm bg-white text-dark">${stat.count} ไม้</div>` : '';
-           let bgStyle = (i === today.getMonth() && (yearFilter === "all" || year === today.getFullYear())) ? 'background: #eff6ff; border: 2px solid #3b82f6;' : '';
+           let bgStyle = (i === today.getMonth() && (yearFilter === "all" || year === today.getFullYear())) ? 'background: #F0EEE8; border: 2px solid #1E1E24;' : '';
            
            html += `<div class="cal-cell" style="${bgStyle}; min-height: 95px;">
                       <div class="text-dark fw-bold" style="font-size:0.85rem;">${monthNames[i]}</div>
@@ -2079,7 +1597,7 @@
           
           let pnlDisplay = stat.pnl > 0 ? `<div class="cal-pnl text-success">+${stat.pnl.toFixed(2)}</div>` : stat.pnl < 0 ? `<div class="cal-pnl text-danger">${stat.pnl.toFixed(2)}</div>` : `<div class="cal-pnl opacity-25">-</div>`;
           let countDisplay = stat.count > 0 ? `<div class="cal-count shadow-sm bg-white">${stat.count} ไม้</div>` : '';
-          let bgStyle = (day===today.getDate() && month===today.getMonth() && year===today.getFullYear()) ? 'background: #eff6ff; border: 2px solid #3b82f6;' : '';
+          let bgStyle = (day===today.getDate() && month===today.getMonth() && year===today.getFullYear()) ? 'background: #F0EEE8; border: 2px solid #1E1E24;' : '';
           
           html += `<div class="cal-cell" style="${bgStyle}">
                      <div class="cal-date">${day}</div>
@@ -2104,8 +1622,8 @@
       const fundFoot   = document.getElementById('funding-summary-footer');
 
       if (tab === 'trades') {
-        tradeBtn.style.cssText  = 'background:#eff6ff;color:#2563eb;border:1.5px solid #bfdbfe;font-size:0.9rem;';
-        fundBtn.style.cssText   = 'background:#f8fafc;color:#64748b;border:1.5px solid #e2e8f0;font-size:0.9rem;';
+        tradeBtn.style.cssText  = 'background:#F0EEE8;color:#131317;border:1.5px solid #C9C6BC;font-size:0.9rem;';
+        fundBtn.style.cssText   = 'background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;';
         tradePanel.style.display = '';
         fundPanel.style.display  = 'none';
         fundFoot.style.setProperty('display', 'none', 'important');
@@ -2115,8 +1633,8 @@
           tradeFoot.style.setProperty('display', 'flex', 'important');
         }
       } else {
-        fundBtn.style.cssText   = 'background:#fefce8;color:#b45309;border:1.5px solid #fde68a;font-size:0.9rem;';
-        tradeBtn.style.cssText  = 'background:#f8fafc;color:#64748b;border:1.5px solid #e2e8f0;font-size:0.9rem;';
+        fundBtn.style.cssText   = 'background:#F6ECD6;color:#8F5F14;border:1.5px solid #E4C77A;font-size:0.9rem;';
+        tradeBtn.style.cssText  = 'background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;';
         fundPanel.style.display  = '';
         tradePanel.style.display = 'none';
         tradeFoot.style.setProperty('display', 'none', 'important');
@@ -2168,8 +1686,8 @@
           const amtClass = isDeposit ? 'text-success fw-bold' : 'text-danger fw-bold';
           const amtSign  = isDeposit ? '+$' : '-$';
           const badgeStyle = isDeposit
-            ? 'background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;'
-            : 'background:#fff5f5;color:#b91c1c;border:1px solid #fecaca;';
+            ? 'background:#E8F1EC;color:#276B44;border:1px solid #B7D4C2;'
+            : 'background:#FAEBEB;color:#8E2224;border:1px solid #E8A8A9;';
 
           fundTbody.innerHTML += `
             <tr class="clickable-row" onclick="openTradeModal(${index})">
@@ -2357,7 +1875,7 @@
         const rMult = pnl / risk;
         const sign  = rMult >= 0 ? '+' : '';
         rmultVal.textContent = sign + rMult.toFixed(2) + 'R';
-        rmultVal.style.color = rMult >= 0 ? '#059669' : '#ef4444';
+        rmultVal.style.color = rMult >= 0 ? '#276B44' : '#B93033';
         rmultBox.classList.remove('d-none');
       } else {
         rmultBox.classList.add('d-none');
@@ -2423,23 +1941,33 @@
     }
   </script>
 
-  <div id="_authLoading" style="position:fixed;inset:0;z-index:99999;background:#0f172a;display:flex;align-items:center;justify-content:center;color:white;font-family:'Prompt',sans-serif">
+
+  <nav class="tj-bottomnav print-hide">
+    <div class="tj-bottomnav-inner">
+      <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
+      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
+      <a class="tj-nav-fab nav-icon-btn nav-link" onclick="switchTab('add-trade')" title="บันทึกออเดอร์"><i class="fa-solid fa-plus"></i></a>
+      <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#fundingModal"><i class="fa-solid fa-wallet"></i><span>ทุน</span></button>
+      <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i><span>ตั้งค่า</span></button>
+    </div>
+  </nav>
+  <div id="_authLoading" style="position:fixed;inset:0;z-index:99999;background:#131317;display:flex;align-items:center;justify-content:center;color:white;font-family:'Prompt',sans-serif">
     <div style="text-align:center">
-      <i class="fa-solid fa-circle-notch fa-spin" style="font-size:36px;color:#3b82f6;margin-bottom:16px"></i>
+      <i class="fa-solid fa-circle-notch fa-spin" style="font-size:36px;color:#1E1E24;margin-bottom:16px"></i>
       <p style="font-weight:600; font-size: 1.1rem; letter-spacing: 0.5px;">กำลังโหลดระบบ...</p>
     </div>
   </div>
 
-  <div id="_loginScreen" style="display:none;position:fixed;inset:0;z-index:99998;background:linear-gradient(135deg,#0f172a,#1e1b4b,#0f172a);align-items:center;justify-content:center;padding:24px;font-family:'Prompt',sans-serif">
+  <div id="_loginScreen" style="display:none;position:fixed;inset:0;z-index:99998;background:linear-gradient(135deg,#131317,#1e1b4b,#131317);align-items:center;justify-content:center;padding:24px;font-family:'Prompt',sans-serif">
     <div style="background:white;border-radius:24px;padding:48px 32px;max-width:400px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)">
       <div style="font-size:64px;margin-bottom:16px; text-shadow: 0 10px 20px rgba(0,0,0,0.1);">📈</div>
-      <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin:0 0 12px;letter-spacing:-0.5px">Pro Trading Journal</h1>
-      <p style="font-size:15px;color:#64748b;margin:0 0 40px; line-height: 1.5;">บันทึกการเทรดของคุณ<br>วิเคราะห์ด้วย AI ใช้ได้ทุกอุปกรณ์</p>
-      <button onclick="_signInWithGoogle()" style="width:100%;padding:16px 20px;border-radius:14px;border:1px solid #e2e8f0;background:#f8fafc;color:#1e293b;font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+      <h1 style="font-size:28px;font-weight:700;color:#131317;margin:0 0 12px;letter-spacing:-0.5px">Pro Trading Journal</h1>
+      <p style="font-size:15px;color:#70707A;margin:0 0 40px; line-height: 1.5;">บันทึกการเทรดของคุณ<br>วิเคราะห์ด้วย AI ใช้ได้ทุกอุปกรณ์</p>
+      <button onclick="_signInWithGoogle()" style="width:100%;padding:16px 20px;border-radius:14px;border:1px solid #E4E1D8;background:#F8F7F3;color:#131317;font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
         <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
         เข้าสู่ระบบด้วย Google
       </button>
-      <p style="font-size:12px;color:#94a3b8;margin:24px 0 0">เข้าสู่ระบบครั้งแรกจะสร้างบัญชีให้อัตโนมัติ</p>
+      <p style="font-size:12px;color:#9C9CA4;margin:24px 0 0">เข้าสู่ระบบครั้งแรกจะสร้างบัญชีให้อัตโนมัติ</p>
     </div>
   </div>
 
@@ -2497,7 +2025,7 @@
       if (profileArea) {
         profileArea.innerHTML = `
           <div class="d-flex flex-column align-items-center justify-content-center">
-            ${window._currentUserPicture ? `<img src="${window._currentUserPicture}" style="width:80px;height:80px;border-radius:50%;object-fit:cover; border: 3px solid #e2e8f0; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" referrerpolicy="no-referrer">` : `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg, #3b82f6, #2563eb);color:white;display:flex;align-items:center;justify-content:center;font-weight:700; font-size: 2rem; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">${(window._currentUserName||'U').charAt(0).toUpperCase()}</div>`}
+            ${window._currentUserPicture ? `<img src="${window._currentUserPicture}" style="width:80px;height:80px;border-radius:50%;object-fit:cover; border: 3px solid #E4E1D8; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" referrerpolicy="no-referrer">` : `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg, #1E1E24, #131317);color:white;display:flex;align-items:center;justify-content:center;font-weight:700; font-size: 2rem; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">${(window._currentUserName||'U').charAt(0).toUpperCase()}</div>`}
             <h5 class="fw-bold text-dark mb-1">${window._currentUserName}</h5>
             <span class="text-muted small">${window._currentUserEmail || ''}</span>
             <div class="badge bg-success mt-3 px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i> เชื่อมต่อบัญชีแล้ว</div>
@@ -2524,7 +2052,7 @@
       const track = document.getElementById('darkModeTrack');
       const thumb = document.getElementById('darkModeThumb');
       if (icon)  icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-      if (track) track.style.background = isDark ? '#6366f1' : '#e2e8f0';
+      if (track) track.style.background = isDark ? '#1E1E24' : '#E4E1D8';
       if (thumb) thumb.style.transform  = isDark ? 'translateX(24px)' : 'translateX(0)';
     }
 
@@ -2536,7 +2064,7 @@
       _syncDarkModeUI();
       if (window.equityChart) {
         const gridColor = newTheme === 'dark' ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
-        const tickColor = newTheme === 'dark' ? '#64748b' : '#94a3b8';
+        const tickColor = newTheme === 'dark' ? '#70707A' : '#9C9CA4';
         window.equityChart.options.scales.x.grid.color = gridColor;
         window.equityChart.options.scales.y.grid.color = gridColor;
         window.equityChart.options.scales.x.ticks.color = tickColor;
@@ -2617,13 +2145,13 @@
   </script>
 
   <!-- ─── PWA Install Banner UI ─────────────────────────────── -->
-  <div id="pwa-install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:99990; background:linear-gradient(135deg,#0f172a,#1e293b); color:white; border-radius:18px; padding:14px 20px; box-shadow:0 10px 40px rgba(0,0,0,0.4); align-items:center; gap:14px; max-width:360px; width:calc(100% - 40px); font-family:'Prompt',sans-serif; border:1px solid rgba(255,255,255,0.1);">
+  <div id="pwa-install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:99990; background:linear-gradient(135deg,#131317,#131317); color:white; border-radius:18px; padding:14px 20px; box-shadow:0 10px 40px rgba(0,0,0,0.4); align-items:center; gap:14px; max-width:360px; width:calc(100% - 40px); font-family:'Prompt',sans-serif; border:1px solid rgba(255,255,255,0.1);">
     <div style="font-size:32px; flex-shrink:0;">📈</div>
     <div style="flex:1; min-width:0;">
       <div style="font-weight:700; font-size:14px; margin-bottom:2px;">ติดตั้งแอปบนมือถือ</div>
       <div style="font-size:12px; color:rgba(255,255,255,0.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">ใช้แบบ Standalone ไม่ต้องเปิด Browser</div>
     </div>
-    <button onclick="_installPWA()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; border:none; border-radius:12px; padding:10px 16px; font-weight:700; font-size:13px; cursor:pointer; font-family:'Prompt',sans-serif; white-space:nowrap; box-shadow:0 4px 15px rgba(59,130,246,0.5);">ติดตั้ง</button>
+    <button onclick="_installPWA()" style="background:linear-gradient(135deg,#1E1E24,#131317); color:white; border:none; border-radius:12px; padding:10px 16px; font-weight:700; font-size:13px; cursor:pointer; font-family:'Prompt',sans-serif; white-space:nowrap; box-shadow:0 4px 15px rgba(19,19,23,0.5);">ติดตั้ง</button>
     <button onclick="document.getElementById('pwa-install-banner').style.display='none'" style="background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); border:none; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:18px; line-height:1; flex-shrink:0;">&times;</button>
   </div>
   <!-- ======= END PWA ======= -->
