@@ -117,7 +117,7 @@
     .tj-brand-text{display:flex;flex-direction:column;line-height:1.05;}
     .tj-brand-text b{font-size:.82rem;font-weight:700;color:var(--ink);letter-spacing:.2px;}
     .tj-brand-text span{font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
-    .tj-topbar-actions{display:flex;gap:4px;}
+    .tj-topbar-actions{display:flex;gap:6px;align-items:center;}
     .tj-icon-btn{width:40px;height:40px;border:none;background:transparent;color:var(--muted);border-radius:999px;font-size:1.05rem;cursor:pointer;transition:background .15s,color .15s;}
     .tj-icon-btn:hover{background:rgba(146,28,30,.08);color:var(--brand);}
 
@@ -137,6 +137,26 @@
     .tj-month-pill{display:inline-flex;align-items:center;gap:6px;background:var(--card-bg);border:1px solid var(--border);border-radius:999px;padding:6px 12px;box-shadow:var(--card-shadow);}
     .tj-month-pill .tj-pill-select{border:none!important;background:transparent!important;box-shadow:none!important;padding:0 2px!important;margin:0!important;font-weight:600;font-size:.82rem;color:var(--form-label)!important;-webkit-appearance:none;-moz-appearance:none;appearance:none;width:auto;line-height:1.2;cursor:pointer;}
     .tj-month-pill .tj-pill-select:focus{outline:none;box-shadow:none!important;border:none!important;}
+    /* compact variant that lives in the topbar actions area */
+    .tj-month-pill--top{padding:4px 9px;gap:4px;}
+    .tj-month-pill--top .tj-pill-select{font-size:.76rem;}
+
+    /* ── Settings modal (mockup redesign) ── */
+    .tj-set-section{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 4px 8px;}
+    .tj-set-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;box-shadow:var(--card-shadow);overflow:hidden;}
+    .tj-set-row{display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer;background:transparent;border:none;width:100%;text-align:left;font-family:var(--font-app);transition:background .15s;color:var(--ink);}
+    .tj-set-row + .tj-set-row{border-top:1px solid var(--card-border);}
+    .tj-set-row:hover{background:var(--row-hover);}
+    .tj-set-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:rgba(146,28,30,.10);color:var(--brand);}
+    .tj-set-body{flex:1;min-width:0;text-align:left;}
+    .tj-set-label{font-size:.9rem;font-weight:700;color:var(--section-title);line-height:1.25;}
+    .tj-set-sub{font-size:.75rem;color:var(--metric-label-color);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .tj-set-chev{color:var(--metric-label-color);font-size:.85rem;flex-shrink:0;}
+    .tj-set-row.danger .tj-set-ico{background:var(--loss-bg);color:var(--loss);}
+    .tj-set-row.danger .tj-set-label{color:var(--loss);}
+    .tj-profile-card{display:flex;align-items:center;gap:14px;padding:16px;}
+    .tj-profile-card .tj-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;flex-shrink:0;overflow:hidden;}
+    .tj-profile-card .tj-avatar img{width:100%;height:100%;object-fit:cover;}
 
     /* ── Page transitions ── */
     .page-section{display:none;animation:pageIn .35s cubic-bezier(.16,1,.3,1);}
@@ -153,7 +173,7 @@
     /* ── Balance hero (AP red, hard-edged, layered paper) ── */
     .balance-card{background:#921C1E!important;color:#fff!important;border:none!important;border-radius:0!important;overflow:hidden!important;position:relative;box-shadow:12px 12px 0 rgba(146,28,30,.20),24px 24px 0 rgba(146,28,30,.09),0 10px 30px rgba(20,14,14,.14)!important;}
     .balance-card::before,.balance-card::after{display:none!important;}
-    .balance-card .shimmer-line{display:block!important;position:absolute;top:0;left:0;width:70px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);animation:tjShimmer 3.5s linear infinite;z-index:1;pointer-events:none;}
+    .balance-card .shimmer-line{display:none!important;position:absolute;top:0;left:0;width:70px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);z-index:1;pointer-events:none;}
     .balance-card small,.balance-card .text-white-50{color:rgba(255,255,255,.72)!important;}
     .balance-card .text-info,.balance-card .text-success,.balance-card .text-warning{color:rgba(255,255,255,.9)!important;}
     .balance-card .trades-box{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:12px!important;padding:12px 18px;text-align:center;}
@@ -374,7 +394,20 @@
         <span class="tj-brand-text"><b>Pro Trading</b><span>Journal</span></span>
       </a>
       <div class="tj-topbar-actions">
-        <button class="tj-icon-btn" onclick="window.print()" title="พิมพ์รายงาน"><i class="fa-solid fa-print"></i></button>
+        <div class="tj-month-pill tj-month-pill--top">
+          <i class="fa-solid fa-calendar-days" style="color:var(--brand);font-size:.8rem;"></i>
+          <select class="tj-pill-select" id="filter-month" onchange="loadAllData()" aria-label="เลือกเดือน">
+            <option value="all" selected>ทุกเดือน</option>
+            <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
+            <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
+            <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
+            <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
+          </select>
+          <select class="tj-pill-select" id="filter-year" onchange="loadAllData()" aria-label="เลือกปี">
+            <option value="all">ทุกปี</option><option value="2026" selected>2026</option><option value="2025">2025</option>
+          </select>
+          <i class="fa-solid fa-chevron-down" style="font-size:.6rem;color:var(--muted);"></i>
+        </div>
         <button class="tj-icon-btn" onclick="toggleDarkMode()" title="สลับธีม (Light / Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
       </div>
     </div>
@@ -392,25 +425,6 @@
         <div>
           <div class="tj-greeting-eyebrow">สวัสดี, เทรดเดอร์</div>
           <div class="tj-greeting-title">ภาพรวมพอร์ต</div>
-        </div>
-        <div class="d-flex align-items-center gap-2">
-          <div class="tj-month-pill">
-            <i class="fa-solid fa-calendar-days" style="color:var(--brand);font-size:.85rem;"></i>
-            <select class="tj-pill-select" id="filter-month" onchange="loadAllData()" aria-label="เลือกเดือน">
-              <option value="all" selected>ทุกเดือน</option>
-              <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
-              <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
-              <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
-              <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
-            </select>
-            <select class="tj-pill-select" id="filter-year" onchange="loadAllData()" aria-label="เลือกปี">
-              <option value="all">ทุกปี</option><option value="2026" selected>2026</option><option value="2025">2025</option>
-            </select>
-            <i class="fa-solid fa-chevron-down" style="font-size:.68rem;color:var(--muted);"></i>
-          </div>
-          <button class="btn btn-outline-secondary btn-sm fw-bold px-3" onclick="window.print()" title="พิมพ์รายงาน">
-            <i class="fa-solid fa-print"></i>
-          </button>
         </div>
       </div>
       <div class="d-none d-print-block text-center fw-bold fs-5 text-dark mb-3" id="print-header-title">
@@ -886,47 +900,71 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
         <div class="modal-header bg-light border-bottom p-4">
-          <h5 class="modal-title fw-bold text-dark fs-5"><i class="fa-solid fa-gear me-2 text-secondary"></i> ตั้งค่าระบบ & บัญชี</h5>
+          <h5 class="modal-title fw-bold fs-5" style="color:var(--ink);"><i class="fa-solid fa-gear me-2" style="color:var(--muted);"></i> ตั้งค่า</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body p-4 text-center">
-          <div id="userProfileArea" class="mb-4">
-            <div class="text-muted"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดข้อมูลบัญชี...</div>
-          </div>
-          <hr class="text-muted opacity-25">
-          <!-- Dark Mode Toggle -->
-          <div class="d-flex align-items-center justify-content-between px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="toggleDarkMode()">
-            <div class="d-flex align-items-center gap-3">
-              <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1E1E24,#131317);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <i class="fa-solid fa-moon" style="color:#fff;font-size:1rem;" id="darkModeIcon"></i>
-              </div>
-              <div style="text-align:left;">
-                <div style="font-size:0.9rem;font-weight:700;color:var(--section-title);">ธีมสีเข้ม</div>
-                <div style="font-size:0.75rem;color:var(--metric-label-color);">Dark Mode</div>
-              </div>
-            </div>
-            <div id="darkModeTrack" style="width:52px;height:28px;border-radius:99px;background:#E4E1D8;position:relative;transition:background 0.3s;flex-shrink:0;">
-              <div id="darkModeThumb" style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
+        <div class="modal-body p-4">
+          <!-- Profile card (reuses #userProfileArea; JS fills its innerHTML) -->
+          <div id="userProfileArea" class="tj-set-card">
+            <div class="tj-profile-card">
+              <div class="tj-avatar"><i class="fa-solid fa-spinner fa-spin" style="font-size:1rem;"></i></div>
+              <div class="tj-set-body"><div class="tj-set-sub">กำลังโหลดข้อมูลบัญชี...</div></div>
             </div>
           </div>
-          <hr class="text-muted opacity-25">
-          <!-- ปุ่มอัปเดตเวอร์ชัน -->
-          <div class="d-flex align-items-center justify-content-between px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background 0.2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="forceAppUpdate()">
-            <div class="d-flex align-items-center gap-3">
-              <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2F7A4F,#1f5637);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <i class="fa-solid fa-rotate" style="color:#fff;font-size:1rem;" id="updateIcon"></i>
+
+          <!-- ── การแสดงผล ── -->
+          <div class="tj-set-section">การแสดงผล</div>
+          <div class="tj-set-card">
+            <div class="tj-set-row" onclick="toggleDarkMode()">
+              <div class="tj-set-ico" style="background:linear-gradient(135deg,#1E1E24,#131317);color:#fff;"><i class="fa-solid fa-moon" id="darkModeIcon"></i></div>
+              <div class="tj-set-body">
+                <div class="tj-set-label">โหมดกลางคืน (Dark)</div>
+                <div class="tj-set-sub">สลับธีมสว่าง / มืด</div>
               </div>
-              <div style="text-align:left;">
-                <div style="font-size:0.9rem;font-weight:700;color:var(--section-title);">อัปเดตเป็นเวอร์ชันล่าสุด</div>
-                <div style="font-size:0.75rem;color:var(--metric-label-color);">ล้างแคช &amp; โหลดใหม่ · <span id="appVersionLabel">-</span></div>
+              <div id="darkModeTrack" style="width:52px;height:28px;border-radius:99px;background:#E4E1D8;position:relative;transition:background 0.3s;flex-shrink:0;">
+                <div id="darkModeThumb" style="width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2);"></div>
               </div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:0.85rem;"></i>
           </div>
-          <hr class="text-muted opacity-25">
-          <button class="btn btn-outline-danger w-100 fw-bold py-2 mt-2" onclick="_signOut()">
+
+          <!-- ── ข้อมูล ── -->
+          <div class="tj-set-section">ข้อมูล</div>
+          <div class="tj-set-card">
+            <div class="tj-set-row" onclick="exportDataCSV()">
+              <div class="tj-set-ico"><i class="fa-solid fa-file-export"></i></div>
+              <div class="tj-set-body"><div class="tj-set-label">สำรอง / Export CSV</div><div class="tj-set-sub">ดาวน์โหลดประวัติเป็นไฟล์ .csv</div></div>
+              <i class="fa-solid fa-chevron-right tj-set-chev"></i>
+            </div>
+            <div class="tj-set-row" onclick="importData()">
+              <div class="tj-set-ico"><i class="fa-solid fa-file-import"></i></div>
+              <div class="tj-set-body"><div class="tj-set-label">นำเข้าข้อมูล</div><div class="tj-set-sub">อัปโหลดข้อมูลจากไฟล์</div></div>
+              <i class="fa-solid fa-chevron-right tj-set-chev"></i>
+            </div>
+            <div class="tj-set-row danger" onclick="clearAllData()">
+              <div class="tj-set-ico"><i class="fa-solid fa-trash-can"></i></div>
+              <div class="tj-set-body"><div class="tj-set-label">ล้างข้อมูลทั้งหมด</div><div class="tj-set-sub">ลบประวัติการเทรดถาวร</div></div>
+              <i class="fa-solid fa-chevron-right tj-set-chev"></i>
+            </div>
+          </div>
+
+          <!-- ── แอป ── -->
+          <div class="tj-set-section">แอป</div>
+          <div class="tj-set-card">
+            <div class="tj-set-row" onclick="forceAppUpdate()">
+              <div class="tj-set-ico" style="background:linear-gradient(135deg,#2F7A4F,#1f5637);color:#fff;"><i class="fa-solid fa-rotate" id="updateIcon"></i></div>
+              <div class="tj-set-body">
+                <div class="tj-set-label">อัปเดตเป็นเวอร์ชันล่าสุด</div>
+                <div class="tj-set-sub">ล้างแคช &amp; โหลดใหม่ · <span id="appVersionLabel">-</span></div>
+              </div>
+              <i class="fa-solid fa-chevron-right tj-set-chev"></i>
+            </div>
+          </div>
+
+          <button class="btn btn-outline-danger w-100 fw-bold py-2 mt-4" onclick="_signOut()">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> ออกจากระบบ (Logout)
           </button>
+
+          <div class="text-center mt-3" id="settingsFooterVersion" style="font-size:.75rem;color:var(--muted);">Pro Trading Journal · v10</div>
         </div>
       </div>
     </div>
@@ -2225,11 +2263,13 @@
       const profileArea = document.getElementById('userProfileArea');
       if (profileArea) {
         profileArea.innerHTML = `
-          <div class="d-flex flex-column align-items-center justify-content-center">
-            ${window._currentUserPicture ? `<img src="${window._currentUserPicture}" style="width:80px;height:80px;border-radius:50%;object-fit:cover; border: 3px solid #E4E1D8; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" referrerpolicy="no-referrer">` : `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg, #1E1E24, #131317);color:white;display:flex;align-items:center;justify-content:center;font-weight:700; font-size: 2rem; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">${(window._currentUserName||'U').charAt(0).toUpperCase()}</div>`}
-            <h5 class="fw-bold text-dark mb-1">${window._currentUserName}</h5>
-            <span class="text-muted small">${window._currentUserEmail || ''}</span>
-            <div class="badge bg-success mt-3 px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i> เชื่อมต่อบัญชีแล้ว</div>
+          <div class="tj-profile-card">
+            <div class="tj-avatar">${window._currentUserPicture ? `<img src="${window._currentUserPicture}" referrerpolicy="no-referrer">` : (window._currentUserName||'U').charAt(0).toUpperCase()}</div>
+            <div class="tj-set-body">
+              <div class="tj-set-label">${window._currentUserName}</div>
+              <div class="tj-set-sub">${window._currentUserEmail || ''}</div>
+            </div>
+            <i class="fa-solid fa-chevron-right tj-set-chev"></i>
           </div>
         `;
       }
@@ -2284,10 +2324,59 @@
     });
   </script>
 
-  <!-- ======= PWA: Service Worker Registration ======= -->
-  <!-- APP BUILD: 2026-07-16 (v9) -->
+  <!-- ======= Settings: Data actions (Export / Import / Clear) ======= -->
   <script>
-    window.APP_BUILD = '2026-07-16-v9';
+    // ── Export trade + funding history to a downloaded CSV (client-side only) ──
+    window.exportDataCSV = function() {
+      var rows = (typeof globalTradeHistory !== 'undefined' && Array.isArray(globalTradeHistory)) ? globalTradeHistory : [];
+      if (!rows.length) { alert("ยังไม่มีข้อมูลให้ส่งออก"); return; }
+      var cols = [
+        ['date','วันที่'], ['symbol','Symbol'], ['type','ประเภท'], ['lots','Lots'],
+        ['entryPrice','Entry'], ['slPrice','SL'], ['tpPrice','TP'], ['pnl','PnL'],
+        ['rMult','R-Multiple'], ['outcome','ผลลัพธ์'], ['setup','Setup'], ['session','Session'],
+        ['marketContext','Market Context'], ['overtrade','Overtrade'], ['revenge','Revenge'],
+        ['violatedRule','แหกกฎ'], ['notes','บันทึก']
+      ];
+      var esc = function(v) {
+        if (v === null || v === undefined) return '';
+        var s = String(v).replace(/"/g, '""');
+        return /[",\n\r]/.test(s) ? '"' + s + '"' : s;
+      };
+      var lines = [ cols.map(function(c){ return esc(c[1]); }).join(',') ];
+      rows.forEach(function(r) {
+        lines.push(cols.map(function(c){ return esc(r[c[0]]); }).join(','));
+      });
+      // BOM so Excel reads Thai (UTF-8) correctly
+      var blob = new Blob(["﻿" + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      var d = new Date();
+      var pad = function(n){ return (n<10?'0':'') + n; };
+      a.href = url;
+      a.download = 'trading-journal-' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + '.csv';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+    };
+
+    // ── Import: stub (needs a defined schema before enabling a DB write) ──
+    window.importData = function() {
+      alert("ฟีเจอร์นำเข้าข้อมูลกำลังพัฒนา — จะเปิดใช้เร็วๆ นี้");
+    };
+
+    // ── Clear all: strongly gated. Actual delete is NOT wired — no safe existing
+    //    Supabase delete pattern in the app (only .insert is used), so we do not guess. ──
+    window.clearAllData = function() {
+      if (!confirm("⚠️ ลบข้อมูลการเทรดทั้งหมดถาวร? การกระทำนี้ไม่สามารถย้อนกลับได้")) return;
+      if (!confirm("ยืนยันอีกครั้ง: ต้องการลบข้อมูลทั้งหมดจริงหรือไม่?")) return;
+      alert("ต้องยืนยันการตั้งค่าลบข้อมูลก่อนเปิดใช้ — แจ้งผู้ดูแล");
+    };
+  </script>
+
+  <!-- ======= PWA: Service Worker Registration ======= -->
+  <!-- APP BUILD: 2026-07-16 (v10) -->
+  <script>
+    window.APP_BUILD = '2026-07-16-v10';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
