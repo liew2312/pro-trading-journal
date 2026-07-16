@@ -1,5 +1,5 @@
-// อัปเดตเวอร์ชันของ Cache เป็น v8 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-16)
-const CACHE_NAME = 'tradejournal-cache-v8';
+// อัปเดตเวอร์ชันของ Cache เป็น v9 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-16 · History/Funding redesign)
+const CACHE_NAME = 'tradejournal-cache-v9';
 const urlsToCache = [
   './index.html',
   './manifest.json'
