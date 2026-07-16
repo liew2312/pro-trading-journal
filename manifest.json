@@ -1,7 +1,9 @@
 {
   "name": "Pro Trading Journal",
   "short_name": "Pro Journal",
-  "start_url": "/",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#F8F7F3",
   "theme_color": "#921C1E",

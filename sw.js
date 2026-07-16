@@ -1,5 +1,5 @@
-// อัปเดตเวอร์ชันของ Cache เป็น v4 เพื่อโหลดไฟล์ใหม่ (รวม Dark Mode)
-const CACHE_NAME = 'tradejournal-cache-v4';
+// อัปเดตเวอร์ชันของ Cache เป็น v5 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-16)
+const CACHE_NAME = 'tradejournal-cache-v5';
 const urlsToCache = [
   './index.html',
   './manifest.json'

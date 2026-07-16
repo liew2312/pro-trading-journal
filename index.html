@@ -2084,7 +2084,10 @@
   </script>
 
   <!-- ======= PWA: Service Worker Registration ======= -->
+  <!-- APP BUILD: 2026-07-16 (v5) -->
   <script>
+    window.APP_BUILD = '2026-07-16-v5';
+    console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
         navigator.serviceWorker.register('sw.js')
