@@ -10,7 +10,7 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgZmlsbD0iIzkyMUMxRSIvPjxwYXRoIGQ9Ik0xMDAgMzQwIEwyMDAgMjQwIEwyODAgMzAwIEw0MTAgMTYwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxjaXJjbGUgY3g9IjQxMCIgY3k9IjE2MCIgcj0iMjYiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+      "src": "app-icon.svg",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
