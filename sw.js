@@ -1,5 +1,5 @@
 // อัปเดตเวอร์ชันของ Cache เป็น v11 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-16 · Dashboard header + Settings modal redesign)
-const CACHE_NAME = 'tradejournal-cache-v12';
+const CACHE_NAME = 'tradejournal-cache-v13';
 const urlsToCache = [
   './index.html',
   './manifest.json'

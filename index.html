@@ -185,6 +185,38 @@
     .cal-date{font-size:.66rem;font-weight:700;color:var(--cal-date-color);align-self:flex-start;line-height:1;}
     .cal-pnl{font-size:.72rem;font-weight:800;text-align:center;letter-spacing:-.3px;margin-top:2px;}
     .cal-count{font-size:.56rem;color:var(--cal-count-color);font-weight:700;margin-top:1px;background:transparent;border:none;padding:0;}
+    /* ── History cards ── */
+    .tj-hist-list{display:flex;flex-direction:column;gap:8px;padding:14px;}
+    .tj-hist-row{display:flex;align-items:center;gap:12px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:11px 14px;box-shadow:var(--card-shadow);cursor:pointer;transition:transform .12s;}
+    .tj-hist-row:hover{transform:translateY(-1px);}
+    .tj-hist-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .tj-hist-ico.win,.tj-hist-ico.dep{background:var(--metric-mfe-bg);color:var(--profit);}
+    .tj-hist-ico.loss{background:var(--metric-mae-bg);color:var(--loss);}
+    .tj-hist-ico.wd{background:var(--metric-r-bg);color:var(--ap-warn);}
+    .tj-hist-main{flex:1;min-width:0;}
+    .tj-hist-sym{font-weight:700;color:var(--ink);font-size:.95rem;display:flex;align-items:center;gap:7px;}
+    .tj-hist-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .tj-hist-tag{font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.3px;}
+    .tj-hist-right{text-align:right;flex-shrink:0;}
+    .tj-hist-pnl{font-weight:800;font-size:.98rem;letter-spacing:-.3px;}
+    .tj-hist-r{font-size:.68rem;color:var(--muted);font-weight:700;margin-top:1px;}
+    .tj-chips{display:flex;gap:7px;flex-wrap:wrap;}
+    .tj-chip{font-size:.78rem;font-weight:700;padding:6px 14px;border-radius:999px;border:1.5px solid var(--card-border);background:var(--card-bg);color:var(--muted);cursor:pointer;font-family:inherit;}
+    .tj-chip.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+    #history-table-body.f-win .hist-loss,#history-table-body.f-win .hist-zero{display:none;}
+    #history-table-body.f-loss .hist-win,#history-table-body.f-loss .hist-zero{display:none;}
+    /* ── Funding page ── */
+    .tj-fund-sum{display:flex;gap:10px;margin-bottom:18px;}
+    .tj-fund-sumcard{flex:1;border-radius:14px;padding:14px;border:1px solid;}
+    .tj-fund-sumcard.dep{background:var(--metric-mfe-bg);border-color:rgba(47,122,79,.28);}
+    .tj-fund-sumcard.wd{background:var(--metric-r-bg);border-color:rgba(181,121,26,.38);}
+    .tj-fund-sumlabel{font-size:.72rem;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:5px;}
+    .tj-fund-sumval{font-size:1.35rem;font-weight:800;letter-spacing:-.5px;margin-top:4px;color:var(--ink);}
+    .tj-seg{display:flex;gap:8px;margin-bottom:18px;}
+    .tj-seg label{flex:1;text-align:center;padding:12px;border-radius:12px;border:1.5px solid var(--card-border);background:var(--card-bg);color:var(--muted);font-weight:700;cursor:pointer;transition:all .15s;margin:0;}
+    .tj-seg input{display:none;}
+    .tj-seg input:checked+label{background:var(--profit);color:#fff;border-color:var(--profit);}
+    .tj-seg input#fund-withdraw:checked+label{background:var(--ap-warn);border-color:var(--ap-warn);color:#fff;}
 
     .stat-list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--stat-list-border);}
     .stat-list-item:last-child{border-bottom:none;}
@@ -666,62 +698,36 @@
 
     <div id="history" class="page-section print-hide">
       <div class="card card-stat p-0 overflow-hidden mx-auto" style="max-width: 1000px;">
-        
-        <div class="p-4 border-bottom bg-white">
-          <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3 gap-3">
-            <h4 class="mb-0 fw-bold text-dark"><i class="fa-solid fa-list-ul text-primary me-2"></i> ประวัติการเทรด</h4>
-            <button class="btn btn-sm btn-outline-primary fw-bold px-4 rounded-pill" onclick="clearHistoryFilter()"><i class="fa-solid fa-layer-group me-1"></i> ดูทั้งหมด</button>
-          </div>
-          
-          <div class="row g-3 mb-3">
-            <div class="col-sm-4">
-              <select id="history-filter-type" class="form-select form-select-lg fw-bold text-primary" onchange="toggleHistoryFilterInput()">
-                <option value="day">รายวัน (Day)</option>
-                <option value="week">สัปดาห์ (Week)</option>
-                <option value="month">รายเดือน (Month)</option>
-                <option value="all">ทั้งหมด (All)</option>
+        <div class="p-4 border-bottom">
+          <h4 class="mb-3 fw-bold" style="color:var(--ink);">ประวัติ</h4>
+          <div class="row g-2 mb-3">
+            <div class="col-5">
+              <select id="history-filter-type" class="form-select form-select-sm fw-bold" onchange="toggleHistoryFilterInput()">
+                <option value="day">รายวัน</option>
+                <option value="week">สัปดาห์</option>
+                <option value="month">รายเดือน</option>
+                <option value="all">ทั้งช่วงเวลา</option>
               </select>
             </div>
-            <div class="col-sm-8">
-              <input type="date" id="history-filter-day" class="form-control form-control-lg fw-bold text-dark" onchange="loadHistoryData()">
-              <input type="week" id="history-filter-week" class="form-control form-control-lg fw-bold text-dark d-none" onchange="loadHistoryData()">
-              <input type="month" id="history-filter-month" class="form-control form-control-lg fw-bold text-dark d-none" onchange="loadHistoryData()">
+            <div class="col-7">
+              <input type="date" id="history-filter-day" class="form-control form-control-sm fw-bold" onchange="loadHistoryData()">
+              <input type="week" id="history-filter-week" class="form-control form-control-sm fw-bold d-none" onchange="loadHistoryData()">
+              <input type="month" id="history-filter-month" class="form-control form-control-sm fw-bold d-none" onchange="loadHistoryData()">
             </div>
           </div>
-
-          <!-- ── Tab Switcher ── -->
-          <div class="d-flex gap-2" id="history-tab-switcher">
-            <button id="tab-btn-trades" onclick="switchHistoryTab('trades')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill active-history-tab" style="background:#F0EEE8;color:#131317;border:1.5px solid #C9C6BC;font-size:0.9rem;">
-              <i class="fa-solid fa-chart-candlestick me-1"></i> การเทรด
-              <span id="tab-badge-trades" class="badge ms-1 rounded-pill" style="background:#131317;color:#fff;font-size:0.75rem;">0</span>
-            </button>
-            <button id="tab-btn-funding" onclick="switchHistoryTab('funding')" class="btn btn-sm fw-bold px-4 py-2 rounded-pill" style="background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;">
-              <i class="fa-solid fa-wallet me-1"></i> การเงิน
-              <span id="tab-badge-funding" class="badge ms-1 rounded-pill" style="background:#70707A;color:#fff;font-size:0.75rem;">0</span>
-            </button>
+          <div class="tj-chips">
+            <button class="tj-chip active" onclick="setHistFilter('all',this)">ทั้งหมด</button>
+            <button class="tj-chip" onclick="setHistFilter('win',this)">กำไร</button>
+            <button class="tj-chip" onclick="setHistFilter('loss',this)">ขาดทุน</button>
           </div>
         </div>
-        
-        <!-- ── Trades Table ── -->
-        <div id="history-panel-trades" class="table-responsive">
-          <table class="table table-hover align-middle mb-0" style="font-size: 0.95rem;">
-            <thead class="table-light"><tr><th class="ps-4 py-3">Date</th><th class="py-3">Asset / Detail</th><th class="text-end pe-4 py-3">Net P/L</th></tr></thead>
-            <tbody id="history-table-body"><tr><td colspan="3" class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</td></tr></tbody>
-          </table>
-        </div>
-        
-        <!-- ── Funding Table ── -->
-        <div id="history-panel-funding" class="table-responsive" style="display:none;">
-          <table class="table table-hover align-middle mb-0" style="font-size: 0.95rem;">
-            <thead class="table-light"><tr><th class="ps-4 py-3">Date</th><th class="py-3">รายการ</th><th class="text-end pe-4 py-3">จำนวนเงิน</th></tr></thead>
-            <tbody id="funding-table-body"><tr><td colspan="3" class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</td></tr></tbody>
-          </table>
-        </div>
 
-        <div id="history-summary-footer" class="p-4 bg-light border-top d-flex justify-content-between align-items-center" style="display: none !important;">
-        </div>
-        <div id="funding-summary-footer" class="p-4 bg-light border-top d-flex justify-content-between align-items-center" style="display: none !important;">
-        </div>
+        <div id="history-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</div></div>
+
+        <div id="history-summary-footer" class="p-4 border-top d-flex justify-content-between align-items-center" style="background:var(--calendar-header-bg);display:none !important;"></div>
+        <span id="tab-badge-trades" class="d-none">0</span>
+        <span id="tab-badge-funding" class="d-none">0</span>
+        <div id="funding-summary-footer" class="d-none"></div>
       </div>
     </div>
   </div>
@@ -729,29 +735,48 @@
   <div class="modal fade print-hide" id="fundingModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-        <div class="modal-header bg-warning border-0" style="border-radius: 20px 20px 0 0; padding: 20px 24px;">
-          <h5 class="modal-title fw-bold text-dark fs-4"><i class="fa-solid fa-wallet me-2"></i> จัดการเงินทุน</h5>
+        <div class="modal-header border-0" style="border-radius: 20px 20px 0 0; padding: 20px 24px;background:var(--card-bg);">
+          <h5 class="modal-title fw-bold fs-4" style="color:var(--ink);"><i class="fa-solid fa-wallet me-2" style="color:var(--brand);"></i> จัดการทุน</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body p-4 p-md-5">
-          <form id="fundingForm" onsubmit="handleFundingSubmit(event)">
-            <div class="mb-4">
-              <label class="form-label fw-bold">ประเภทรายการ</label>
-              <select class="form-select form-select-lg" name="fundType">
-                <option value="Deposit">⬇️ ฝากเงินเข้า (Deposit)</option>
-                <option value="Withdraw">⬆️ ถอนเงินออก (Withdraw)</option>
-              </select>
+        <div class="modal-body p-4">
+          <div class="tj-fund-sum">
+            <div class="tj-fund-sumcard dep">
+              <div class="tj-fund-sumlabel"><i class="fa-solid fa-arrow-down-left"></i> ฝากรวม</div>
+              <div class="tj-fund-sumval" id="fund-total-deposit">$0.00</div>
             </div>
-            <div class="mb-4">
+            <div class="tj-fund-sumcard wd">
+              <div class="tj-fund-sumlabel"><i class="fa-solid fa-arrow-up-right"></i> ถอนรวม</div>
+              <div class="tj-fund-sumval" id="fund-total-withdraw">$0.00</div>
+            </div>
+          </div>
+          <form id="fundingForm" onsubmit="handleFundingSubmit(event)">
+            <div class="tj-seg">
+              <input type="radio" name="fundType" id="fund-deposit" value="Deposit" checked onchange="updateFundingBtnLabel()">
+              <label for="fund-deposit">ฝากเงิน</label>
+              <input type="radio" name="fundType" id="fund-withdraw" value="Withdraw" onchange="updateFundingBtnLabel()">
+              <label for="fund-withdraw">ถอนเงิน</label>
+            </div>
+            <div class="mb-3">
               <label class="form-label fw-bold">จำนวนเงิน ($)</label>
               <input type="number" step="any" class="form-control form-control-lg" name="amount" placeholder="ระบุจำนวนเงิน..." required>
             </div>
-            <div class="mb-5">
-              <label class="form-label text-muted fw-bold">บันทึกรายละเอียดเพิ่มเติม</label>
-              <input type="text" class="form-control form-control-lg" name="fundNotes" placeholder="เช่น เติมพอร์ตใหม่เดือน ก.ค., ถอนกำไรไปเที่ยว...">
+            <div class="row g-2 mb-4">
+              <div class="col-6">
+                <label class="form-label fw-bold">วันที่</label>
+                <input type="date" class="form-control" id="fund-date-display">
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-bold">หมายเหตุ</label>
+                <input type="text" class="form-control" name="fundNotes" placeholder="เติมทุน...">
+              </div>
             </div>
-            <button type="submit" class="btn btn-dark w-100 py-3 fs-5 fw-bold" id="fundingBtn" style="border-radius: 14px;">ยืนยันทำรายการ</button>
+            <button type="submit" class="btn w-100 py-3 fs-5 fw-bold" id="fundingBtn" style="border-radius:14px;background:var(--profit);color:#fff;">บันทึกการฝากเงิน</button>
           </form>
+          <div class="mt-4">
+            <div class="fw-bold mb-2" style="color:var(--ink);font-size:.95rem;">ประวัติเงินทุน</div>
+            <div id="funding-table-body" class="tj-hist-list" style="padding:0;"><div class="text-center py-4 text-muted fw-bold">กำลังโหลด...</div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1627,38 +1652,34 @@
     let _activeHistoryTab = 'trades';
 
     function switchHistoryTab(tab) {
-      _activeHistoryTab = tab;
-      const tradeBtn  = document.getElementById('tab-btn-trades');
-      const fundBtn   = document.getElementById('tab-btn-funding');
-      const tradePanel = document.getElementById('history-panel-trades');
-      const fundPanel  = document.getElementById('history-panel-funding');
-      const tradeFoot  = document.getElementById('history-summary-footer');
-      const fundFoot   = document.getElementById('funding-summary-footer');
-
-      if (tab === 'trades') {
-        tradeBtn.style.cssText  = 'background:#F0EEE8;color:#131317;border:1.5px solid #C9C6BC;font-size:0.9rem;';
-        fundBtn.style.cssText   = 'background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;';
-        tradePanel.style.display = '';
-        fundPanel.style.display  = 'none';
-        fundFoot.style.setProperty('display', 'none', 'important');
-        // restore trade footer if it was visible
-        if (tradePanel.querySelector('tbody').children.length > 0 &&
-            !tradePanel.querySelector('tbody').innerHTML.includes('ไม่พบ')) {
-          tradeFoot.style.setProperty('display', 'flex', 'important');
-        }
-      } else {
-        fundBtn.style.cssText   = 'background:#F6ECD6;color:#8F5F14;border:1.5px solid #E4C77A;font-size:0.9rem;';
-        tradeBtn.style.cssText  = 'background:#F8F7F3;color:#70707A;border:1.5px solid #E4E1D8;font-size:0.9rem;';
-        fundPanel.style.display  = '';
-        tradePanel.style.display = 'none';
-        tradeFoot.style.setProperty('display', 'none', 'important');
-        // restore funding footer if it was visible
-        if (fundPanel.querySelector('tbody').children.length > 0 &&
-            !fundPanel.querySelector('tbody').innerHTML.includes('ไม่พบ')) {
-          fundFoot.style.setProperty('display', 'flex', 'important');
-        }
+      _activeHistoryTab = 'trades';
+      const tradeFoot = document.getElementById('history-summary-footer');
+      const body = document.getElementById('history-table-body');
+      if (tradeFoot && body && body.children.length > 0 &&
+          !body.innerHTML.includes('ไม่พบ') && !body.innerHTML.includes('กำลังโหลด')) {
+        tradeFoot.style.setProperty('display', 'flex', 'important');
       }
     }
+    window.setHistFilter = function(mode, el){
+      var b = document.getElementById('history-table-body');
+      if (b){ b.classList.remove('f-win','f-loss'); if(mode==='win') b.classList.add('f-win'); else if(mode==='loss') b.classList.add('f-loss'); }
+      if (el && el.parentNode){ el.parentNode.querySelectorAll('.tj-chip').forEach(function(c){ c.classList.remove('active'); }); el.classList.add('active'); }
+    };
+    window.updateFundingBtnLabel = function(){
+      var w = document.getElementById('fund-withdraw'); var btn = document.getElementById('fundingBtn');
+      if(!btn) return;
+      var isW = w && w.checked;
+      btn.textContent = isW ? 'บันทึกการถอนเงิน' : 'บันทึกการฝากเงิน';
+      btn.style.background = isW ? 'var(--ap-warn)' : 'var(--profit)';
+    };
+    // โหลดข้อมูลเงินทุน + รีเซ็ตปุ่ม เมื่อเปิดโมดัลจัดการทุน
+    document.addEventListener('DOMContentLoaded', function(){
+      var fm = document.getElementById('fundingModal');
+      if (fm) fm.addEventListener('show.bs.modal', function(){
+        try { if (typeof loadHistoryData === 'function') loadHistoryData(); } catch(e){}
+        if (window.updateFundingBtnLabel) window.updateFundingBtnLabel();
+      });
+    });
 
     function updateHistoryUI(historyData) {
       globalTradeHistory = historyData; 
@@ -1685,63 +1706,50 @@
       historyData.forEach((trade, index) => {
         const isFunding = (trade.type === 'Deposit' || trade.type === 'Withdraw');
         const pnlValue  = parseFloat(trade.pnl);
-        const pnlClass  = pnlValue >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold';
         const dateParts = (trade.date || '').split(' ');
 
         if (isFunding) {
-          // ── Funding row ──────────────────────────────────────
+          // ── Funding card ──────────────────────────────────────
           fundCount++;
           const isDeposit = trade.type === 'Deposit';
           if (isDeposit) totalDeposit += Math.abs(pnlValue);
           else           totalWithdraw += Math.abs(pnlValue);
-
-          const icon  = isDeposit ? '💰' : '💸';
-          const label = isDeposit ? 'ฝากเงินเข้า' : 'ถอนเงินออก';
-          const amtClass = isDeposit ? 'text-success fw-bold' : 'text-danger fw-bold';
-          const amtSign  = isDeposit ? '+$' : '-$';
-          const badgeStyle = isDeposit
-            ? 'background:#E8F1EC;color:#276B44;border:1px solid #B7D4C2;'
-            : 'background:#FAEBEB;color:#8E2224;border:1px solid #E8A8A9;';
-
-          fundTbody.innerHTML += `
-            <tr class="clickable-row" onclick="openTradeModal(${index})">
-              <td class="ps-4" style="width:25%;">
-                <div style="font-size:0.85rem;" class="text-muted fw-bold">${dateParts[0] || ''}</div>
-                <div style="font-size:0.75rem;" class="text-muted">${dateParts[1] || ''}</div>
-              </td>
-              <td>
-                <strong class="mb-1 d-block text-dark" style="font-size:1rem;">${icon} ${label}</strong>
-                <span class="badge" style="${badgeStyle} padding:4px 10px; border-radius:8px; font-size:0.75rem; font-weight:600;">
-                  ${isDeposit ? 'Deposit' : 'Withdraw'}
-                </span>
-              </td>
-              <td class="text-end pe-4 ${amtClass} align-middle fs-6">${amtSign}${Math.abs(pnlValue).toFixed(2)}</td>
-            </tr>`;
+          if (fundTbody) fundTbody.innerHTML += `
+            <div class="tj-hist-row" onclick="openTradeModal(${index})">
+              <div class="tj-hist-ico ${isDeposit ? 'dep' : 'wd'}"><i class="fa-solid ${isDeposit ? 'fa-arrow-down-left' : 'fa-arrow-up-right'}"></i></div>
+              <div class="tj-hist-main">
+                <div class="tj-hist-sym">${isDeposit ? 'ฝากเงิน' : 'ถอนเงิน'}</div>
+                <div class="tj-hist-sub">${dateParts[0] || ''}${trade.notes ? ' · ' + trade.notes : ''}</div>
+              </div>
+              <div class="tj-hist-right"><div class="tj-hist-pnl ${isDeposit ? 'text-success' : 'text-warning'}">${isDeposit ? '+$' : '-$'}${Math.abs(pnlValue).toFixed(2)}</div></div>
+            </div>`;
         } else {
-          // ── Trade row ────────────────────────────────────────
+          // ── Trade card ────────────────────────────────────────
           totalTrades++;
           totalPnl += pnlValue;
-
-          let typeBadge = trade.type === 'Buy'
-            ? '<span class="text-success fw-bold">B</span>'
-            : '<span class="text-danger fw-bold">S</span>';
-          let displaySub = `${typeBadge} | ${trade.setup}`;
-          if (trade.overtrade === "Yes" || trade.revenge === "Yes") {
-            displaySub += ` <span class="badge bg-danger ms-1" style="font-size:0.6rem;">⚠️ Warn</span>`;
-          }
-
+          const winCls = pnlValue > 0 ? 'win' : pnlValue < 0 ? 'loss' : 'zero';
+          const arrow  = pnlValue >= 0 ? 'fa-arrow-trend-up' : 'fa-arrow-trend-down';
+          const oc = trade.outcome || '';
+          let ocTag = '';
+          if (oc === 'TP')      ocTag = '<span class="tj-hist-tag" style="background:var(--metric-mfe-bg);color:var(--profit);">TP</span>';
+          else if (oc === 'SL') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);">SL</span>';
+          else if (oc === 'BE') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ap-warn);">BE</span>';
+          else if (oc === 'Manual') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ink);">' + (pnlValue >= 0 ? 'M.Win' : 'Cut') + '</span>';
+          let warn = (trade.overtrade === 'Yes' || trade.revenge === 'Yes') ? ' <span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);">⚠</span>' : '';
+          const rNum = parseFloat(trade.rMult);
+          const rDisp = (!isNaN(rNum)) ? `<div class="tj-hist-r">${rNum >= 0 ? '+' : ''}${rNum.toFixed(1)}R</div>` : '';
           tbody.innerHTML += `
-            <tr class="clickable-row" onclick="openTradeModal(${index})">
-              <td class="ps-4" style="width:25%;">
-                <div style="font-size:0.85rem;" class="text-muted fw-bold">${dateParts[0] || ''}</div>
-                <div style="font-size:0.75rem;" class="text-muted">${dateParts[1] || ''}</div>
-              </td>
-              <td>
-                <strong class="mb-1 d-block text-dark" style="font-size:1rem;">${trade.symbol}</strong>
-                <div style="font-size:0.85rem;" class="text-muted text-truncate">${displaySub}</div>
-              </td>
-              <td class="text-end pe-4 ${pnlClass} align-middle fs-6">${pnlValue > 0 ? '+$'+trade.pnl : '$'+trade.pnl}</td>
-            </tr>`;
+            <div class="tj-hist-row hist-${winCls}" onclick="openTradeModal(${index})">
+              <div class="tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}"><i class="fa-solid ${arrow}"></i></div>
+              <div class="tj-hist-main">
+                <div class="tj-hist-sym">${trade.symbol || '-'} ${ocTag}${warn}</div>
+                <div class="tj-hist-sub">${dateParts[0] || ''}${dateParts[1] ? ' · ' + dateParts[1] : ''} · ${trade.type || ''}</div>
+              </div>
+              <div class="tj-hist-right">
+                <div class="tj-hist-pnl ${pnlValue >= 0 ? 'text-success' : 'text-danger'}">${pnlValue > 0 ? '+$' + trade.pnl : '$' + trade.pnl}</div>
+                ${rDisp}
+              </div>
+            </div>`;
         }
       });
 
@@ -1753,9 +1761,11 @@
         fundTbody.innerHTML = `<tr><td colspan="3" class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-folder-open mb-3 fs-1 d-block opacity-25"></i> ไม่พบรายการการเงินในช่วงเวลานี้</td></tr>`;
       }
 
-      // ── Update badges ─────────────────────────────────────────
+      // ── Update badges + funding summary cards ─────────────────
       document.getElementById('tab-badge-trades').textContent  = totalTrades;
       document.getElementById('tab-badge-funding').textContent = fundCount;
+      var _fd = document.getElementById('fund-total-deposit'); if (_fd) _fd.textContent = '$' + totalDeposit.toFixed(2);
+      var _fw = document.getElementById('fund-total-withdraw'); if (_fw) _fw.textContent = '$' + totalWithdraw.toFixed(2);
 
       // ── Trade footer ──────────────────────────────────────────
       if (totalTrades > 0 && _activeHistoryTab === 'trades') {
@@ -2100,7 +2110,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-07-16-v12';
+    window.APP_BUILD = '2026-07-16-v13';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
