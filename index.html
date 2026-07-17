@@ -117,6 +117,13 @@
     .tj-nav-fab{flex:none;width:54px;height:54px;border-radius:50%;background:#921C1E;color:#fff!important;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 18px rgba(146,28,30,.42);border:4px solid var(--canvas);cursor:pointer;text-decoration:none;transition:transform .15s;}
     .tj-nav-fab i{font-size:1.35rem;}
     .tj-nav-fab:hover{transform:translateY(-2px);color:#fff;}
+    /* compact month/year pill in topbar */
+    .tj-month-pill{display:inline-flex;align-items:center;gap:3px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:999px;padding:3px 8px;box-shadow:var(--card-shadow);}
+    .tj-month-pill select{border:none;background:transparent;color:var(--ink);font-family:var(--font-app,'Prompt',sans-serif);font-weight:700;font-size:.72rem;padding:2px 1px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;max-width:82px;}
+    /* floating add FAB (bottom-right) */
+    .tj-fab-add{position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#921C1E,#6E1214);color:#fff!important;display:flex;align-items:center;justify-content:center;font-size:1.6rem;border:none;box-shadow:0 10px 24px rgba(146,28,30,.45);cursor:pointer;text-decoration:none;z-index:1100;transition:transform .15s;}
+    .tj-fab-add:hover{transform:translateY(-2px)scale(1.03);color:#fff!important;}
+    body:has(#add-trade.active) .tj-fab-add{display:none;}
 
     /* ── Page transitions ── */
     .page-section{display:none;animation:pageIn .35s cubic-bezier(.16,1,.3,1);}
@@ -163,19 +170,21 @@
     /* ── Quote (no left accent) ── */
     .quote-box{background:var(--quote-box-bg)!important;border:none!important;padding:14px 18px;border-radius:14px;font-style:italic;color:var(--quote-box-color)!important;margin-bottom:16px;text-align:center;font-weight:500;font-size:.9rem;}
 
-    /* ── Calendar ── */
+    /* ── Calendar (rounded tinted tiles) ── */
     .calendar-container{background:var(--calendar-bg);border-radius:16px;padding:16px;box-shadow:var(--card-shadow);border:1px solid var(--calendar-border);width:100%;}
-    .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-weight:700;color:var(--metric-label-color);background:var(--calendar-header-bg);border-radius:10px 10px 0 0;padding:10px 0;font-size:.78rem;border-bottom:2px solid var(--calendar-header-border);}
-    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--cal-cell-border);width:100%;}
-    .calendar-grid.monthly-view{grid-template-columns:repeat(4,1fr);}
+    .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center;font-weight:700;color:var(--metric-label-color);padding:0 0 8px;font-size:.72rem;}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;width:100%;}
+    .calendar-grid.monthly-view{grid-template-columns:repeat(4,1fr);gap:8px;}
     @media(max-width:480px){.calendar-grid.monthly-view{grid-template-columns:repeat(3,1fr)!important;}}
-    .cal-cell{position:relative;min-height:72px;padding:5px 3px;background:var(--cal-cell-bg);border-right:1px solid var(--cal-cell-border);border-bottom:1px solid var(--cal-cell-border);display:flex;flex-direction:column;justify-content:center;align-items:center;transition:background .15s;cursor:pointer;}
-    .cal-cell:hover{background:var(--row-hover);}
-    .cal-cell.empty{background:var(--cal-cell-empty);}
-    .cal-cell.today{background:var(--cal-cell-today);}
-    .cal-date{font-size:.72rem;font-weight:700;color:var(--cal-date-color);position:absolute;top:5px;left:7px;}
-    .cal-pnl{font-size:.8rem;font-weight:800;margin-top:14px;text-align:center;letter-spacing:-.3px;}
-    .cal-count{background:var(--cal-count-bg);border-radius:6px;padding:2px 8px;font-size:.62rem;color:var(--cal-count-color);font-weight:700;margin-top:4px;border:1px solid var(--cal-count-border);}
+    .cal-cell{position:relative;min-height:62px;padding:6px 4px;background:var(--cal-cell-bg);border:1px solid var(--cal-cell-border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;transition:transform .12s,box-shadow .12s;cursor:pointer;overflow:hidden;}
+    .cal-cell:hover{transform:translateY(-1px);box-shadow:var(--card-shadow);}
+    .cal-cell.empty{background:var(--cal-cell-empty);border-color:transparent;cursor:default;}
+    .cal-cell.profit{background:var(--metric-mfe-bg);border-color:rgba(47,122,79,.28);}
+    .cal-cell.loss{background:var(--metric-mae-bg);border-color:rgba(185,48,51,.26);}
+    .cal-cell.today{box-shadow:0 0 0 2px var(--brand) inset;}
+    .cal-date{font-size:.66rem;font-weight:700;color:var(--cal-date-color);align-self:flex-start;line-height:1;}
+    .cal-pnl{font-size:.72rem;font-weight:800;text-align:center;letter-spacing:-.3px;margin-top:2px;}
+    .cal-count{font-size:.56rem;color:var(--cal-count-color);font-weight:700;margin-top:1px;background:transparent;border:none;padding:0;}
 
     .stat-list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--stat-list-border);}
     .stat-list-item:last-child{border-bottom:none;}
@@ -281,7 +290,19 @@
         <span class="tj-brand-text"><b>Pro Trading</b><span>Journal</span></span>
       </a>
       <div class="tj-topbar-actions">
-        <button class="tj-icon-btn" onclick="window.print()" title="พิมพ์รายงาน"><i class="fa-solid fa-print"></i></button>
+        <div class="tj-month-pill">
+          <i class="fa-solid fa-calendar-days" style="color:var(--brand);font-size:.72rem;"></i>
+          <select id="filter-month" onchange="loadAllData()" aria-label="เลือกเดือน">
+            <option value="all" selected>ทุกเดือน</option>
+            <option value="1">ม.ค.</option><option value="2">ก.พ.</option><option value="3">มี.ค.</option>
+            <option value="4">เม.ย.</option><option value="5">พ.ค.</option><option value="6">มิ.ย.</option>
+            <option value="7">ก.ค.</option><option value="8">ส.ค.</option><option value="9">ก.ย.</option>
+            <option value="10">ต.ค.</option><option value="11">พ.ย.</option><option value="12">ธ.ค.</option>
+          </select>
+          <select id="filter-year" onchange="loadAllData()" aria-label="เลือกปี">
+            <option value="all">ทุกปี</option><option value="2026" selected>2026</option><option value="2025">2025</option>
+          </select>
+        </div>
         <button class="tj-icon-btn" onclick="toggleDarkMode()" title="สลับธีม (Light / Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
       </div>
     </div>
@@ -295,32 +316,8 @@
         <div class="col-12"><div class="quote-box" id="daily-quote">"ตลาดไม่ได้สนใจว่าคุณจะรู้สึกอย่างไร ทำตามแผนของคุณก็พอ"</div></div>
       </div>
 
-      <div class="card card-stat p-3 p-md-4 mb-4 shadow-sm">
-        <div class="row g-3 align-items-center">
-          <div class="col-auto print-hide"><i class="fa-solid fa-calendar-days text-primary fs-5"></i> <span class="fw-bold ms-2 text-dark">เลือกช่วงเวลา:</span></div>
-          <div class="col print-hide">
-            <select class="form-select form-select-sm fw-bold" id="filter-month" onchange="loadAllData()">
-              <option value="all" selected>ทุกเดือน (All Months)</option>
-              <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option><option value="3">มีนาคม</option>
-              <option value="4">เมษายน</option><option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
-              <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option><option value="9">กันยายน</option>
-              <option value="10">ตุลาคม</option><option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
-            </select>
-          </div>
-          <div class="col-4 col-md-3 print-hide">
-            <select class="form-select form-select-sm fw-bold" id="filter-year" onchange="loadAllData()">
-              <option value="all">ทุกปี</option><option value="2026" selected>2026</option><option value="2025">2025</option>
-            </select>
-          </div>
-          <div class="col-12 col-md-auto text-end print-hide">
-            <button class="btn btn-outline-secondary btn-sm w-100 fw-bold shadow-sm py-2 px-3" onclick="window.print()">
-              <i class="fa-solid fa-print"></i> พิมพ์รายงาน
-            </button>
-          </div>
-        </div>
-        <div class="d-none d-print-block text-center fw-bold fs-5 text-dark mt-2" id="print-header-title">
-          สรุปการเทรด (Trading Report)
-        </div>
+      <div class="d-none d-print-block text-center fw-bold fs-5 text-dark mb-3" id="print-header-title">
+        สรุปการเทรด (Trading Report)
       </div>
 
       <div class="row mb-4">
@@ -1582,12 +1579,13 @@
         let html = "";
         for (let i = 0; i < 12; i++) {
            let stat = monthlyStats[i];
+           let tone = stat.pnl > 0 ? 'profit' : stat.pnl < 0 ? 'loss' : '';
            let pnlDisplay = stat.pnl > 0 ? `<div class="cal-pnl text-success">+${stat.pnl.toFixed(2)}</div>` : stat.pnl < 0 ? `<div class="cal-pnl text-danger">${stat.pnl.toFixed(2)}</div>` : `<div class="cal-pnl opacity-25">-</div>`;
-           let countDisplay = stat.count > 0 ? `<div class="cal-count shadow-sm bg-white text-dark">${stat.count} ไม้</div>` : '';
-           let bgStyle = (i === today.getMonth() && (yearFilter === "all" || year === today.getFullYear())) ? 'background: #F0EEE8; border: 2px solid #1E1E24;' : '';
-           
-           html += `<div class="cal-cell" style="${bgStyle}; min-height: 95px;">
-                      <div class="text-dark fw-bold" style="font-size:0.85rem;">${monthNames[i]}</div>
+           let countDisplay = stat.count > 0 ? `<div class="cal-count">${stat.count} ไม้</div>` : '';
+           let isToday = (i === today.getMonth() && (yearFilter === "all" || year === today.getFullYear())) ? ' today' : '';
+
+           html += `<div class="cal-cell ${tone}${isToday}" style="min-height: 95px;justify-content:center;">
+                      <div class="fw-bold" style="font-size:0.85rem;color:var(--ink);">${monthNames[i]}</div>
                       ${pnlDisplay}
                       ${countDisplay}
                     </div>`;
@@ -1610,11 +1608,12 @@
         for (let day = 1; day <= daysInMonth; day++) {
           let stat = dailyData[`${year}-${String(month+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`] || {pnl: 0, count: 0};
           
+          let tone = stat.pnl > 0 ? 'profit' : stat.pnl < 0 ? 'loss' : '';
           let pnlDisplay = stat.pnl > 0 ? `<div class="cal-pnl text-success">+${stat.pnl.toFixed(2)}</div>` : stat.pnl < 0 ? `<div class="cal-pnl text-danger">${stat.pnl.toFixed(2)}</div>` : `<div class="cal-pnl opacity-25">-</div>`;
-          let countDisplay = stat.count > 0 ? `<div class="cal-count shadow-sm bg-white">${stat.count} ไม้</div>` : '';
-          let bgStyle = (day===today.getDate() && month===today.getMonth() && year===today.getFullYear()) ? 'background: #F0EEE8; border: 2px solid #1E1E24;' : '';
-          
-          html += `<div class="cal-cell" style="${bgStyle}">
+          let countDisplay = stat.count > 0 ? `<div class="cal-count">${stat.count} ไม้</div>` : '';
+          let isToday = (day===today.getDate() && month===today.getMonth() && year===today.getFullYear()) ? ' today' : '';
+
+          html += `<div class="cal-cell ${tone}${isToday}">
                      <div class="cal-date">${day}</div>
                      ${pnlDisplay}
                      ${countDisplay}
@@ -1961,11 +1960,11 @@
     <div class="tj-bottomnav-inner">
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
-      <a class="tj-nav-fab nav-icon-btn nav-link" onclick="switchTab('add-trade')" title="บันทึกออเดอร์"><i class="fa-solid fa-plus"></i></a>
       <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#fundingModal"><i class="fa-solid fa-wallet"></i><span>ทุน</span></button>
       <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i><span>ตั้งค่า</span></button>
     </div>
   </nav>
+  <a class="tj-fab-add print-hide" onclick="switchTab('add-trade')" title="บันทึกออเดอร์" aria-label="บันทึกออเดอร์"><i class="fa-solid fa-plus"></i></a>
   <div id="_authLoading" style="position:fixed;inset:0;z-index:99999;background:#131317;display:flex;align-items:center;justify-content:center;color:white;font-family:'Prompt',sans-serif">
     <div style="text-align:center">
       <i class="fa-solid fa-circle-notch fa-spin" style="font-size:36px;color:#1E1E24;margin-bottom:16px"></i>
@@ -2101,7 +2100,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-07-16-v11';
+    window.APP_BUILD = '2026-07-16-v12';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
