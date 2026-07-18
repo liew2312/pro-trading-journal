@@ -317,80 +317,6 @@
       .row,.col-4,.col-6,.col-12{page-break-inside:avoid;}
       .calendar-container{page-break-inside:avoid;border:1px solid #ddd!important;box-shadow:none!important;}
     }
-    /* ══════════ NEW: Advanced stats / Filter bar / Analytics ══════════ */
-    .text-gain{color:var(--profit)!important;} .text-loss{color:var(--loss)!important;}
-
-    /* Advanced stat grid */
-    .adv-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-    @media(max-width:768px){.adv-stat-grid{grid-template-columns:repeat(2,1fr);}}
-    .adv-stat{background:var(--panel,#F5F4EE);border:1px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;}
-    [data-theme="dark"] .adv-stat{background:var(--input-bg);}
-    .adv-stat-label{font-size:.68rem;font-weight:700;color:var(--metric-label-color,#70707A);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:5px;}
-    .adv-stat-value{font-size:1.25rem;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15;}
-    .adv-stat-sub{font-size:.68rem;font-weight:600;color:var(--metric-label-color,#8A8880);margin-top:3px;font-variant-numeric:tabular-nums;}
-
-    /* Filter bar */
-    .tj-filterbar{position:sticky;top:60px;z-index:20;background:var(--topbar-bg);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;padding:10px 12px;margin-bottom:18px;box-shadow:var(--card-shadow);}
-    .tj-filter-scroll{display:flex;align-items:center;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:2px;}
-    .tj-filter-scroll::-webkit-scrollbar{height:5px;} .tj-filter-scroll::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:9px;}
-    .tj-preset-group,.tj-side-group,.tj-view-group{display:inline-flex;background:var(--panel,#F5F4EE);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;flex-shrink:0;}
-    [data-theme="dark"] .tj-preset-group,[data-theme="dark"] .tj-side-group,[data-theme="dark"] .tj-view-group{background:var(--input-bg);}
-    .tj-preset,.tj-side,.tj-view{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:.78rem;padding:5px 11px;border-radius:8px;cursor:pointer;white-space:nowrap;transition:all .15s;}
-    .tj-preset.active,.tj-side.active,.tj-view.active{background:var(--brand);color:#fff;box-shadow:0 2px 6px rgba(146,28,30,.25);}
-    .tj-fbtn{border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-weight:700;font-size:.78rem;padding:6px 12px;border-radius:10px;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;}
-    .tj-fbtn.on{background:var(--brand);color:#fff;border-color:var(--brand);}
-    .tj-fdivider{width:1px;height:24px;background:var(--border);flex-shrink:0;}
-    .tj-checkmenu{max-height:260px;overflow:auto;min-width:190px;}
-    .tj-checkmenu .form-check{margin:0;padding:5px 8px 5px 30px;border-radius:8px;}
-    .tj-checkmenu .form-check:hover{background:var(--row-hover);}
-    .tj-checkmenu label{font-size:.85rem;font-weight:600;color:var(--ink);cursor:pointer;}
-    .tj-chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
-    .tj-chip-row:empty{display:none;}
-    .tj-fchip{display:inline-flex;align-items:center;gap:6px;background:var(--god-rule-bg);border:1px solid var(--god-rule-border);color:var(--brand);font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:99px;animation:chipIn .18s ease;}
-    .tj-fchip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:.7rem;line-height:1;padding:0;}
-    .tj-fchip.clear{background:transparent;border-style:dashed;color:var(--muted);}
-    @keyframes chipIn{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
-
-    /* Hide-P&L privacy mode */
-    body.tj-hidepnl #stat-balance, body.tj-hidepnl #stat-pnl, body.tj-hidepnl #stat-deposit,
-    body.tj-hidepnl #stat-withdraw, body.tj-hidepnl .adv-stat-value, body.tj-hidepnl .adv-stat-sub,
-    body.tj-hidepnl .cal-pnl, body.tj-hidepnl .tj-hist-pnl, body.tj-hidepnl .tj-hist-r,
-    body.tj-hidepnl #history-summary-footer .fw-bold, body.tj-hidepnl .tj-tagpnl,
-    body.tj-hidepnl .tj-fund-sumval, body.tj-hidepnl .metric-value{
-      filter:blur(8px);transition:filter .2s;user-select:none;
-    }
-    body.tj-hidepnl #stat-balance:hover, body.tj-hidepnl #stat-pnl:hover{filter:blur(0);}
-
-    /* Heatmap */
-    .tj-heatmap-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-    .tj-heatmap{display:grid;grid-template-columns:auto repeat(24,minmax(20px,1fr));gap:3px;min-width:640px;}
-    .tj-hcell{aspect-ratio:1;border-radius:4px;background:var(--cal-cell-empty);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:rgba(0,0,0,.35);cursor:default;}
-    [data-theme="dark"] .tj-hcell{color:rgba(255,255,255,.35);}
-    .tj-hlabel{font-size:.66rem;font-weight:700;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;}
-    .tj-hhead{font-size:.58rem;font-weight:700;color:var(--muted);text-align:center;}
-    .tj-heat-legend{display:flex;align-items:center;gap:5px;justify-content:center;margin-top:12px;font-size:.68rem;font-weight:700;color:var(--muted);}
-    .tj-heat-legend .hl{width:16px;height:12px;border-radius:3px;display:inline-block;}
-    .hl1{background:#B93033;}.hl2{background:#e08d84;}.hl3{background:var(--cal-cell-empty);}.hl4{background:#8fbca0;}.hl5{background:#2F7A4F;}
-
-    /* Empty state */
-    .tj-empty{text-align:center;padding:36px 12px;color:var(--muted);}
-    .tj-empty i{font-size:2rem;opacity:.3;display:block;margin-bottom:10px;}
-    .tj-empty div{font-size:.85rem;font-weight:600;}
-
-    /* Tag leaderboard */
-    .tj-tagrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px solid var(--stat-list-border);}
-    .tj-tagrow:last-child{border-bottom:0;}
-    .tj-tagname{font-size:.88rem;font-weight:700;color:var(--ink);}
-    .tj-tagmeta{font-size:.7rem;color:var(--muted);font-weight:600;}
-    .tj-tagpnl{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;}
-
-    /* Skeleton */
-    .tj-skel{background:linear-gradient(90deg,var(--cal-cell-empty) 25%,var(--panel,#eee) 37%,var(--cal-cell-empty) 63%);background-size:400% 100%;animation:skel 1.2s ease-in-out infinite;border-radius:8px;color:transparent!important;}
-    @keyframes skel{0%{background-position:100% 50%;}100%{background-position:0 50%;}}
-
-    @media(prefers-reduced-motion:reduce){
-      *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
-    }
   </style>
 </head>
 <body>
@@ -426,40 +352,6 @@
       
       <div class="row">
         <div class="col-12"><div class="quote-box" id="daily-quote">"ตลาดไม่ได้สนใจว่าคุณจะรู้สึกอย่างไร ทำตามแผนของคุณก็พอ"</div></div>
-      </div>
-
-      <!-- ── Global Cross-Filter Bar (ใหม่) ──────────────────────── -->
-      <div class="tj-filterbar print-hide" id="tj-filterbar">
-        <div class="tj-filter-scroll">
-          <div class="tj-preset-group" id="tj-presets">
-            <button class="tj-preset" data-preset="7d">7วัน</button>
-            <button class="tj-preset" data-preset="30d">30วัน</button>
-            <button class="tj-preset" data-preset="90d">90วัน</button>
-            <button class="tj-preset" data-preset="ytd">YTD</button>
-            <button class="tj-preset" data-preset="1y">1ปี</button>
-            <button class="tj-preset active" data-preset="all">ทั้งหมด</button>
-          </div>
-          <div class="dropdown">
-            <button class="tj-fbtn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="tj-symbol-btn"><i class="fa-solid fa-coins"></i> Symbol</button>
-            <div class="dropdown-menu tj-checkmenu p-2" id="tj-symbol-menu"><div class="text-muted small px-2 py-1">—</div></div>
-          </div>
-          <div class="dropdown">
-            <button class="tj-fbtn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" id="tj-setup-btn"><i class="fa-solid fa-crosshairs"></i> Setup</button>
-            <div class="dropdown-menu tj-checkmenu p-2" id="tj-setup-menu"><div class="text-muted small px-2 py-1">—</div></div>
-          </div>
-          <div class="tj-side-group" id="tj-side">
-            <button class="tj-side active" data-side="all">ทั้งหมด</button>
-            <button class="tj-side" data-side="long">Long</button>
-            <button class="tj-side" data-side="short">Short</button>
-          </div>
-          <div class="tj-fdivider"></div>
-          <div class="tj-view-group" id="tj-view">
-            <button class="tj-view active" data-view="money">$</button>
-            <button class="tj-view" data-view="r">R</button>
-          </div>
-          <button class="tj-fbtn" id="tj-hidepnl" type="button" title="ซ่อนตัวเลข P&L"><i class="fa-solid fa-eye"></i> <span>แสดง P&L</span></button>
-        </div>
-        <div class="tj-chip-row" id="tj-active-chips"></div>
       </div>
 
       <div class="d-none d-print-block text-center fw-bold fs-5 text-dark mb-3" id="print-header-title">
@@ -594,60 +486,6 @@
         </div>
       </div>
 
-      <!-- ── Advanced Stats (ใหม่) ─────────────────────────────── -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat p-4">
-            <div class="section-header">
-              <div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-simple" style="color:#1E1E24"></i></div>
-              <h6 class="title">สถิติเชิงลึก (Advanced Stats)</h6>
-            </div>
-            <div class="adv-stat-grid">
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-arrow-trend-down"></i> Max Drawdown</div>
-                <div class="adv-stat-value text-loss" id="adv-mdd">-</div>
-                <div class="adv-stat-sub" id="adv-mdd-pct">-</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-wave-square"></i> Sharpe Ratio</div>
-                <div class="adv-stat-value" id="adv-sharpe">-</div>
-                <div class="adv-stat-sub">รายวัน · annualized</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-scale-unbalanced"></i> Avg Win / Loss</div>
-                <div class="adv-stat-value" id="adv-payoff">-</div>
-                <div class="adv-stat-sub" id="adv-winloss">-</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-fire-flame-curved"></i> Streak ยาวสุด</div>
-                <div class="adv-stat-value" id="adv-streak">-</div>
-                <div class="adv-stat-sub">ชนะ / แพ้ ติดกัน</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-trophy"></i> ไม้ใหญ่สุด</div>
-                <div class="adv-stat-value text-gain" id="adv-largewin">-</div>
-                <div class="adv-stat-sub text-loss" id="adv-largeloss">-</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-regular fa-hourglass-half"></i> ถือครองเฉลี่ย</div>
-                <div class="adv-stat-value" id="adv-hold">-</div>
-                <div class="adv-stat-sub">ต่อไม้</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-calendar-day"></i> Best / Worst Day</div>
-                <div class="adv-stat-value text-gain" id="adv-bestday">-</div>
-                <div class="adv-stat-sub text-loss" id="adv-worstday">-</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-bullseye"></i> Capture Rate</div>
-                <div class="adv-stat-value" id="adv-capture">-</div>
-                <div class="adv-stat-sub">R ที่คว้าได้ / MFE</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- ── Equity Curve ──────────────────────────────────────── -->
       <div class="row mb-4">
         <div class="col-12">
@@ -687,66 +525,6 @@
         <h5 class="mb-4 text-center fw-bold text-dark" id="calendar-title">ปฏิทิน P/L</h5>
         <div class="calendar-header" id="calendar-header"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
         <div class="calendar-grid" id="calendar-body"></div>
-      </div>
-    </div>
-
-    <!-- ══════════ ANALYTICS PAGE (ใหม่) ══════════ -->
-    <div id="analytics" class="page-section print-hide">
-      <div class="text-center mb-4">
-        <h4 class="fw-bold mb-1" style="color:var(--ink);"><i class="fa-solid fa-magnifying-glass-chart me-2" style="color:var(--brand);"></i> วิเคราะห์เชิงลึก</h4>
-        <div class="text-muted small">เจาะพฤติกรรมและจุดแข็ง-จุดอ่อนของระบบเทรด · ใช้ตัวกรองด้านบนหน้าหลักร่วมกันได้</div>
-      </div>
-
-      <div class="row g-3 mb-4">
-        <div class="col-lg-6">
-          <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-column" style="color:#1E1E24"></i></div><h6 class="title">การกระจายของ R-Multiple</h6></div>
-            <div style="position:relative;height:260px;width:100%;"><canvas id="rDistChart"></canvas></div>
-            <div id="rdist-empty" class="tj-empty d-none"><i class="fa-solid fa-chart-column"></i><div>ยังไม่มีข้อมูล R-Multiple</div></div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-braille" style="color:#1E1E24"></i></div><h6 class="title">MAE / MFE Scatter (คลิกจุดเพื่อดูไม้)</h6></div>
-            <div style="position:relative;height:260px;width:100%;"><canvas id="scatterChart"></canvas></div>
-            <div id="scatter-empty" class="tj-empty d-none"><i class="fa-solid fa-braille"></i><div>ต้องมีราคา Entry/SL และ MAE/MFE จึงจะคำนวณได้</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat p-4">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-table-cells" style="color:#1E1E24"></i></div><h6 class="title">Heatmap ผลงานตาม วัน × ชั่วโมง</h6></div>
-            <div class="tj-heatmap-wrap"><div id="wh-heatmap" class="tj-heatmap"></div></div>
-            <div class="tj-heat-legend"><span>ขาดทุน</span><i class="hl hl1"></i><i class="hl hl2"></i><i class="hl hl3"></i><i class="hl hl4"></i><i class="hl hl5"></i><span>กำไร</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat p-4">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-line" style="color:#1E1E24"></i></div><h6 class="title">Rolling Metrics (ย้อนหลัง 20 ไม้)</h6></div>
-            <div style="position:relative;height:280px;width:100%;"><canvas id="rollingChart"></canvas></div>
-            <div id="rolling-empty" class="tj-empty d-none"><i class="fa-solid fa-chart-line"></i><div>ต้องมีอย่างน้อย 2 ไม้ที่มีค่า R</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row g-3 mb-5">
-        <div class="col-md-6">
-          <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(47,122,79,0.1)"><i class="fa-solid fa-thumbs-up" style="color:#2F7A4F"></i></div><h6 class="title">พฤติกรรมทำกำไรสูงสุด</h6></div>
-            <div id="tag-best"></div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(185,48,51,0.1)"><i class="fa-solid fa-thumbs-down" style="color:#B93033"></i></div><h6 class="title">พฤติกรรมต้นทุนสูงสุด</h6></div>
-            <div id="tag-worst"></div>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1383,35 +1161,6 @@
       let overtradeCount = 0, revengeCount = 0;
       let totalMae = 0, maeCount = 0, totalMfe = 0, mfeCount = 0, totalR = 0, rCount = 0;
 
-      // ── (ใหม่) ตัวสะสมสำหรับ metric เชิงลึก + ข้อมูลกราฟวิเคราะห์ ──
-      let grossProfitCount = 0;               // = wins (นับซ้ำเพื่อความชัด)
-      let largestWin = 0, largestLoss = 0;    // ไม้กำไร/ขาดทุนสูงสุด
-      let curWinStreak = 0, curLossStreak = 0, longestWinStreak = 0, longestLossStreak = 0;
-      let holdSum = 0, holdCount = 0;         // เวลาถือครองเฉลี่ย (นาที)
-      let captureSum = 0, captureCount = 0;   // capture rate (realized R ÷ MFE-R)
-      const rBuckets = { "≤-2R":0, "-2..-1R":0, "-1..0R":0, "0..1R":0, "1..2R":0, "2..3R":0, ">3R":0 };
-      const whMatrix = Array.from({length:7}, () => Array.from({length:24}, () => ({ pnl:0, count:0 })));
-      const scatterPts = [];                  // {maeR, mfeR, r, pnl, symbol, ...} สำหรับ MAE/MFE scatter
-      const rollingSeq = [];                  // ลำดับ R ของแต่ละไม้ (ตามเวลา) สำหรับ rolling metrics
-      const behaviorMap = {};                 // tag/behavior leaderboard: {key:{pnl,trades,wins}}
-      const addBehavior = (key, pnlv) => {
-        if (!key) return;
-        if (!behaviorMap[key]) behaviorMap[key] = { pnl:0, trades:0, wins:0 };
-        behaviorMap[key].pnl += pnlv; behaviorMap[key].trades++; if (pnlv > 0) behaviorMap[key].wins++;
-      };
-
-      // ── (ใหม่) global cross-filter: preset วันที่ / symbol / setup / side ──
-      const gf = window._globalFilter || null;
-      let dateCutoff = null;
-      if (gf && gf.preset && gf.preset !== "all") {
-        const now = new Date();
-        if (gf.preset === "ytd") dateCutoff = new Date(now.getFullYear(), 0, 1);
-        else {
-          const days = { "7d":7, "30d":30, "90d":90, "1y":365 }[gf.preset];
-          if (days) { dateCutoff = new Date(now); dateCutoff.setDate(dateCutoff.getDate() - days); }
-        }
-      }
-
       for (const r of rows) {
         const rawDate = new Date(r.created_at);
         const m = rawDate.getMonth() + 1;
@@ -1434,16 +1183,6 @@
         let isMatch = true;
         if (filterMonth && filterMonth !== "all" && m != filterMonth) isMatch = false;
         if (filterYear  && filterYear  !== "all" && y != filterYear)  isMatch = false;
-        // global cross-filter
-        if (gf) {
-          if (dateCutoff && rawDate < dateCutoff) isMatch = false;
-          if (type === "Buy" || type === "Sell") {
-            if (gf.symbols && gf.symbols.length && !gf.symbols.includes(symbol)) isMatch = false;
-            if (gf.setups && gf.setups.length && !gf.setups.includes(String(r.setup || "").trim())) isMatch = false;
-            if (gf.side === "long"  && type !== "Buy")  isMatch = false;
-            if (gf.side === "short" && type !== "Sell") isMatch = false;
-          }
-        }
         if (!isMatch) continue;
 
         if (type === "Deposit" || type === "Withdraw") {
@@ -1513,86 +1252,6 @@
           if (!dailyStatsMap[dateKey]) dailyStatsMap[dateKey] = { pnl: 0, count: 0 };
           dailyStatsMap[dateKey].pnl += pnlOrAmount;
           dailyStatsMap[dateKey].count++;
-
-          // ── (ใหม่) metric เชิงลึก ──
-          if (pnlOrAmount > largestWin)  largestWin  = pnlOrAmount;
-          if (pnlOrAmount < largestLoss) largestLoss = pnlOrAmount;
-
-          // streak (ไม้เรียงตามเวลาอยู่แล้ว)
-          if (pnlOrAmount > 0) {
-            curWinStreak++; curLossStreak = 0;
-            if (curWinStreak > longestWinStreak) longestWinStreak = curWinStreak;
-          } else if (pnlOrAmount < 0) {
-            curLossStreak++; curWinStreak = 0;
-            if (curLossStreak > longestLossStreak) longestLossStreak = curLossStreak;
-          }
-
-          // เวลาถือครอง (จาก entry_time / exit_time รูปแบบ HH:MM)
-          const et = String(r.entry_time || "").trim(), xt = String(r.exit_time || "").trim();
-          if (/^\d{1,2}:\d{2}/.test(et) && /^\d{1,2}:\d{2}/.test(xt)) {
-            const [eh, emi] = et.split(":").map(Number), [xh, xmi] = xt.split(":").map(Number);
-            let mins = (xh * 60 + xmi) - (eh * 60 + emi);
-            if (mins < 0) mins += 24 * 60; // ข้ามวัน
-            if (mins >= 0 && mins <= 24 * 60) { holdSum += mins; holdCount++; }
-          }
-
-          // R distribution
-          if (!isNaN(rVal)) {
-            rollingSeq.push(rVal);
-            if      (rVal <= -2) rBuckets["≤-2R"]++;
-            else if (rVal <  -1) rBuckets["-2..-1R"]++;
-            else if (rVal <   0) rBuckets["-1..0R"]++;
-            else if (rVal <   1) rBuckets["0..1R"]++;
-            else if (rVal <   2) rBuckets["1..2R"]++;
-            else if (rVal <=  3) rBuckets["2..3R"]++;
-            else                 rBuckets[">3R"]++;
-          }
-
-          // weekday × hour (ใช้ชั่วโมงจาก entry_time ถ้ามี ไม่งั้นใช้ created_at)
-          const wd = rawDate.getDay();
-          let hr = rawDate.getHours();
-          if (/^\d{1,2}:\d{2}/.test(et)) { const h = parseInt(et.split(":")[0], 10); if (h >= 0 && h <= 23) hr = h; }
-          whMatrix[wd][hr].pnl += pnlOrAmount; whMatrix[wd][hr].count++;
-
-          // MAE/MFE (แปลงเป็นหน่วย R โดยอ้างอิงระยะ entry→SL) + capture rate
-          const entP = parseFloat(r.entry_price), slP = parseFloat(r.sl_price);
-          const riskDist = (!isNaN(entP) && !isNaN(slP)) ? Math.abs(entP - slP) : NaN;
-          let maeR = NaN, mfeR = NaN;
-          if (!isNaN(riskDist) && riskDist > 0) {
-            if (!isNaN(maeVal)) maeR = maeVal / riskDist;
-            if (!isNaN(mfeVal)) mfeR = mfeVal / riskDist;
-          }
-          if (!isNaN(mfeR) && mfeR > 0.05 && !isNaN(rVal)) {
-            captureSum += Math.max(0, Math.min(1, rVal / mfeR)); captureCount++;
-          }
-          scatterPts.push({
-            maeR: isNaN(maeR) ? null : +maeR.toFixed(2),
-            mfeR: isNaN(mfeR) ? null : +mfeR.toFixed(2),
-            r: isNaN(rVal) ? null : +rVal.toFixed(2),
-            pnl: +pnlOrAmount.toFixed(2), symbol,
-            setup, session, outcome,
-            date: dateKey,
-            entryPrice: isNaN(entP) ? "" : entP, slPrice: isNaN(slP) ? "" : slP,
-            tpPrice: (r.tp_price != null ? r.tp_price : ""),
-            lots: (r.lots != null ? r.lots : "-"), type,
-            notes: r.notes || "",
-            chartBefore: r.chart_before || "", chartAfter: r.chart_after || "",
-            marketContext: r.market_context || "-", rMult: isNaN(rVal) ? "-" : rVal,
-            violatedRule: r.violated_rule || "No", overtrade: r.overtrade || "-", revenge: r.revenge || "-"
-          });
-
-          // behavior / tag leaderboard
-          if (setup)   addBehavior("Setup: " + setup, pnlOrAmount);
-          if (session) addBehavior("Session: " + session, pnlOrAmount);
-          if (r.market_context) addBehavior("ตลาด: " + r.market_context, pnlOrAmount);
-          if (r.confidence)     addBehavior("มั่นใจ " + r.confidence + "★", pnlOrAmount);
-          if (r.followed_plan === "No") addBehavior("ไม่ทำตามแผน", pnlOrAmount);
-          if (r.followed_plan === "Yes") addBehavior("ทำตามแผน", pnlOrAmount);
-          if (r.overtrade === "Yes") addBehavior("Overtrade", pnlOrAmount);
-          if (r.revenge === "Yes")   addBehavior("Revenge", pnlOrAmount);
-          if (r.lot_respected === "No") addBehavior("Over-lot", pnlOrAmount);
-          String(r.confluences || "").split(",").map(s => s.trim()).filter(Boolean)
-            .forEach(cf => addBehavior("Confluence: " + cf, pnlOrAmount));
         }
       }
 
@@ -1600,55 +1259,6 @@
       const avgWin  = wins > 0 ? grossProfit / wins : 0;
       const avgLoss = (totalTrades - wins) > 0 ? grossLoss / (totalTrades - wins) : 0;
       const expectancy = (wrDec * avgWin) - ((1 - wrDec) * avgLoss);
-      const payoffRatio = avgLoss > 0 ? avgWin / avgLoss : (avgWin > 0 ? Infinity : 0);
-
-      // ── (ใหม่) Max Drawdown จาก equity curve (peak-to-trough) ──
-      let mddAbs = 0, mddPct = 0, peakEq = -Infinity;
-      for (const s of equityData) {
-        const v = parseFloat(s);
-        if (v > peakEq) peakEq = v;
-        const dd = peakEq - v;
-        if (dd > mddAbs) mddAbs = dd;
-        if (peakEq > 0) { const p = (dd / peakEq) * 100; if (p > mddPct) mddPct = p; }
-      }
-
-      // ── (ใหม่) Sharpe (จากผลตอบแทนรายวัน, annualized ~√252) ──
-      const dayPnls = Object.keys(dailyStatsMap).sort().map(k => dailyStatsMap[k].pnl);
-      let sharpe = 0;
-      if (dayPnls.length > 1) {
-        const mean = dayPnls.reduce((a, b) => a + b, 0) / dayPnls.length;
-        const variance = dayPnls.reduce((a, b) => a + (b - mean) ** 2, 0) / (dayPnls.length - 1);
-        const sd = Math.sqrt(variance);
-        sharpe = sd > 0 ? (mean / sd) * Math.sqrt(252) : 0;
-      }
-
-      // ── (ใหม่) best / worst day ──
-      let bestDay = { key: "", pnl: -Infinity }, worstDay = { key: "", pnl: Infinity };
-      for (const k in dailyStatsMap) {
-        if (dailyStatsMap[k].pnl > bestDay.pnl)  bestDay  = { key: k, pnl: dailyStatsMap[k].pnl };
-        if (dailyStatsMap[k].pnl < worstDay.pnl) worstDay = { key: k, pnl: dailyStatsMap[k].pnl };
-      }
-      if (bestDay.pnl === -Infinity)  bestDay  = { key: "", pnl: 0 };
-      if (worstDay.pnl === Infinity)  worstDay = { key: "", pnl: 0 };
-
-      // ── (ใหม่) rolling metrics (trailing window 20 ไม้) ──
-      const rollWin = 20;
-      const rollingLabels = [], rollingWinRate = [], rollingExpR = [];
-      for (let i = 0; i < rollingSeq.length; i++) {
-        const start = Math.max(0, i - rollWin + 1);
-        const slice = rollingSeq.slice(start, i + 1);
-        const w = slice.filter(x => x > 0).length;
-        rollingLabels.push("#" + (i + 1));
-        rollingWinRate.push(+((w / slice.length) * 100).toFixed(1));
-        rollingExpR.push(+(slice.reduce((a, b) => a + b, 0) / slice.length).toFixed(3));
-      }
-
-      // ── (ใหม่) behavior / tag leaderboard ──
-      const behaviorList = Object.keys(behaviorMap)
-        .filter(k => behaviorMap[k].trades >= 2)
-        .map(k => ({ key: k, pnl: +behaviorMap[k].pnl.toFixed(2), trades: behaviorMap[k].trades,
-                     winRate: +((behaviorMap[k].wins / behaviorMap[k].trades) * 100).toFixed(0) }))
-        .sort((a, b) => b.pnl - a.pnl);
 
       const insights = [];
       if (totalTrades > 5) {
@@ -1700,32 +1310,7 @@
         },
         equityLabels: equityLabels,
         equityData:   equityData,
-        aiInsights:   insights,
-
-        // ── (ใหม่) metric เชิงลึก ──
-        maxDrawdownAbs: mddAbs.toFixed(2),
-        maxDrawdownPct: mddPct.toFixed(1),
-        sharpe:         sharpe.toFixed(2),
-        avgWin:         avgWin.toFixed(2),
-        avgLoss:        avgLoss.toFixed(2),
-        payoffRatio:    isFinite(payoffRatio) ? payoffRatio.toFixed(2) : "∞",
-        largestWin:     largestWin.toFixed(2),
-        largestLoss:    largestLoss.toFixed(2),
-        longestWinStreak:  longestWinStreak,
-        longestLossStreak: longestLossStreak,
-        avgHoldMin:     holdCount > 0 ? Math.round(holdSum / holdCount) : null,
-        captureRate:    captureCount > 0 ? ((captureSum / captureCount) * 100).toFixed(0) : null,
-        bestDay:        bestDay,
-        worstDay:       worstDay,
-
-        // ── (ใหม่) ข้อมูลกราฟวิเคราะห์ ──
-        rBuckets:       rBuckets,
-        whMatrix:       whMatrix,
-        scatterPts:     scatterPts,
-        rollingLabels:  rollingLabels,
-        rollingWinRate: rollingWinRate,
-        rollingExpR:    rollingExpR,
-        behaviorList:   behaviorList
+        aiInsights:   insights
       };
     }
 
@@ -2317,10 +1902,7 @@
     }
 
     function openTradeModal(index) {
-      showTradeModal(globalTradeHistory[index]);
-    }
-    window.showTradeModal = function(trade) {
-      if (!trade) return;
+      const trade = globalTradeHistory[index];
       const isFunding = (trade.type === 'Deposit' || trade.type === 'Withdraw');
       
       document.getElementById('modalDate').innerText = trade.date;
@@ -2482,7 +2064,6 @@
   <nav class="tj-bottomnav print-hide">
     <div class="tj-bottomnav-inner">
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
-      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-magnifying-glass-chart"></i><span>วิเคราะห์</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
       <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#fundingModal"><i class="fa-solid fa-wallet"></i><span>ทุน</span></button>
       <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i><span>ตั้งค่า</span></button>
@@ -2717,260 +2298,6 @@
     <button onclick="document.getElementById('pwa-install-banner').style.display='none'" style="background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); border:none; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:18px; line-height:1; flex-shrink:0;">&times;</button>
   </div>
   <!-- ======= END PWA ======= -->
-
-  <!-- ══════════ NEW: Advanced stats · Analytics · Cross-filter · Toggles ══════════ -->
-  <script>
-  (function(){
-    // ── global filter + view state ──
-    window._globalFilter = { preset:'all', symbols:[], setups:[], side:'all' };
-    window._viewMode = 'money';           // 'money' | 'r'
-    window._charts = {};
-    window._allSymbols = new Set();
-    window._allSetups  = new Set(['SMC','Demand/Supply','Breakout','Trend Following']);
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-
-    // ── helpers ──
-    function money(n){ n = Number(n)||0; const s = n<0?'-':(n>0?'+':''); return s+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-    function moneyPlain(n){ n = Number(n)||0; return '$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-    function glyph(n){ return n>0?'▲':(n<0?'▼':'–'); }
-    function toneClass(n){ return n>0?'text-gain':(n<0?'text-loss':''); }
-    function fmtHold(mins){ if(mins==null) return '-'; if(mins<60) return mins+' นาที'; const h=Math.floor(mins/60), m=mins%60; return h+' ชม'+(m?(' '+m+'น'):''); }
-    function fmtDayKey(k){ if(!k) return '-'; const p=k.split('-'); return p.length===3 ? (p[2]+'/'+p[1]) : k; }
-
-    function countUp(el, to, fmt){
-      if(!el) return;
-      to = Number(to)||0;
-      if(reduceMotion){ el.textContent = fmt(to); return; }
-      const from = 0, dur = 550, t0 = performance.now();
-      (function step(now){
-        const p = Math.min(1,(now-t0)/dur), e = 1-Math.pow(1-p,3);
-        el.textContent = fmt(from+(to-from)*e);
-        if(p<1) requestAnimationFrame(step);
-      })(performance.now());
-    }
-
-    // ── Advanced stat cards ──
-    function renderAdvancedStats(d){
-      const set = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-      const mddAbs = Number(d.maxDrawdownAbs)||0;
-      set('adv-mdd', mddAbs>0 ? ('-'+moneyPlain(mddAbs)) : '$0.00');
-      set('adv-mdd-pct', '-'+(d.maxDrawdownPct||'0.0')+'%');
-      set('adv-sharpe', d.sharpe!=null ? d.sharpe : '-');
-      set('adv-payoff', (d.payoffRatio||'0')+'x');
-      set('adv-winloss', '+'+moneyPlain(d.avgWin)+' / -'+moneyPlain(d.avgLoss));
-      set('adv-streak', (d.longestWinStreak||0)+'W / '+(d.longestLossStreak||0)+'L');
-      set('adv-largewin', '+'+moneyPlain(d.largestWin));
-      set('adv-largeloss', '-'+moneyPlain(Math.abs(Number(d.largestLoss)||0)));
-      set('adv-hold', fmtHold(d.avgHoldMin));
-      const bd=d.bestDay||{pnl:0,key:''}, wd=d.worstDay||{pnl:0,key:''};
-      set('adv-bestday', (bd.pnl>0?'+':'')+moneyPlain(bd.pnl)+(bd.key?(' · '+fmtDayKey(bd.key)):''));
-      set('adv-worstday', (wd.pnl<0?'-':'')+moneyPlain(Math.abs(wd.pnl))+(wd.key?(' · '+fmtDayKey(wd.key)):''));
-      set('adv-capture', d.captureRate!=null ? (d.captureRate+'%') : '-');
-    }
-
-    // ── View mode ($ / R) applied to headline + equity ──
-    function applyViewMode(){
-      const d = window._lastMetrics; if(!d) return;
-      const pnlEl = document.getElementById('stat-pnl');
-      if(window._viewMode==='r'){
-        const sumR = (d.scatterPts||[]).reduce((a,p)=> a + (p.r!=null?p.r:0), 0);
-        if(pnlEl){ pnlEl.textContent = (sumR>=0?'+':'')+sumR.toFixed(2)+'R'; pnlEl.style.color = sumR>=0?'#2F7A4F':'#B93033'; }
-        let cum=0; const rSeries=(d.scatterPts||[]).map(p=>{ cum+=(p.r!=null?p.r:0); return +cum.toFixed(2); });
-        const rLabels=rSeries.map((_,i)=>'#'+(i+1));
-        if(typeof renderEquityChart==='function') renderEquityChart(rLabels, rSeries.map(String));
-      } else {
-        const tp=Number(d.totalPnl)||0;
-        if(pnlEl){ pnlEl.textContent=(tp>=0?'+$':'-$')+Math.abs(tp).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); pnlEl.style.color=tp>=0?'#2F7A4F':'#B93033'; }
-        if(typeof renderEquityChart==='function') renderEquityChart(d.equityLabels, d.equityData);
-      }
-    }
-
-    // ── Analytics: charts ──
-    const AXIS='#9C9CA4', GRID=getComputedStyle(document.body).getPropertyValue('--cal-cell-empty')||'#F2F0EA';
-    function baseOpts(extra){ return Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}, extra||{}); }
-
-    function renderRDist(d){
-      const b=d.rBuckets||{}; const keys=Object.keys(b); const vals=keys.map(k=>b[k]);
-      const total=vals.reduce((a,c)=>a+c,0);
-      const empty=document.getElementById('rdist-empty'), cv=document.getElementById('rDistChart');
-      if(empty) empty.classList.toggle('d-none', total>0); if(cv) cv.style.display= total>0?'':'none';
-      if(!total) return;
-      const colors=keys.map(k=> k.indexOf('-')===0||k.charAt(0)==='≤'?'#B93033': (k==='0..1R'?'#B5791A':'#2F7A4F'));
-      if(window._charts.rdist) window._charts.rdist.destroy();
-      window._charts.rdist=new Chart(cv.getContext('2d'),{type:'bar',data:{labels:keys,datasets:[{data:vals,backgroundColor:colors,borderRadius:6}]},
-        options:baseOpts({scales:{x:{grid:{display:false},ticks:{color:AXIS,font:{size:10}}},y:{grid:{color:GRID},ticks:{color:AXIS,precision:0}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+' ไม้'}}}})});
-    }
-
-    function renderScatter(d){
-      const pts=(d.scatterPts||[]).filter(p=>p.maeR!=null && p.r!=null);
-      const empty=document.getElementById('scatter-empty'), cv=document.getElementById('scatterChart');
-      if(empty) empty.classList.toggle('d-none', pts.length>0); if(cv) cv.style.display= pts.length>0?'':'none';
-      if(!pts.length) return;
-      window._scatterTrades=pts;
-      const data=pts.map(p=>({x:Math.abs(p.maeR), y:p.r}));
-      const colors=pts.map(p=> p.pnl>0?'rgba(47,122,79,.75)':'rgba(185,48,51,.75)');
-      if(window._charts.scatter) window._charts.scatter.destroy();
-      window._charts.scatter=new Chart(cv.getContext('2d'),{type:'scatter',data:{datasets:[{data:data,backgroundColor:colors,pointRadius:5,pointHoverRadius:8}]},
-        options:baseOpts({onClick:(e,els)=>{ if(els&&els.length){ const t=window._scatterTrades[els[0].index]; if(t&&window.showTradeModal) window.showTradeModal(t); } },
-          scales:{x:{title:{display:true,text:'MAE (R) — โดนลาก',color:AXIS},grid:{color:GRID},ticks:{color:AXIS}},y:{title:{display:true,text:'Realized R',color:AXIS},grid:{color:GRID},ticks:{color:AXIS}}},
-          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const t=window._scatterTrades[c.dataIndex]; return [t.symbol+' · '+money(t.pnl), 'R '+t.r+' · MAE '+Math.abs(t.maeR)+'R'];}}}}})});
-    }
-
-    const WD=['อา','จ','อ','พ','พฤ','ศ','ส'];
-    function renderHeatmap(d){
-      const m=d.whMatrix; const host=document.getElementById('wh-heatmap'); if(!host||!m) return;
-      let maxAbs=0; for(let w=0;w<7;w++)for(let h=0;h<24;h++){ const v=Math.abs(m[w][h].pnl); if(v>maxAbs)maxAbs=v; }
-      const col=(pnl,cnt)=>{ if(!cnt) return 'var(--cal-cell-empty)'; if(maxAbs===0) return 'var(--cal-cell-empty)'; const t=Math.min(1,Math.abs(pnl)/maxAbs);
-        if(pnl>0) return 'rgba(47,122,79,'+(0.18+0.72*t).toFixed(2)+')'; if(pnl<0) return 'rgba(185,48,51,'+(0.18+0.72*t).toFixed(2)+')'; return 'var(--cal-cell-empty)'; };
-      let html='<div class="tj-hhead"></div>';
-      for(let h=0;h<24;h++) html+='<div class="tj-hhead">'+h+'</div>';
-      for(let w=0;w<7;w++){ html+='<div class="tj-hlabel">'+WD[w]+'</div>';
-        for(let h=0;h<24;h++){ const c=m[w][h]; const title=WD[w]+' '+h+':00 · '+c.count+' ไม้ · '+money(c.pnl);
-          html+='<div class="tj-hcell" style="background:'+col(c.pnl,c.count)+'" title="'+title+'">'+(c.count||'')+'</div>'; } }
-      host.innerHTML=html;
-    }
-
-    function renderRolling(d){
-      const labels=d.rollingLabels||[], wr=d.rollingWinRate||[], ex=d.rollingExpR||[];
-      const empty=document.getElementById('rolling-empty'), cv=document.getElementById('rollingChart');
-      if(empty) empty.classList.toggle('d-none', labels.length>1); if(cv) cv.style.display= labels.length>1?'':'none';
-      if(labels.length<2) return;
-      if(window._charts.rolling) window._charts.rolling.destroy();
-      window._charts.rolling=new Chart(cv.getContext('2d'),{type:'line',data:{labels:labels,datasets:[
-        {label:'Win Rate %',data:wr,borderColor:'#921C1E',backgroundColor:'rgba(146,28,30,.08)',borderWidth:2,pointRadius:0,tension:.35,yAxisID:'y',fill:true},
-        {label:'Expectancy (R)',data:ex,borderColor:'#2F7A4F',borderWidth:2,pointRadius:0,tension:.35,yAxisID:'y1'}
-      ]},options:baseOpts({interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{usePointStyle:true,boxWidth:9,color:AXIS,font:{family:"'Prompt',sans-serif",weight:'600'}}}},
-        scales:{x:{grid:{display:false},ticks:{color:AXIS,maxTicksLimit:8}},y:{position:'left',grid:{color:GRID},ticks:{color:AXIS},title:{display:true,text:'Win %',color:AXIS}},y1:{position:'right',grid:{display:false},ticks:{color:'#2F7A4F'},title:{display:true,text:'Exp R',color:'#2F7A4F'}}}})});
-    }
-
-    function renderTagBoards(d){
-      const list=d.behaviorList||[];
-      const best=list.filter(x=>x.pnl>0).slice(0,6);
-      const worst=list.filter(x=>x.pnl<0).slice(-6).reverse();
-      const row=x=>'<div class="tj-tagrow"><div><div class="tj-tagname">'+x.key+'</div><div class="tj-tagmeta">'+x.trades+' ไม้ · '+x.winRate+'% win</div></div><div class="tj-tagpnl '+toneClass(x.pnl)+'">'+glyph(x.pnl)+' '+money(x.pnl)+'</div></div>';
-      const be=document.getElementById('tag-best'), we=document.getElementById('tag-worst');
-      if(be) be.innerHTML = best.length? best.map(row).join('') : '<div class="text-muted small text-center py-3 fw-bold">ยังไม่มีข้อมูลพอ</div>';
-      if(we) we.innerHTML = worst.length? worst.map(row).join('') : '<div class="text-muted small text-center py-3 fw-bold">ไม่มีพฤติกรรมขาดทุนเด่น 👍</div>';
-    }
-
-    function renderAnalytics(d){ try{ renderRDist(d); renderScatter(d); renderHeatmap(d); renderRolling(d); renderTagBoards(d); }catch(e){ console.error('analytics render',e); } }
-
-    // ── Filter menus (symbol / setup) ──
-    function populateFilterMenus(d){
-      Object.keys(d.pairStats||{}).forEach(s=> s && window._allSymbols.add(s));
-      Object.keys(d.setupStats||{}).forEach(s=> s && window._allSetups.add(s));
-      buildCheckMenu('tj-symbol-menu', Array.from(window._allSymbols).sort(), window._globalFilter.symbols, 'symbols');
-      buildCheckMenu('tj-setup-menu', Array.from(window._allSetups).sort(), window._globalFilter.setups, 'setups');
-      const sb=document.getElementById('tj-symbol-btn'), stb=document.getElementById('tj-setup-btn');
-      if(sb) sb.classList.toggle('on', window._globalFilter.symbols.length>0);
-      if(stb) stb.classList.toggle('on', window._globalFilter.setups.length>0);
-    }
-    function buildCheckMenu(menuId, items, selected, key){
-      const menu=document.getElementById(menuId); if(!menu) return;
-      if(!items.length){ menu.innerHTML='<div class="text-muted small px-2 py-1">ยังไม่มีข้อมูล</div>'; return; }
-      menu.innerHTML=items.map((it,i)=>{
-        const id=menuId+'-'+i, ck=selected.indexOf(it)>=0?'checked':'';
-        return '<div class="form-check"><input class="form-check-input" type="checkbox" value="'+it.replace(/"/g,'&quot;')+'" id="'+id+'" '+ck+'><label class="form-check-label" for="'+id+'">'+it+'</label></div>';
-      }).join('');
-      menu.querySelectorAll('input').forEach(inp=> inp.addEventListener('change',()=>{
-        window._globalFilter[key]=Array.from(menu.querySelectorAll('input:checked')).map(x=>x.value);
-        updateChips(); if(typeof loadAllData==='function') loadAllData();
-      }));
-    }
-
-    // ── Active chips ──
-    function updateChips(){
-      const host=document.getElementById('tj-active-chips'); if(!host) return;
-      const gf=window._globalFilter; const chips=[];
-      const presetLbl={'7d':'7 วัน','30d':'30 วัน','90d':'90 วัน','ytd':'YTD','1y':'1 ปี'};
-      if(gf.preset!=='all') chips.push(chip('ช่วง: '+presetLbl[gf.preset],'preset'));
-      if(gf.side!=='all') chips.push(chip(gf.side==='long'?'Long':'Short','side'));
-      gf.symbols.forEach(s=> chips.push(chip(s,'symbol:'+s)));
-      gf.setups.forEach(s=> chips.push(chip(s,'setup:'+s)));
-      host.innerHTML = chips.length ? (chips.join('')+'<span class="tj-fchip clear" role="button" onclick="_clearAllFilters()">ล้างทั้งหมด <i class="fa-solid fa-xmark"></i></span>') : '';
-    }
-    function chip(label,token){ return '<span class="tj-fchip">'+label+' <button onclick="_removeFilter(\''+token+'\')">&times;</button></span>'; }
-    window._removeFilter=function(token){
-      const gf=window._globalFilter;
-      if(token==='preset'){ gf.preset='all'; setActive('tj-presets','[data-preset="all"]'); }
-      else if(token==='side'){ gf.side='all'; setActive('tj-side','[data-side="all"]'); }
-      else if(token.indexOf('symbol:')===0){ gf.symbols=gf.symbols.filter(x=>x!==token.slice(7)); }
-      else if(token.indexOf('setup:')===0){ gf.setups=gf.setups.filter(x=>x!==token.slice(6)); }
-      populateFilterMenus(window._lastMetrics||{}); updateChips(); if(typeof loadAllData==='function') loadAllData();
-    };
-    window._clearAllFilters=function(){
-      window._globalFilter={preset:'all',symbols:[],setups:[],side:'all'};
-      setActive('tj-presets','[data-preset="all"]'); setActive('tj-side','[data-side="all"]');
-      populateFilterMenus(window._lastMetrics||{}); updateChips(); if(typeof loadAllData==='function') loadAllData();
-    };
-    function setActive(groupId, sel){ const g=document.getElementById(groupId); if(!g) return; g.querySelectorAll('button').forEach(b=>b.classList.remove('active')); const t=g.querySelector(sel); if(t) t.classList.add('active'); }
-
-    // ── Wire filter bar controls ──
-    function wireControls(){
-      const presets=document.getElementById('tj-presets');
-      if(presets) presets.querySelectorAll('.tj-preset').forEach(btn=> btn.addEventListener('click',()=>{
-        window._globalFilter.preset=btn.dataset.preset;
-        presets.querySelectorAll('.tj-preset').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        if(btn.dataset.preset!=='all'){ const fm=document.getElementById('filter-month'), fy=document.getElementById('filter-year'); if(fm) fm.value='all'; if(fy) fy.value='all'; }
-        updateChips(); if(typeof loadAllData==='function') loadAllData();
-      }));
-      const side=document.getElementById('tj-side');
-      if(side) side.querySelectorAll('.tj-side').forEach(btn=> btn.addEventListener('click',()=>{
-        window._globalFilter.side=btn.dataset.side;
-        side.querySelectorAll('.tj-side').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        updateChips(); if(typeof loadAllData==='function') loadAllData();
-      }));
-      const view=document.getElementById('tj-view');
-      if(view) view.querySelectorAll('.tj-view').forEach(btn=> btn.addEventListener('click',()=>{
-        window._viewMode=btn.dataset.view;
-        view.querySelectorAll('.tj-view').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        applyViewMode();
-      }));
-      const hb=document.getElementById('tj-hidepnl');
-      if(hb) hb.addEventListener('click',()=>{
-        const on=document.body.classList.toggle('tj-hidepnl'); hb.classList.toggle('on',on);
-        hb.innerHTML = on ? '<i class="fa-solid fa-eye-slash"></i> <span>ซ่อน P&L</span>' : '<i class="fa-solid fa-eye"></i> <span>แสดง P&L</span>';
-      });
-    }
-
-    // ── Hook into updateDashboardUI ──
-    function install(){
-      const orig = window.updateDashboardUI;
-      if(typeof orig!=='function'){ setTimeout(install,60); return; }
-      window.updateDashboardUI = function(data){
-        window._lastMetrics = data;
-        orig(data);
-        try{
-          renderAdvancedStats(data);
-          renderAnalytics(data);
-          populateFilterMenus(data);
-          if(window._viewMode==='r') applyViewMode();
-          const pnlEl=document.getElementById('stat-pnl');
-          if(pnlEl && window._viewMode==='money' && !reduceMotion){
-            const tp=Number(data.totalPnl)||0;
-            countUp(pnlEl, tp, v=> (v>=0?'+$':'-$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
-          }
-        }catch(e){ console.error('ext dashboard',e); }
-      };
-    }
-
-    // เมื่อสลับมาแท็บ "วิเคราะห์" ให้วาดกราฟใหม่ (canvas ที่ถูกซ่อนตอนวาดครั้งแรกจะมีขนาด 0)
-    function hookSwitchTab(){
-      const orig = window.switchTab;
-      if(typeof orig!=='function'){ setTimeout(hookSwitchTab,60); return; }
-      window.switchTab = function(id){
-        orig(id);
-        if(id==='analytics' && window._lastMetrics){ setTimeout(()=>{ try{ renderAnalytics(window._lastMetrics); }catch(e){} }, 40); }
-      };
-    }
-
-    // รันทันที (สคริปต์อยู่ท้าย body → DOM พร้อมแล้ว) เพื่อครอบ updateDashboardUI
-    // ก่อน loadAllData() ของ DOMContentLoaded จะจับ reference เดิม
-    wireControls();
-    install();
-    hookSwitchTab();
-  })();
-  </script>
 
 </body>
 </html>
