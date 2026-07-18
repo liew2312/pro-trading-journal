@@ -217,6 +217,12 @@
     .tj-seg input{display:none;}
     .tj-seg input:checked+label{background:var(--profit);color:#fff;border-color:var(--profit);}
     .tj-seg input#fund-withdraw:checked+label{background:var(--ap-warn);border-color:var(--ap-warn);color:#fff;}
+    /* history tabs (เทรด / ฝาก-ถอน) */
+    .tj-histtabs{display:flex;gap:8px;}
+    .tj-histtab{flex:1;padding:9px 8px;border-radius:999px;border:1.5px solid var(--card-border);background:var(--card-bg);color:var(--muted);font-weight:700;font-size:.85rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+    .tj-histtab.active{background:var(--brand);color:#fff;border-color:var(--brand);}
+    .tj-histtab span{font-size:.68rem;background:rgba(0,0,0,.12);padding:1px 7px;border-radius:999px;}
+    .tj-histtab.active span{background:rgba(255,255,255,.25);}
 
     .stat-list-item{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--stat-list-border);}
     .stat-list-item:last-child{border-bottom:none;}
@@ -722,12 +728,20 @@
           </div>
         </div>
 
-        <div id="history-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</div></div>
+          <div class="tj-histtabs mb-3">
+            <button id="tab-btn-trades" class="tj-histtab active" onclick="switchHistoryTab('trades')"><i class="fa-solid fa-chart-line"></i> เทรด <span id="tab-badge-trades">0</span></button>
+            <button id="tab-btn-funding" class="tj-histtab" onclick="switchHistoryTab('funding')"><i class="fa-solid fa-wallet"></i> ฝาก / ถอน <span id="tab-badge-funding">0</span></button>
+          </div>
+        </div>
 
-        <div id="history-summary-footer" class="p-4 border-top d-flex justify-content-between align-items-center" style="background:var(--calendar-header-bg);display:none !important;"></div>
-        <span id="tab-badge-trades" class="d-none">0</span>
-        <span id="tab-badge-funding" class="d-none">0</span>
-        <div id="funding-summary-footer" class="d-none"></div>
+        <div id="history-panel-trades">
+          <div id="history-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</div></div>
+          <div id="history-summary-footer" class="p-4 border-top d-flex justify-content-between align-items-center" style="background:var(--calendar-header-bg);display:none !important;"></div>
+        </div>
+        <div id="history-panel-funding" style="display:none;">
+          <div id="funding-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold">กำลังโหลด...</div></div>
+          <div id="funding-summary-footer" class="p-4 border-top d-flex justify-content-between align-items-center" style="background:var(--calendar-header-bg);display:none !important;"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -773,10 +787,6 @@
             </div>
             <button type="submit" class="btn w-100 py-3 fs-5 fw-bold" id="fundingBtn" style="border-radius:14px;background:var(--profit);color:#fff;">บันทึกการฝากเงิน</button>
           </form>
-          <div class="mt-4">
-            <div class="fw-bold mb-2" style="color:var(--ink);font-size:.95rem;">ประวัติเงินทุน</div>
-            <div id="funding-table-body" class="tj-hist-list" style="padding:0;"><div class="text-center py-4 text-muted fw-bold">กำลังโหลด...</div></div>
-          </div>
         </div>
       </div>
     </div>
@@ -1652,13 +1662,21 @@
     let _activeHistoryTab = 'trades';
 
     function switchHistoryTab(tab) {
-      _activeHistoryTab = 'trades';
-      const tradeFoot = document.getElementById('history-summary-footer');
-      const body = document.getElementById('history-table-body');
-      if (tradeFoot && body && body.children.length > 0 &&
-          !body.innerHTML.includes('ไม่พบ') && !body.innerHTML.includes('กำลังโหลด')) {
-        tradeFoot.style.setProperty('display', 'flex', 'important');
-      }
+      _activeHistoryTab = tab;
+      var tp=document.getElementById('history-panel-trades'), fp=document.getElementById('history-panel-funding');
+      var tb=document.getElementById('tab-btn-trades'), fb=document.getElementById('tab-btn-funding');
+      var chips=document.getElementById('hist-outcome-chips');
+      var tf=document.getElementById('history-summary-footer'), ff=document.getElementById('funding-summary-footer');
+      var tbody=document.getElementById('history-table-body'), fbody=document.getElementById('funding-table-body');
+      if(tp) tp.style.display = tab==='trades' ? '' : 'none';
+      if(fp) fp.style.display = tab==='funding' ? '' : 'none';
+      if(tb) tb.classList.toggle('active', tab==='trades');
+      if(fb) fb.classList.toggle('active', tab==='funding');
+      if(chips) chips.style.display = tab==='trades' ? '' : 'none';
+      var hasT = tbody && tbody.children.length>0 && !tbody.innerHTML.includes('ไม่พบ') && !tbody.innerHTML.includes('กำลังโหลด');
+      var hasF = fbody && fbody.children.length>0 && !fbody.innerHTML.includes('ไม่พบ') && !fbody.innerHTML.includes('กำลังโหลด');
+      if(tf) tf.style.setProperty('display', (tab==='trades' && hasT) ? 'flex' : 'none', 'important');
+      if(ff) ff.style.setProperty('display', (tab==='funding' && hasF) ? 'flex' : 'none', 'important');
     }
     window.setHistFilter = function(mode, el){
       var b = document.getElementById('history-table-body');
@@ -2110,7 +2128,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-07-16-v13';
+    window.APP_BUILD = '2026-07-16-v14';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
