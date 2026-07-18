@@ -453,10 +453,6 @@
             <button class="tj-side" data-side="short">Short</button>
           </div>
           <div class="tj-fdivider"></div>
-          <div class="tj-view-group" id="tj-view">
-            <button class="tj-view active" data-view="money">$</button>
-            <button class="tj-view" data-view="r">R</button>
-          </div>
           <button class="tj-fbtn" id="tj-hidepnl" type="button" title="ซ่อนตัวเลข P&L"><i class="fa-solid fa-eye"></i> <span>แสดง P&L</span></button>
         </div>
         <div class="tj-chip-row" id="tj-active-chips"></div>
@@ -609,11 +605,6 @@
                 <div class="adv-stat-sub" id="adv-mdd-pct">-</div>
               </div>
               <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-wave-square"></i> Sharpe Ratio</div>
-                <div class="adv-stat-value" id="adv-sharpe">-</div>
-                <div class="adv-stat-sub">รายวัน · annualized</div>
-              </div>
-              <div class="adv-stat">
                 <div class="adv-stat-label"><i class="fa-solid fa-scale-unbalanced"></i> Avg Win / Loss</div>
                 <div class="adv-stat-value" id="adv-payoff">-</div>
                 <div class="adv-stat-sub" id="adv-winloss">-</div>
@@ -637,11 +628,6 @@
                 <div class="adv-stat-label"><i class="fa-solid fa-calendar-day"></i> Best / Worst Day</div>
                 <div class="adv-stat-value text-gain" id="adv-bestday">-</div>
                 <div class="adv-stat-sub text-loss" id="adv-worstday">-</div>
-              </div>
-              <div class="adv-stat">
-                <div class="adv-stat-label"><i class="fa-solid fa-bullseye"></i> Capture Rate</div>
-                <div class="adv-stat-value" id="adv-capture">-</div>
-                <div class="adv-stat-sub">R ที่คว้าได้ / MFE</div>
               </div>
             </div>
           </div>
@@ -697,39 +683,12 @@
         <div class="text-muted small">เจาะพฤติกรรมและจุดแข็ง-จุดอ่อนของระบบเทรด · ใช้ตัวกรองด้านบนหน้าหลักร่วมกันได้</div>
       </div>
 
-      <div class="row g-3 mb-4">
-        <div class="col-lg-6">
-          <div class="card card-stat p-4 h-100">
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card card-stat p-4">
             <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-column" style="color:#1E1E24"></i></div><h6 class="title">การกระจายของ R-Multiple</h6></div>
-            <div style="position:relative;height:260px;width:100%;"><canvas id="rDistChart"></canvas></div>
+            <div style="position:relative;height:300px;width:100%;"><canvas id="rDistChart"></canvas></div>
             <div id="rdist-empty" class="tj-empty d-none"><i class="fa-solid fa-chart-column"></i><div>ยังไม่มีข้อมูล R-Multiple</div></div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card card-stat p-4 h-100">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-braille" style="color:#1E1E24"></i></div><h6 class="title">MAE / MFE Scatter (คลิกจุดเพื่อดูไม้)</h6></div>
-            <div style="position:relative;height:260px;width:100%;"><canvas id="scatterChart"></canvas></div>
-            <div id="scatter-empty" class="tj-empty d-none"><i class="fa-solid fa-braille"></i><div>ต้องมีราคา Entry/SL และ MAE/MFE จึงจะคำนวณได้</div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat p-4">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-table-cells" style="color:#1E1E24"></i></div><h6 class="title">Heatmap ผลงานตาม วัน × ชั่วโมง</h6></div>
-            <div class="tj-heatmap-wrap"><div id="wh-heatmap" class="tj-heatmap"></div></div>
-            <div class="tj-heat-legend"><span>ขาดทุน</span><i class="hl hl1"></i><i class="hl hl2"></i><i class="hl hl3"></i><i class="hl hl4"></i><i class="hl hl5"></i><span>กำไร</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat p-4">
-            <div class="section-header"><div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-line" style="color:#1E1E24"></i></div><h6 class="title">Rolling Metrics (ย้อนหลัง 20 ไม้)</h6></div>
-            <div style="position:relative;height:280px;width:100%;"><canvas id="rollingChart"></canvas></div>
-            <div id="rolling-empty" class="tj-empty d-none"><i class="fa-solid fa-chart-line"></i><div>ต้องมีอย่างน้อย 2 ไม้ที่มีค่า R</div></div>
           </div>
         </div>
       </div>
@@ -1388,11 +1347,7 @@
       let largestWin = 0, largestLoss = 0;    // ไม้กำไร/ขาดทุนสูงสุด
       let curWinStreak = 0, curLossStreak = 0, longestWinStreak = 0, longestLossStreak = 0;
       let holdSum = 0, holdCount = 0;         // เวลาถือครองเฉลี่ย (นาที)
-      let captureSum = 0, captureCount = 0;   // capture rate (realized R ÷ MFE-R)
       const rBuckets = { "≤-2R":0, "-2..-1R":0, "-1..0R":0, "0..1R":0, "1..2R":0, "2..3R":0, ">3R":0 };
-      const whMatrix = Array.from({length:7}, () => Array.from({length:24}, () => ({ pnl:0, count:0 })));
-      const scatterPts = [];                  // {maeR, mfeR, r, pnl, symbol, ...} สำหรับ MAE/MFE scatter
-      const rollingSeq = [];                  // ลำดับ R ของแต่ละไม้ (ตามเวลา) สำหรับ rolling metrics
       const behaviorMap = {};                 // tag/behavior leaderboard: {key:{pnl,trades,wins}}
       const addBehavior = (key, pnlv) => {
         if (!key) return;
@@ -1538,7 +1493,6 @@
 
           // R distribution
           if (!isNaN(rVal)) {
-            rollingSeq.push(rVal);
             if      (rVal <= -2) rBuckets["≤-2R"]++;
             else if (rVal <  -1) rBuckets["-2..-1R"]++;
             else if (rVal <   0) rBuckets["-1..0R"]++;
@@ -1547,39 +1501,6 @@
             else if (rVal <=  3) rBuckets["2..3R"]++;
             else                 rBuckets[">3R"]++;
           }
-
-          // weekday × hour (ใช้ชั่วโมงจาก entry_time ถ้ามี ไม่งั้นใช้ created_at)
-          const wd = rawDate.getDay();
-          let hr = rawDate.getHours();
-          if (/^\d{1,2}:\d{2}/.test(et)) { const h = parseInt(et.split(":")[0], 10); if (h >= 0 && h <= 23) hr = h; }
-          whMatrix[wd][hr].pnl += pnlOrAmount; whMatrix[wd][hr].count++;
-
-          // MAE/MFE (แปลงเป็นหน่วย R โดยอ้างอิงระยะ entry→SL) + capture rate
-          const entP = parseFloat(r.entry_price), slP = parseFloat(r.sl_price);
-          const riskDist = (!isNaN(entP) && !isNaN(slP)) ? Math.abs(entP - slP) : NaN;
-          let maeR = NaN, mfeR = NaN;
-          if (!isNaN(riskDist) && riskDist > 0) {
-            if (!isNaN(maeVal)) maeR = maeVal / riskDist;
-            if (!isNaN(mfeVal)) mfeR = mfeVal / riskDist;
-          }
-          if (!isNaN(mfeR) && mfeR > 0.05 && !isNaN(rVal)) {
-            captureSum += Math.max(0, Math.min(1, rVal / mfeR)); captureCount++;
-          }
-          scatterPts.push({
-            maeR: isNaN(maeR) ? null : +maeR.toFixed(2),
-            mfeR: isNaN(mfeR) ? null : +mfeR.toFixed(2),
-            r: isNaN(rVal) ? null : +rVal.toFixed(2),
-            pnl: +pnlOrAmount.toFixed(2), symbol,
-            setup, session, outcome,
-            date: dateKey,
-            entryPrice: isNaN(entP) ? "" : entP, slPrice: isNaN(slP) ? "" : slP,
-            tpPrice: (r.tp_price != null ? r.tp_price : ""),
-            lots: (r.lots != null ? r.lots : "-"), type,
-            notes: r.notes || "",
-            chartBefore: r.chart_before || "", chartAfter: r.chart_after || "",
-            marketContext: r.market_context || "-", rMult: isNaN(rVal) ? "-" : rVal,
-            violatedRule: r.violated_rule || "No", overtrade: r.overtrade || "-", revenge: r.revenge || "-"
-          });
 
           // behavior / tag leaderboard
           if (setup)   addBehavior("Setup: " + setup, pnlOrAmount);
@@ -1612,16 +1533,6 @@
         if (peakEq > 0) { const p = (dd / peakEq) * 100; if (p > mddPct) mddPct = p; }
       }
 
-      // ── (ใหม่) Sharpe (จากผลตอบแทนรายวัน, annualized ~√252) ──
-      const dayPnls = Object.keys(dailyStatsMap).sort().map(k => dailyStatsMap[k].pnl);
-      let sharpe = 0;
-      if (dayPnls.length > 1) {
-        const mean = dayPnls.reduce((a, b) => a + b, 0) / dayPnls.length;
-        const variance = dayPnls.reduce((a, b) => a + (b - mean) ** 2, 0) / (dayPnls.length - 1);
-        const sd = Math.sqrt(variance);
-        sharpe = sd > 0 ? (mean / sd) * Math.sqrt(252) : 0;
-      }
-
       // ── (ใหม่) best / worst day ──
       let bestDay = { key: "", pnl: -Infinity }, worstDay = { key: "", pnl: Infinity };
       for (const k in dailyStatsMap) {
@@ -1631,17 +1542,6 @@
       if (bestDay.pnl === -Infinity)  bestDay  = { key: "", pnl: 0 };
       if (worstDay.pnl === Infinity)  worstDay = { key: "", pnl: 0 };
 
-      // ── (ใหม่) rolling metrics (trailing window 20 ไม้) ──
-      const rollWin = 20;
-      const rollingLabels = [], rollingWinRate = [], rollingExpR = [];
-      for (let i = 0; i < rollingSeq.length; i++) {
-        const start = Math.max(0, i - rollWin + 1);
-        const slice = rollingSeq.slice(start, i + 1);
-        const w = slice.filter(x => x > 0).length;
-        rollingLabels.push("#" + (i + 1));
-        rollingWinRate.push(+((w / slice.length) * 100).toFixed(1));
-        rollingExpR.push(+(slice.reduce((a, b) => a + b, 0) / slice.length).toFixed(3));
-      }
 
       // ── (ใหม่) behavior / tag leaderboard ──
       const behaviorList = Object.keys(behaviorMap)
@@ -1705,7 +1605,6 @@
         // ── (ใหม่) metric เชิงลึก ──
         maxDrawdownAbs: mddAbs.toFixed(2),
         maxDrawdownPct: mddPct.toFixed(1),
-        sharpe:         sharpe.toFixed(2),
         avgWin:         avgWin.toFixed(2),
         avgLoss:        avgLoss.toFixed(2),
         payoffRatio:    isFinite(payoffRatio) ? payoffRatio.toFixed(2) : "∞",
@@ -1714,17 +1613,11 @@
         longestWinStreak:  longestWinStreak,
         longestLossStreak: longestLossStreak,
         avgHoldMin:     holdCount > 0 ? Math.round(holdSum / holdCount) : null,
-        captureRate:    captureCount > 0 ? ((captureSum / captureCount) * 100).toFixed(0) : null,
         bestDay:        bestDay,
         worstDay:       worstDay,
 
         // ── (ใหม่) ข้อมูลกราฟวิเคราะห์ ──
         rBuckets:       rBuckets,
-        whMatrix:       whMatrix,
-        scatterPts:     scatterPts,
-        rollingLabels:  rollingLabels,
-        rollingWinRate: rollingWinRate,
-        rollingExpR:    rollingExpR,
         behaviorList:   behaviorList
       };
     }
@@ -2755,7 +2648,6 @@
       const mddAbs = Number(d.maxDrawdownAbs)||0;
       set('adv-mdd', mddAbs>0 ? ('-'+moneyPlain(mddAbs)) : '$0.00');
       set('adv-mdd-pct', '-'+(d.maxDrawdownPct||'0.0')+'%');
-      set('adv-sharpe', d.sharpe!=null ? d.sharpe : '-');
       set('adv-payoff', (d.payoffRatio||'0')+'x');
       set('adv-winloss', '+'+moneyPlain(d.avgWin)+' / -'+moneyPlain(d.avgLoss));
       set('adv-streak', (d.longestWinStreak||0)+'W / '+(d.longestLossStreak||0)+'L');
@@ -2765,24 +2657,6 @@
       const bd=d.bestDay||{pnl:0,key:''}, wd=d.worstDay||{pnl:0,key:''};
       set('adv-bestday', (bd.pnl>0?'+':'')+moneyPlain(bd.pnl)+(bd.key?(' · '+fmtDayKey(bd.key)):''));
       set('adv-worstday', (wd.pnl<0?'-':'')+moneyPlain(Math.abs(wd.pnl))+(wd.key?(' · '+fmtDayKey(wd.key)):''));
-      set('adv-capture', d.captureRate!=null ? (d.captureRate+'%') : '-');
-    }
-
-    // ── View mode ($ / R) applied to headline + equity ──
-    function applyViewMode(){
-      const d = window._lastMetrics; if(!d) return;
-      const pnlEl = document.getElementById('stat-pnl');
-      if(window._viewMode==='r'){
-        const sumR = (d.scatterPts||[]).reduce((a,p)=> a + (p.r!=null?p.r:0), 0);
-        if(pnlEl){ pnlEl.textContent = (sumR>=0?'+':'')+sumR.toFixed(2)+'R'; pnlEl.style.color = sumR>=0?'#2F7A4F':'#B93033'; }
-        let cum=0; const rSeries=(d.scatterPts||[]).map(p=>{ cum+=(p.r!=null?p.r:0); return +cum.toFixed(2); });
-        const rLabels=rSeries.map((_,i)=>'#'+(i+1));
-        if(typeof renderEquityChart==='function') renderEquityChart(rLabels, rSeries.map(String));
-      } else {
-        const tp=Number(d.totalPnl)||0;
-        if(pnlEl){ pnlEl.textContent=(tp>=0?'+$':'-$')+Math.abs(tp).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); pnlEl.style.color=tp>=0?'#2F7A4F':'#B93033'; }
-        if(typeof renderEquityChart==='function') renderEquityChart(d.equityLabels, d.equityData);
-      }
     }
 
     // ── Analytics: charts ──
@@ -2801,48 +2675,6 @@
         options:baseOpts({scales:{x:{grid:{display:false},ticks:{color:AXIS,font:{size:10}}},y:{grid:{color:GRID},ticks:{color:AXIS,precision:0}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+' ไม้'}}}})});
     }
 
-    function renderScatter(d){
-      const pts=(d.scatterPts||[]).filter(p=>p.maeR!=null && p.r!=null);
-      const empty=document.getElementById('scatter-empty'), cv=document.getElementById('scatterChart');
-      if(empty) empty.classList.toggle('d-none', pts.length>0); if(cv) cv.style.display= pts.length>0?'':'none';
-      if(!pts.length) return;
-      window._scatterTrades=pts;
-      const data=pts.map(p=>({x:Math.abs(p.maeR), y:p.r}));
-      const colors=pts.map(p=> p.pnl>0?'rgba(47,122,79,.75)':'rgba(185,48,51,.75)');
-      if(window._charts.scatter) window._charts.scatter.destroy();
-      window._charts.scatter=new Chart(cv.getContext('2d'),{type:'scatter',data:{datasets:[{data:data,backgroundColor:colors,pointRadius:5,pointHoverRadius:8}]},
-        options:baseOpts({onClick:(e,els)=>{ if(els&&els.length){ const t=window._scatterTrades[els[0].index]; if(t&&window.showTradeModal) window.showTradeModal(t); } },
-          scales:{x:{title:{display:true,text:'MAE (R) — โดนลาก',color:AXIS},grid:{color:GRID},ticks:{color:AXIS}},y:{title:{display:true,text:'Realized R',color:AXIS},grid:{color:GRID},ticks:{color:AXIS}}},
-          plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>{const t=window._scatterTrades[c.dataIndex]; return [t.symbol+' · '+money(t.pnl), 'R '+t.r+' · MAE '+Math.abs(t.maeR)+'R'];}}}}})});
-    }
-
-    const WD=['อา','จ','อ','พ','พฤ','ศ','ส'];
-    function renderHeatmap(d){
-      const m=d.whMatrix; const host=document.getElementById('wh-heatmap'); if(!host||!m) return;
-      let maxAbs=0; for(let w=0;w<7;w++)for(let h=0;h<24;h++){ const v=Math.abs(m[w][h].pnl); if(v>maxAbs)maxAbs=v; }
-      const col=(pnl,cnt)=>{ if(!cnt) return 'var(--cal-cell-empty)'; if(maxAbs===0) return 'var(--cal-cell-empty)'; const t=Math.min(1,Math.abs(pnl)/maxAbs);
-        if(pnl>0) return 'rgba(47,122,79,'+(0.18+0.72*t).toFixed(2)+')'; if(pnl<0) return 'rgba(185,48,51,'+(0.18+0.72*t).toFixed(2)+')'; return 'var(--cal-cell-empty)'; };
-      let html='<div class="tj-hhead"></div>';
-      for(let h=0;h<24;h++) html+='<div class="tj-hhead">'+h+'</div>';
-      for(let w=0;w<7;w++){ html+='<div class="tj-hlabel">'+WD[w]+'</div>';
-        for(let h=0;h<24;h++){ const c=m[w][h]; const title=WD[w]+' '+h+':00 · '+c.count+' ไม้ · '+money(c.pnl);
-          html+='<div class="tj-hcell" style="background:'+col(c.pnl,c.count)+'" title="'+title+'">'+(c.count||'')+'</div>'; } }
-      host.innerHTML=html;
-    }
-
-    function renderRolling(d){
-      const labels=d.rollingLabels||[], wr=d.rollingWinRate||[], ex=d.rollingExpR||[];
-      const empty=document.getElementById('rolling-empty'), cv=document.getElementById('rollingChart');
-      if(empty) empty.classList.toggle('d-none', labels.length>1); if(cv) cv.style.display= labels.length>1?'':'none';
-      if(labels.length<2) return;
-      if(window._charts.rolling) window._charts.rolling.destroy();
-      window._charts.rolling=new Chart(cv.getContext('2d'),{type:'line',data:{labels:labels,datasets:[
-        {label:'Win Rate %',data:wr,borderColor:'#921C1E',backgroundColor:'rgba(146,28,30,.08)',borderWidth:2,pointRadius:0,tension:.35,yAxisID:'y',fill:true},
-        {label:'Expectancy (R)',data:ex,borderColor:'#2F7A4F',borderWidth:2,pointRadius:0,tension:.35,yAxisID:'y1'}
-      ]},options:baseOpts({interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{usePointStyle:true,boxWidth:9,color:AXIS,font:{family:"'Prompt',sans-serif",weight:'600'}}}},
-        scales:{x:{grid:{display:false},ticks:{color:AXIS,maxTicksLimit:8}},y:{position:'left',grid:{color:GRID},ticks:{color:AXIS},title:{display:true,text:'Win %',color:AXIS}},y1:{position:'right',grid:{display:false},ticks:{color:'#2F7A4F'},title:{display:true,text:'Exp R',color:'#2F7A4F'}}}})});
-    }
-
     function renderTagBoards(d){
       const list=d.behaviorList||[];
       const best=list.filter(x=>x.pnl>0).slice(0,6);
@@ -2853,7 +2685,7 @@
       if(we) we.innerHTML = worst.length? worst.map(row).join('') : '<div class="text-muted small text-center py-3 fw-bold">ไม่มีพฤติกรรมขาดทุนเด่น 👍</div>';
     }
 
-    function renderAnalytics(d){ try{ renderRDist(d); renderScatter(d); renderHeatmap(d); renderRolling(d); renderTagBoards(d); }catch(e){ console.error('analytics render',e); } }
+    function renderAnalytics(d){ try{ renderRDist(d); renderTagBoards(d); }catch(e){ console.error('analytics render',e); } }
 
     // ── Filter menus (symbol / setup) ──
     function populateFilterMenus(d){
@@ -2920,12 +2752,6 @@
         side.querySelectorAll('.tj-side').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
         updateChips(); if(typeof loadAllData==='function') loadAllData();
       }));
-      const view=document.getElementById('tj-view');
-      if(view) view.querySelectorAll('.tj-view').forEach(btn=> btn.addEventListener('click',()=>{
-        window._viewMode=btn.dataset.view;
-        view.querySelectorAll('.tj-view').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
-        applyViewMode();
-      }));
       const hb=document.getElementById('tj-hidepnl');
       if(hb) hb.addEventListener('click',()=>{
         const on=document.body.classList.toggle('tj-hidepnl'); hb.classList.toggle('on',on);
@@ -2944,9 +2770,8 @@
           renderAdvancedStats(data);
           renderAnalytics(data);
           populateFilterMenus(data);
-          if(window._viewMode==='r') applyViewMode();
           const pnlEl=document.getElementById('stat-pnl');
-          if(pnlEl && window._viewMode==='money' && !reduceMotion){
+          if(pnlEl && !reduceMotion){
             const tp=Number(data.totalPnl)||0;
             countUp(pnlEl, tp, v=> (v>=0?'+$':'-$')+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}));
           }
