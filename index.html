@@ -834,6 +834,24 @@
             <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:0.85rem;"></i>
           </div>
           <hr class="text-muted opacity-25">
+          <!-- ── ข้อมูล ── -->
+          <div class="text-start text-muted fw-bold mb-2" style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;">ข้อมูล</div>
+          <div class="d-flex align-items-center gap-3 px-2 py-3" style="cursor:pointer;border-radius:14px;transition:background .2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="exportDataCSV()">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--metric-mfe-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-file-export" style="color:var(--profit);"></i></div>
+            <div style="text-align:left;flex:1;"><div style="font-size:.9rem;font-weight:700;color:var(--section-title);">สำรอง / Export CSV</div><div style="font-size:.75rem;color:var(--metric-label-color);">ดาวน์โหลดข้อมูลทั้งหมดเป็น .csv</div></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:.85rem;"></i>
+          </div>
+          <div class="d-flex align-items-center gap-3 px-2 py-3" style="cursor:pointer;border-radius:14px;transition:background .2s;" onmouseenter="this.style.background='rgba(19,19,23,0.07)'" onmouseleave="this.style.background=''" onclick="importData()">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--metric-r-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-file-import" style="color:var(--ink);"></i></div>
+            <div style="text-align:left;flex:1;"><div style="font-size:.9rem;font-weight:700;color:var(--section-title);">นำเข้าข้อมูล</div><div style="font-size:.75rem;color:var(--metric-label-color);">อัปโหลดไฟล์ .csv ที่สำรองไว้</div></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:.85rem;"></i>
+          </div>
+          <div class="d-flex align-items-center gap-3 px-2 py-3 mb-2" style="cursor:pointer;border-radius:14px;transition:background .2s;" onmouseenter="this.style.background='rgba(185,48,51,0.08)'" onmouseleave="this.style.background=''" onclick="clearAllData()">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--metric-mae-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-trash-can" style="color:var(--loss);"></i></div>
+            <div style="text-align:left;flex:1;"><div style="font-size:.9rem;font-weight:700;color:var(--loss);">ล้างข้อมูลทั้งหมด</div><div style="font-size:.75rem;color:var(--metric-label-color);">ลบประวัติการเทรดถาวร</div></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:.85rem;"></i>
+          </div>
+          <hr class="text-muted opacity-25">
           <button class="btn btn-outline-danger w-100 fw-bold py-2 mt-2" onclick="_signOut()">
             <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> ออกจากระบบ (Logout)
           </button>
@@ -1054,6 +1072,65 @@
       }
       return all;
     }
+
+    /* ---------- Backup / Import / Clear (Settings > ข้อมูล) ---------- */
+    async function exportDataCSV(){
+      try{
+        var rows = await fetchAllRows();
+        if(!rows.length){ alert('ยังไม่มีข้อมูลให้สำรอง'); return; }
+        var cols = Object.keys(rows[0]);
+        var esc = function(v){ if(v===null||v===undefined) return ''; var s=String(v).replace(/"/g,'""'); return /[",\n\r]/.test(s)?'"'+s+'"':s; };
+        var lines = [cols.join(',')];
+        rows.forEach(function(r){ lines.push(cols.map(function(c){ return esc(r[c]); }).join(',')); });
+        var blob = new Blob(["﻿"+lines.join('\r\n')], {type:'text/csv;charset=utf-8;'});
+        var url = URL.createObjectURL(blob); var a=document.createElement('a'); var d=new Date();
+        var pad = function(n){ return (n<10?'0':'')+n; };
+        a.href=url; a.download='trading-journal-backup-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.csv';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+      }catch(e){ alert('สำรองข้อมูลไม่สำเร็จ: '+(e.message||e)); }
+    }
+    function _parseCSV(text){
+      text=text.replace(/^﻿/,''); var rows=[],cur=[],field='',inQ=false;
+      for(var i=0;i<text.length;i++){ var c=text[i];
+        if(inQ){ if(c==='"'){ if(text[i+1]==='"'){ field+='"'; i++; } else inQ=false; } else field+=c; }
+        else { if(c==='"') inQ=true; else if(c===','){ cur.push(field); field=''; } else if(c==='\n'){ cur.push(field); field=''; rows.push(cur); cur=[]; } else if(c==='\r'){} else field+=c; } }
+      if(field!==''||cur.length){ cur.push(field); rows.push(cur); }
+      if(rows.length<2) return [];
+      var header=rows[0], out=[];
+      for(var j=1;j<rows.length;j++){ if(rows[j].length===1&&rows[j][0]==='') continue; var o={}; header.forEach(function(h,k){ o[h]=rows[j][k]!==undefined?rows[j][k]:''; }); out.push(o); }
+      return out;
+    }
+    async function importData(){
+      var inp=document.createElement('input'); inp.type='file'; inp.accept='.csv,text/csv';
+      inp.onchange=async function(){
+        var file=inp.files&&inp.files[0]; if(!file) return;
+        try{
+          var text=await file.text(); var records=_parseCSV(text);
+          if(!records.length){ alert('ไม่พบข้อมูลในไฟล์ CSV'); return; }
+          if(!confirm('นำเข้า '+records.length+' รายการเข้าสู่พอร์ต? (ข้อมูลเดิมจะยังอยู่)')) return;
+          var numCols=['lots','pnl','mae','mfe','entry_price','sl_price','tp_price','r_mult'];
+          var clean=records.map(function(r){ var o={}; Object.keys(r).forEach(function(k){ if(k!=='id'&&k!=='created_at') o[k]=r[k]; });
+            numCols.forEach(function(k){ if(o[k]===''||o[k]===undefined) o[k]=null; else { var n=parseFloat(o[k]); o[k]=isNaN(n)?null:n; } });
+            o.user_id=window._currentUserId||o.user_id||null; return o; });
+          var res=await sb.from(TABLE_NAME).insert(clean);
+          if(res.error) throw new Error(res.error.message);
+          alert('นำเข้าสำเร็จ '+clean.length+' รายการ'); location.reload();
+        }catch(e){ alert('นำเข้าไม่สำเร็จ: '+(e.message||e)); }
+      };
+      inp.click();
+    }
+    async function clearAllData(){
+      if(!confirm('⚠️ ลบข้อมูลการเทรดทั้งหมดถาวร? การกระทำนี้ย้อนกลับไม่ได้')) return;
+      if(!confirm('ยืนยันอีกครั้ง — ต้องการลบข้อมูลทั้งหมดจริงหรือไม่?')) return;
+      try{
+        var q=sb.from(TABLE_NAME).delete();
+        if(window._currentUserId) q=q.eq('user_id', window._currentUserId); else q=q.not('id','is',null);
+        var res=await q; if(res.error) throw new Error(res.error.message);
+        alert('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว'); location.reload();
+      }catch(e){ alert('ลบไม่สำเร็จ: '+(e.message||e)); }
+    }
+    window.exportDataCSV=exportDataCSV; window.importData=importData; window.clearAllData=clearAllData;
 
     /* ---------- getDashboardMetrics ---------- */
     async function getDashboardMetrics(filterMonth, filterYear) {
@@ -2128,7 +2205,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-07-16-v14';
+    window.APP_BUILD = '2026-07-16-v15';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
