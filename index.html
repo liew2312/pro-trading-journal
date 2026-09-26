@@ -528,7 +528,20 @@
     .tj-chart-box{height:max(420px,calc(100vh - 360px));background:var(--card-bg);position:relative;}
     @media(max-width:600px){.tj-chart-box{height:62vh;}}
     .tj-chart-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.85rem;text-align:center;padding:20px;}
-    .tj-chart-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    .tj-chart-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    @media(max-width:1100px){.tj-chart-actions{grid-template-columns:repeat(2,1fr);}}
+    .tj-cap-btn.full i{background:var(--ink);color:var(--canvas);}
+    /* Fullscreen chart */
+    .tj-fs-bar{display:none;}
+    body.tj-chart-full{overflow:hidden!important;}
+    body.tj-chart-full .page-section{animation:none!important;transform:none!important;}
+    body.tj-chart-full .tj-chart-box{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;z-index:5000;border-radius:0;background:var(--card-bg);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
+    body.tj-chart-full .tj-fs-bar{display:flex;position:absolute;right:calc(10px + env(safe-area-inset-right));bottom:calc(64px + env(safe-area-inset-bottom));gap:6px;z-index:2;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 20px);transition:opacity .2s;}
+    body.tj-chart-full .tj-fs-bar.hide{opacity:0;pointer-events:none;}
+    .tj-fs-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);border-radius:10px;padding:8px 11px;font-size:.78rem;font-weight:700;font-family:inherit;cursor:pointer;box-shadow:var(--shadow-md);opacity:.92;}
+    .tj-fs-btn:hover{opacity:1;}
+    .tj-fs-btn.close{background:var(--ink);color:var(--canvas);border-color:var(--ink);}
+    .tj-fs-btn:disabled{opacity:.5;}
     @media(max-width:700px){.tj-chart-actions{grid-template-columns:1fr;}}
     .tj-cap-btn{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--border);background:var(--card-bg);border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--ink);font-family:inherit;}
     .tj-cap-btn i{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -879,14 +892,24 @@
             <button data-tf="5">5m</button><button data-tf="15" class="active">15m</button><button data-tf="60">1H</button><button data-tf="240">4H</button><button data-tf="D">1D</button>
           </div>
           <button class="tj-fbtn" id="tj-chart-go"><i class="fa-solid fa-arrow-right"></i> เปิดกราฟ</button>
+          <button class="tj-fbtn" id="tj-chart-fs" title="ขยายกราฟเต็มจอ"><i class="fa-solid fa-expand"></i> เต็มจอ</button>
         </div>
         <div class="tj-chart-chips" id="tj-chart-chips"></div>
       </div>
       <div class="card card-stat p-0 mb-3 overflow-hidden">
-        <div id="tj-chart-box" class="tj-chart-box"><div id="tj-tv" style="height:100%;width:100%;"></div></div>
+        <div id="tj-chart-box" class="tj-chart-box"><div id="tj-tv" style="height:100%;width:100%;"></div>
+          <div class="tj-fs-bar" id="tj-fs-bar">
+            <button type="button" class="tj-fs-btn cap" data-slot="fileBefore" title="จับภาพลง Before"><i class="fa-solid fa-camera"></i><span>Before</span></button>
+            <button type="button" class="tj-fs-btn cap" data-slot="fileAfter" title="จับภาพลง After"><i class="fa-solid fa-camera"></i><span>After</span></button>
+            <button type="button" class="tj-fs-btn" id="tj-fs-rotate" title="หมุนจอ"><i class="fa-solid fa-rotate"></i></button>
+            <button type="button" class="tj-fs-btn" id="tj-fs-hide" title="ซ่อนปุ่ม 6 วินาที (เพื่อแคปหน้าจอ)"><i class="fa-regular fa-eye-slash"></i><span>ซ่อนปุ่ม</span></button>
+            <button type="button" class="tj-fs-btn close" id="tj-fs-close" title="ออกจากเต็มจอ"><i class="fa-solid fa-compress"></i></button>
+          </div>
+        </div>
       </div>
       <div class="card card-stat p-3 mb-5">
         <div class="tj-chart-actions">
+          <button class="tj-cap-btn full" id="tj-chart-fs2"><i class="fa-solid fa-expand"></i><span><b>ขยายกราฟเต็มจอ</b><small>ดูชัด ๆ / แคปหน้าจอได้เต็มภาพ</small></span></button>
           <button class="tj-cap-btn before" data-slot="fileBefore"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → Before</b><small>ภาพก่อนเข้าเทรด</small></span></button>
           <button class="tj-cap-btn after" data-slot="fileAfter"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → After</b><small>ภาพหลังปิดออเดอร์</small></span></button>
           <button class="tj-cap-btn go" id="tj-chart-journal"><i class="fa-solid fa-pen-to-square"></i><span><b>บันทึกเทรดจากกราฟนี้</b><small>ใส่ Symbol + ภาพให้อัตโนมัติ</small></span></button>
@@ -2826,7 +2849,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v17';
+    window.APP_BUILD = '2026-09-26-v18';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3541,6 +3564,7 @@
     async function capture(slot, btn){
       if(!canCapture){ toast('อุปกรณ์นี้จับภาพหน้าจอจากแอปไม่ได้ — เลือกภาพจากเครื่องแทน หรือใช้ปุ่มกล้อง 📷 ของ TradingView', 4200); pickFile(slot); return; }
       const box = $('tj-chart-box');
+      const fsBar = $('tj-fs-bar');
       let stream;
       try{
         if(btn) btn.disabled = true;
@@ -3549,8 +3573,9 @@
       try{
         const track = stream.getVideoTracks()[0];
         const video = document.createElement('video'); video.muted=true; video.playsInline=true; video.srcObject=stream;
+        if(fsBar) fsBar.classList.add('hide');
         await video.play();
-        await new Promise(r=>setTimeout(r, 350));   // รอให้หน้าต่างเลือกแท็บปิด + ได้เฟรมล่าสุด
+        await new Promise(r=>setTimeout(r, 450));   // รอให้หน้าต่างเลือกแท็บปิด + ได้เฟรมล่าสุด
         const vw = video.videoWidth, vh = video.videoHeight;
         const settings = track.getSettings ? track.getSettings() : {};
         const sameTab = settings.displaySurface ? settings.displaySurface==='browser' : true;
@@ -3574,7 +3599,7 @@
       }catch(e){
         try{ stream.getTracks().forEach(t=>t.stop()); }catch(_){}
         toast('จับภาพไม่สำเร็จ: '+(e.message||e));
-      }finally{ if(btn) btn.disabled=false; }
+      }finally{ if(btn) btn.disabled=false; if(fsBar) fsBar.classList.remove('hide'); }
     }
 
     function goJournal(){
@@ -3622,6 +3647,53 @@
     $('tj-chart-go') && $('tj-chart-go').addEventListener('click',()=>renderTV(true));
     document.querySelectorAll('.tj-cap-btn[data-slot]').forEach(b=>b.addEventListener('click',()=>capture(b.dataset.slot, b)));
     $('tj-chart-journal') && $('tj-chart-journal').addEventListener('click', goJournal);
+
+    // ── ขยายกราฟเต็มจอ ─────────────────────────────────────
+    let hideTimer = null;
+    function isFull(){ return document.body.classList.contains('tj-chart-full'); }
+    async function enterFull(){
+      if(isFull()) return;
+      if(!$('tj-tv') || !$('tj-tv').childElementCount) renderTV();
+      document.body.classList.add('tj-chart-full');
+      const box = $('tj-chart-box');
+      try{
+        const req = box.requestFullscreen || box.webkitRequestFullscreen;
+        if(req) await req.call(box, { navigationUI:'hide' });
+      }catch(e){ /* iPhone ไม่รองรับ fullscreen ของ element — ใช้โหมดเต็มหน้าต่างแทน */ }
+      const rot = $('tj-fs-rotate');
+      if(rot) rot.style.display = (screen.orientation && screen.orientation.lock && document.fullscreenElement) ? '' : 'none';
+      try{ history.pushState({tjChartFull:1}, ''); }catch(e){}
+    }
+    function exitFull(fromPop){
+      if(!isFull()) return;
+      document.body.classList.remove('tj-chart-full');
+      clearTimeout(hideTimer); const bar=$('tj-fs-bar'); if(bar) bar.classList.remove('hide');
+      try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
+      const fe = document.fullscreenElement || document.webkitFullscreenElement;
+      if(fe){ try{ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }catch(e){} }
+      if(!fromPop){ try{ if(history.state && history.state.tjChartFull) history.back(); }catch(e){} }
+    }
+    $('tj-chart-fs') && $('tj-chart-fs').addEventListener('click', enterFull);
+    $('tj-chart-fs2') && $('tj-chart-fs2').addEventListener('click', enterFull);
+    $('tj-fs-close') && $('tj-fs-close').addEventListener('click', ()=>exitFull(false));
+    $('tj-fs-hide') && $('tj-fs-hide').addEventListener('click', ()=>{
+      const bar=$('tj-fs-bar'); bar.classList.add('hide'); clearTimeout(hideTimer);
+      hideTimer = setTimeout(()=>bar.classList.remove('hide'), 6000);
+    });
+    let landscape = false;
+    $('tj-fs-rotate') && $('tj-fs-rotate').addEventListener('click', async ()=>{
+      try{ landscape = !landscape; await screen.orientation.lock(landscape ? 'landscape' : 'portrait'); }
+      catch(e){ landscape = false; toast('อุปกรณ์นี้หมุนจออัตโนมัติไม่ได้ — หมุนเครื่องเองได้เลย'); }
+    });
+    document.querySelectorAll('.tj-fs-btn.cap').forEach(b=>{
+      if(!canCapture){ b.style.display='none'; return; }
+      b.addEventListener('click',()=>capture(b.dataset.slot, b));
+    });
+    const onFsChange = ()=>{ if(!(document.fullscreenElement || document.webkitFullscreenElement) && isFull()) exitFull(false); };
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    window.addEventListener('popstate', ()=>{ if(isFull()) exitFull(true); });
+    document.addEventListener('keydown', e=>{ if(e.key==='Escape' && isFull()) exitFull(false); });
     if(!canCapture){ document.querySelectorAll('.tj-cap-btn[data-slot] b').forEach(b=>{ b.textContent = b.textContent.replace('จับภาพ','แนบภาพ'); }); }
 
     function hook(name, after){
@@ -3629,7 +3701,7 @@
       if(typeof orig!=='function'){ setTimeout(()=>hook(name,after),60); return; }
       window[name] = function(){ const r = orig.apply(this, arguments); try{ after.apply(this, arguments); }catch(e){ console.error(e); } return r; };
     }
-    hook('switchTab', id => { if(id==='chart'){ buildChips(); renderTV(); renderShots(); } if(id==='add-trade') renderShots(); });
+    hook('switchTab', id => { if(id!=='chart' && document.body.classList.contains('tj-chart-full')) document.body.classList.remove('tj-chart-full'); if(id==='chart'){ buildChips(); renderTV(); renderShots(); } if(id==='add-trade') renderShots(); });
     hook('toggleDarkMode', () => { const pg=document.querySelector('.page-section.active'); if(pg && pg.id==='chart') renderTV(); else tvKey=''; });
   })();
   </script>
