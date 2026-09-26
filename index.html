@@ -3179,7 +3179,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v26';
+    window.APP_BUILD = '2026-09-26-v27';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5051,6 +5051,7 @@
           hi = i; break;
         }
       }
+      if(hi<0){ const alt = parseByPattern(table, offsetH); if(alt.length) return alt; }
       if(hi<0) throw new Error('ไม่พบตาราง Positions — ใช้ไฟล์ Report จาก MT5 (History → คลิกขวา → Report → HTML) หรือ CSV ที่มีหัวคอลัมน์ Time, Position, Symbol, Type, Volume, Price, S / L, T / P, Profit');
       const out = [];
       for(let i=hi+1;i<table.length;i++){
@@ -5064,6 +5065,35 @@
         const pnl = (num(r[idx.profit])||0) + (idx.com>=0 ? (num(r[idx.com])||0) : 0) + (idx.swap>=0 ? (num(r[idx.swap])||0) : 0);
         out.push({ pos: r[idx.pos]||'', symbol: normSym(r[idx.sym]).replace(/^([A-Z]{6}).*$/, (m0,a)=> /^(XAU|XAG|EUR|GBP|USD|AUD|NZD|CAD|CHF|JPY)/.test(a) ? a : m0),
           type: type==='buy'?'Buy':'Sell', lots, entry, exit, sl: sl>0?sl:null, tp: tp>0?tp:null, open, close, pnl: +pnl.toFixed(2) });
+      }
+      return out;
+    }
+    // สำรอง: อ่านจากรูปแบบข้อมูล (ใช้ได้ทุกภาษาของ MT5 เช่นเมนูภาษาไทย)
+    // แถว Position = [เวลาเปิด, เลขที่, Symbol, Type, Volume, ราคาเปิด, S/L, T/P, เวลาปิด, ราคาปิด, Commission, Swap, Profit]
+    function parseByPattern(table, offsetH){
+      const isDT = v => /^\d{4}[.\-\/]\d{2}[.\-\/]\d{2}[ T]\d{2}:\d{2}/.test(String(v||'').trim());
+      const typeOf = v => { v = String(v||'').trim().toLowerCase(); if(/^(buy|ซื้อ|compra|kauf|achat)(?![a-z])/.test(v)) return 'Buy'; if(/^(sell|ขาย|venta|verkauf|vente)(?![a-z])/.test(v)) return 'Sell'; return ''; };
+      const out = []; let started = false;
+      for(const r of table){
+        const cells = r.map(x=>String(x||'').trim());
+        const dts = []; cells.forEach((c,i)=>{ if(isDT(c)) dts.push(i); });
+        const nonEmpty = cells.filter(Boolean).length;
+        if(started && nonEmpty <= 2) break;              // หัว section ถัดไป (Orders / Deals)
+        if(dts.length < 2) continue;
+        const i1 = dts[0], i2 = dts[1];
+        const type = typeOf(cells[i1+3]);
+        if(!type || i2 - i1 < 8) continue;
+        const nums = cells.slice(i2+1).map(num).filter(v=>isFinite(v));
+        if(nums.length < 2) continue;
+        const open = parseMtTime(cells[i1], offsetH), close = parseMtTime(cells[i2], offsetH);
+        const entry = num(cells[i1+5]), exit = num(cells[i2+1]), lots = num(cells[i1+4]);
+        const sl = num(cells[i1+6]), tp = num(cells[i1+7]);
+        const tail = cells.slice(i2+2).map(num).filter(v=>isFinite(v));   // commission, swap, profit
+        const pnl = tail.reduce((a,b)=>a+b,0);
+        if(!open || !isFinite(entry) || !isFinite(lots)) continue;
+        started = true;
+        out.push({ pos: cells[i1+1]||'', symbol: normSym(cells[i1+2]).replace(/^([A-Z]{6}).*$/, (m0,a)=> /^(XAU|XAG|EUR|GBP|USD|AUD|NZD|CAD|CHF|JPY)/.test(a) ? a : m0),
+          type, lots, entry, exit, sl: sl>0?sl:null, tp: tp>0?tp:null, open, close, pnl: +pnl.toFixed(2) });
       }
       return out;
     }
