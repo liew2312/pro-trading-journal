@@ -514,6 +514,52 @@
 
     body.tj-hidepnl .tj-cal2-pnl, body.tj-hidepnl .tj-cal2-w .val, body.tj-hidepnl .tj-year-cell .v,
     body.tj-hidepnl .tj-kpi-value, body.tj-hidepnl .tj-kpi-sub, body.tj-hidepnl .tj-ls-row .n.money{filter:blur(7px);user-select:none;}
+
+    /* Chart page */
+    .tj-chart-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+    .tj-chart-sym{flex:1 1 220px;display:flex;align-items:center;gap:8px;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:10px;padding:0 12px;}
+    .tj-chart-sym i{color:var(--muted);font-size:.85rem;}
+    .tj-chart-sym input{border:0;outline:0;background:transparent;color:var(--ink);font-weight:700;font-size:.95rem;padding:9px 0;width:100%;text-transform:uppercase;font-family:inherit;}
+    .tj-chart-sym:focus-within{border-color:var(--brand);}
+    .tj-chart-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+    .tj-chart-chips:empty{display:none;}
+    .tj-chart-chips button{border:1px solid var(--border);background:var(--card-bg);color:var(--muted);font-weight:600;font-size:.74rem;padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit;}
+    .tj-chart-chips button.active{background:var(--ink);color:var(--canvas);border-color:var(--ink);}
+    .tj-chart-box{height:max(420px,calc(100vh - 360px));background:var(--card-bg);position:relative;}
+    @media(max-width:600px){.tj-chart-box{height:62vh;}}
+    .tj-chart-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.85rem;text-align:center;padding:20px;}
+    .tj-chart-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+    @media(max-width:700px){.tj-chart-actions{grid-template-columns:1fr;}}
+    .tj-cap-btn{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--border);background:var(--card-bg);border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--ink);font-family:inherit;}
+    .tj-cap-btn i{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .tj-cap-btn b{display:block;font-size:.88rem;} .tj-cap-btn small{display:block;font-size:.7rem;color:var(--muted);}
+    .tj-cap-btn.before i{background:var(--panel);color:var(--ink);}
+    .tj-cap-btn.after i{background:var(--gain-bg);color:var(--profit);}
+    .tj-cap-btn.go{background:var(--brand);border-color:var(--brand);color:var(--on-brand);}
+    .tj-cap-btn.go i{background:rgba(255,255,255,.18);color:#fff;} .tj-cap-btn.go small{color:rgba(255,255,255,.8);}
+    .tj-cap-btn:hover{border-color:var(--ink);} .tj-cap-btn.go:hover{background:var(--brand-2);}
+    .tj-cap-btn:disabled{opacity:.6;cursor:wait;}
+    .tj-chart-hint{display:flex;gap:10px;align-items:flex-start;margin-top:12px;font-size:.74rem;color:var(--muted);line-height:1.5;}
+    .tj-chart-hint i{margin-top:3px;}
+    .tj-shots{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+    .tj-shots:empty{display:none;}
+    .tj-shot{position:relative;width:180px;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel);}
+    .tj-shot img{width:100%;height:100px;object-fit:cover;display:block;}
+    .tj-shot .cap{font-size:.68rem;font-weight:700;padding:4px 8px;color:var(--ink);display:flex;justify-content:space-between;align-items:center;}
+    .tj-shot button{border:0;background:transparent;color:var(--muted);cursor:pointer;padding:0 2px;}
+    .tj-shot button:hover{color:var(--loss);}
+    .tj-slot-prev:empty{display:none;}
+    .tj-slot-prev{margin-top:10px;}
+    .tj-slot-prev .tj-shot{width:100%;}
+    .tj-slot-prev .tj-shot img{height:auto;max-height:240px;object-fit:contain;background:var(--card-bg);}
+    .tj-modal-shots{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+    .tj-modal-shots:empty{display:none;}
+    @media(max-width:576px){.tj-modal-shots{grid-template-columns:1fr;}}
+    .tj-modal-shots figure{margin:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel);}
+    .tj-modal-shots img{width:100%;display:block;cursor:zoom-in;}
+    .tj-modal-shots figcaption{font-size:.72rem;font-weight:700;padding:6px 10px;color:var(--muted);}
+    .tj-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--canvas);padding:10px 16px;border-radius:12px;font-size:.84rem;font-weight:600;z-index:3000;box-shadow:var(--shadow-md);max-width:calc(100% - 32px);}
+    @media(min-width:992px){.tj-toast{bottom:28px;left:calc(50% + 118px);}}
   </style>
 </head>
 <body>
@@ -528,6 +574,7 @@
     <div class="tj-side-label">เมนู</div>
     <button class="tj-side-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i> ภาพรวม</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i> ปฏิทิน</button>
+    <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i> กราฟ</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i> Performance</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติ</button>
     <div class="tj-side-label">บัญชี</div>
@@ -559,6 +606,7 @@
           </select>
         </div>
         <button class="tj-icon-btn d-lg-none" data-bs-toggle="modal" data-bs-target="#fundingModal" title="ฝาก / ถอน"><i class="fa-solid fa-wallet"></i></button>
+        <button class="tj-icon-btn d-lg-none" data-bs-toggle="modal" data-bs-target="#settingsModal" title="ตั้งค่า"><i class="fa-solid fa-gear"></i></button>
         <button class="tj-icon-btn" onclick="toggleDarkMode()" title="สลับธีม (Light / Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
       </div>
     </div>
@@ -815,6 +863,43 @@
 
     </div>
 
+    <!-- ══════════ CHART PAGE ══════════ -->
+    <div id="chart" class="page-section print-hide">
+      <div class="tj-page-head">
+        <div><h4>กราฟ</h4><div class="sub">ดูกราฟราคาในแอป แล้วจับภาพกราฟแนบลงบันทึกเทรดได้ทันที</div></div>
+      </div>
+      <div class="card card-stat p-3 mb-3">
+        <div class="tj-chart-bar">
+          <div class="tj-chart-sym">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="tj-chart-symbol" list="tj-chart-symlist" value="XAUUSD" autocomplete="off" spellcheck="false" aria-label="Symbol" placeholder="เช่น XAUUSD, OANDA:EURUSD">
+            <datalist id="tj-chart-symlist"></datalist>
+          </div>
+          <div class="tj-segctl" id="tj-chart-tf">
+            <button data-tf="5">5m</button><button data-tf="15" class="active">15m</button><button data-tf="60">1H</button><button data-tf="240">4H</button><button data-tf="D">1D</button>
+          </div>
+          <button class="tj-fbtn" id="tj-chart-go"><i class="fa-solid fa-arrow-right"></i> เปิดกราฟ</button>
+        </div>
+        <div class="tj-chart-chips" id="tj-chart-chips"></div>
+      </div>
+      <div class="card card-stat p-0 mb-3 overflow-hidden">
+        <div id="tj-chart-box" class="tj-chart-box"><div id="tj-tv" style="height:100%;width:100%;"></div></div>
+      </div>
+      <div class="card card-stat p-3 mb-5">
+        <div class="tj-chart-actions">
+          <button class="tj-cap-btn before" data-slot="fileBefore"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → Before</b><small>ภาพก่อนเข้าเทรด</small></span></button>
+          <button class="tj-cap-btn after" data-slot="fileAfter"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → After</b><small>ภาพหลังปิดออเดอร์</small></span></button>
+          <button class="tj-cap-btn go" id="tj-chart-journal"><i class="fa-solid fa-pen-to-square"></i><span><b>บันทึกเทรดจากกราฟนี้</b><small>ใส่ Symbol + ภาพให้อัตโนมัติ</small></span></button>
+        </div>
+        <div class="tj-shots" id="tj-chart-shots"></div>
+        <div class="tj-chart-hint" id="tj-chart-hint">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>กด “จับภาพ” แล้วเลือก <b>แท็บนี้</b> ในหน้าต่างที่เบราว์เซอร์ถาม ระบบจะตัดเฉพาะส่วนกราฟให้ ·
+          บนมือถือ (ที่จับภาพหน้าจอไม่ได้) ให้กดไอคอนกล้อง 📷 บนกราฟ TradingView → <b>คัดลอกลิงก์</b> แล้ววางในช่องลิงก์ของฟอร์มบันทึกเทรด</span>
+        </div>
+      </div>
+    </div>
+
     <!-- ══════════ CALENDAR PAGE ══════════ -->
     <div id="calendar" class="page-section print-hide">
       <div class="tj-page-head">
@@ -926,7 +1011,8 @@
 
     <div id="add-trade" class="page-section print-hide">
       <div class="card card-stat form-card p-4 p-md-5 mx-auto" style="max-width: 650px;">
-        <h4 class="mb-4 text-dark fw-bold text-center"><i class="fa-solid fa-pen-to-square text-primary me-2"></i> บันทึกออเดอร์เทรด</h4>
+        <h4 class="mb-2 text-dark fw-bold text-center"><i class="fa-solid fa-pen-to-square text-primary me-2"></i> บันทึกออเดอร์เทรด</h4>
+        <div class="text-center mb-3"><button type="button" class="tj-fbtn d-inline-flex" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i> เปิดกราฟเพื่อจับภาพ</button></div>
         <hr class="text-muted mb-4 opacity-25">
         <form id="tradeForm" onsubmit="handleFormSubmit(event)">
           
@@ -1075,18 +1161,20 @@
             <label class="form-label text-primary fw-bold mb-3"><i class="fa-solid fa-image me-2"></i> ภาพก่อนเข้าเทรด (Before)</label>
             <input type="url" class="form-control mb-3" name="chartBeforeUrl" placeholder="🌐 วางลิ้งก์ TradingView ที่นี่...">
             <div class="d-flex align-items-center mb-3">
-              <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลดรูปภาพ</span><hr class="flex-grow-1 m-0 opacity-25">
+              <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลด / วางรูป (Ctrl+V)</span><hr class="flex-grow-1 m-0 opacity-25">
             </div>
             <input type="file" class="form-control" id="fileBefore" accept="image/*">
+            <div class="tj-slot-prev" id="prev-fileBefore"></div>
           </div>
           
           <div class="upload-box mb-4">
             <label class="form-label text-success fw-bold mb-3"><i class="fa-solid fa-image me-2"></i> ภาพหลังปิดออเดอร์ (After)</label>
             <input type="url" class="form-control mb-3" name="chartAfterUrl" placeholder="🌐 วางลิ้งก์ TradingView ที่นี่...">
             <div class="d-flex align-items-center mb-3">
-              <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลดรูปภาพ</span><hr class="flex-grow-1 m-0 opacity-25">
+              <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลด / วางรูป (Ctrl+V)</span><hr class="flex-grow-1 m-0 opacity-25">
             </div>
             <input type="file" class="form-control" id="fileAfter" accept="image/*">
+            <div class="tj-slot-prev" id="prev-fileAfter"></div>
           </div>
 
           <div class="mb-5">
@@ -1295,6 +1383,7 @@
             <p id="modalNotes" class="mb-0 text-dark p-4 bg-light border rounded" style="font-size:1rem; line-height: 1.6;">-</p>
           </div>
           
+          <div class="tj-modal-shots" id="tj-modal-shots"></div>
           <div class="d-flex gap-3 flex-column flex-sm-row" id="chartLinksDiv">
             <a href="#" id="modalBtnBefore" target="_blank" class="btn btn-outline-primary w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพก่อนเข้า (Before)</a>
             <a href="#" id="modalBtnAfter" target="_blank" class="btn btn-outline-success w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพหลังปิด (After)</a>
@@ -2596,9 +2685,9 @@
     <div class="tj-bottomnav-inner">
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>ภาพรวม</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i><span>ปฏิทิน</span></a>
+      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i><span>กราฟ</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>Performance</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
-      <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i><span>ตั้งค่า</span></button>
     </div>
   </nav>
   <a class="tj-fab-add print-hide" onclick="switchTab('add-trade')" title="บันทึกออเดอร์" aria-label="บันทึกออเดอร์"><i class="fa-solid fa-plus"></i></a>
@@ -2737,7 +2826,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v16';
+    window.APP_BUILD = '2026-09-26-v17';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3332,6 +3421,216 @@
 
     wireCalendar();
     wirePerf();
+  })();
+  </script>
+
+  <!-- ══════════ v3: Chart page (TradingView) + จับภาพกราฟลงบันทึกเทรด ══════════ -->
+  <script>
+  (function(){
+    const SLOTS = ['fileBefore','fileAfter'];
+    const SLOT_LABEL = { fileBefore:'Before', fileAfter:'After' };
+    window._tjShots = { fileBefore:null, fileAfter:null };
+    const urls = {};
+    const $ = id => document.getElementById(id);
+    const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+    const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    function toast(msg, ms){
+      const old = document.querySelector('.tj-toast'); if(old) old.remove();
+      const t = document.createElement('div'); t.className='tj-toast'; t.textContent=msg; document.body.appendChild(t);
+      setTimeout(()=>t.remove(), ms||2600);
+    }
+
+    // ── ภาพที่แนบ (pending) ────────────────────────────────
+    function slotFile(slot){ const inp=$(slot); if(inp && inp.files && inp.files[0]) return inp.files[0]; return window._tjShots[slot]; }
+    function urlFor(slot, file){ if(!file) return ''; if(urls[slot] && urls[slot].file===file) return urls[slot].url; if(urls[slot]) URL.revokeObjectURL(urls[slot].url); urls[slot]={file, url:URL.createObjectURL(file)}; return urls[slot].url; }
+    function shotCard(slot, file, big){
+      const u = urlFor(slot, file);
+      return `<div class="tj-shot"><img src="${u}" alt="ภาพ ${SLOT_LABEL[slot]}"><div class="cap"><span>${SLOT_LABEL[slot]}${big?'':' · '+Math.round(file.size/1024)+' KB'}</span><button type="button" title="ลบภาพ" onclick="tjClearShot('${slot}')"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+    }
+    function renderShots(){
+      const list = $('tj-chart-shots');
+      if(list) list.innerHTML = SLOTS.map(s=>{ const f=slotFile(s); return f? shotCard(s,f,false):''; }).join('');
+      SLOTS.forEach(s=>{ const p=$('prev-'+s); if(p){ const f=slotFile(s); p.innerHTML = f? shotCard(s,f,true):''; } });
+    }
+    window.tjClearShot = function(slot){ window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value=''; renderShots(); };
+    function setShot(slot, file){ window._tjShots[slot]=file; const inp=$(slot); if(inp) inp.value=''; renderShots(); }
+
+    // getFileBase64: ถ้าไม่ได้เลือกไฟล์เอง ให้ใช้ภาพที่จับจากกราฟ / วางไว้
+    (function hookBase64(){
+      const orig = window.getFileBase64;
+      if(typeof orig!=='function'){ setTimeout(hookBase64,60); return; }
+      window.getFileBase64 = function(id){
+        const inp=$(id);
+        if((!inp || !inp.files || !inp.files.length) && window._tjShots[id]){
+          const f = window._tjShots[id];
+          return new Promise(res=>{ const r=new FileReader(); r.onload=e=>res({name:f.name, mimeType:f.type||'image/png', data:String(e.target.result).split(',')[1]}); r.onerror=()=>res(null); r.readAsDataURL(f); });
+        }
+        return orig(id);
+      };
+    })();
+
+    SLOTS.forEach(s=>{ const inp=$(s); if(inp) inp.addEventListener('change',()=>{ if(inp.files && inp.files.length) window._tjShots[s]=null; renderShots(); }); });
+    const form = $('tradeForm');
+    if(form) form.addEventListener('reset',()=>{ window._tjShots={fileBefore:null,fileAfter:null}; setTimeout(renderShots,0); });
+
+    // วางรูปจากคลิปบอร์ด (Ctrl+V) ในหน้าบันทึกเทรด
+    document.addEventListener('paste', e=>{
+      const page = document.querySelector('.page-section.active');
+      if(!page || page.id!=='add-trade') return;
+      const items = (e.clipboardData && e.clipboardData.items) || [];
+      for(const it of items){
+        if(it.kind==='file' && /^image\//.test(it.type)){
+          const f = it.getAsFile(); if(!f) continue;
+          const slot = !slotFile('fileBefore') ? 'fileBefore' : 'fileAfter';
+          const file = new File([f], 'paste-'+slot+'-'+Date.now()+'.png', {type:f.type||'image/png'});
+          setShot(slot, file); e.preventDefault();
+          toast('วางภาพลงช่อง '+SLOT_LABEL[slot]+' แล้ว');
+          return;
+        }
+      }
+    });
+
+    // ── TradingView widget ─────────────────────────────────
+    let tvLoading = null, tvKey = '';
+    function loadTV(){
+      if(window.TradingView) return Promise.resolve();
+      if(tvLoading) return tvLoading;
+      tvLoading = new Promise((res, rej)=>{ const sc=document.createElement('script'); sc.src='https://s3.tradingview.com/tv.js'; sc.async=true; sc.onload=res; sc.onerror=()=>{ tvLoading=null; rej(new Error('load tv.js')); }; document.head.appendChild(sc); });
+      return tvLoading;
+    }
+    function curSym(){ return String(($('tj-chart-symbol')||{}).value||'XAUUSD').trim().toUpperCase().replace(/\s+/g,'') || 'XAUUSD'; }
+    function curTf(){ const b=document.querySelector('#tj-chart-tf button.active'); return b? b.dataset.tf : '15'; }
+    function isDark(){ return document.documentElement.getAttribute('data-theme')==='dark'; }
+    async function renderTV(force){
+      const box = $('tj-tv'); if(!box) return;
+      const sym = curSym(), tf = curTf(), theme = isDark()?'dark':'light';
+      const key = sym+'|'+tf+'|'+theme;
+      if(!force && key===tvKey && box.childElementCount) return;
+      tvKey = key; store.set('tj_chart_sym', sym); store.set('tj_chart_tf', tf);
+      markChips();
+      box.innerHTML = '<div class="tj-chart-empty"><i class="fa-solid fa-spinner fa-spin"></i><div>กำลังโหลดกราฟ...</div></div>';
+      try{ await loadTV(); }
+      catch(e){ box.innerHTML = '<div class="tj-chart-empty"><i class="fa-solid fa-plug-circle-xmark fs-3"></i><div>โหลดกราฟ TradingView ไม่ได้ · ตรวจสอบอินเทอร์เน็ต แล้วกด “เปิดกราฟ” อีกครั้ง</div></div>'; return; }
+      box.innerHTML = '';
+      let tz = 'Asia/Bangkok'; try{ tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; }catch(e){}
+      new window.TradingView.widget({
+        container_id:'tj-tv', autosize:true, symbol:sym, interval:tf, timezone:tz, theme:theme, style:'1',
+        locale:'th_TH', allow_symbol_change:true, save_image:true, withdateranges:true, hide_side_toolbar:false,
+        enable_publishing:false, details:false
+      });
+    }
+    function markChips(){ const s=curSym(); document.querySelectorAll('#tj-chart-chips button').forEach(b=>b.classList.toggle('active', b.dataset.s===s)); }
+    function buildChips(){
+      const set = new Set(['XAUUSD','EURUSD','GBPUSD','USDJPY','BTCUSD']);
+      try{ (window._allSymbols||new Set()).forEach(x=>{ if(x && x!=='FUNDING') set.add(String(x).toUpperCase()); }); }catch(e){}
+      const arr = Array.from(set).slice(0,12);
+      const host=$('tj-chart-chips'); if(host) host.innerHTML = arr.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+      const dl=$('tj-chart-symlist'); if(dl) dl.innerHTML = arr.map(s=>`<option value="${esc(s)}">`).join('');
+      if(host) host.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ $('tj-chart-symbol').value=b.dataset.s; renderTV(); }));
+      markChips();
+    }
+
+    // ── จับภาพกราฟ (Screen Capture API) ─────────────────────
+    const canCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia);
+    function pickFile(slot){
+      const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+      inp.onchange=()=>{ const f=inp.files&&inp.files[0]; if(f){ setShot(slot, f); toast('แนบภาพ '+SLOT_LABEL[slot]+' แล้ว'); } };
+      inp.click();
+    }
+    async function capture(slot, btn){
+      if(!canCapture){ toast('อุปกรณ์นี้จับภาพหน้าจอจากแอปไม่ได้ — เลือกภาพจากเครื่องแทน หรือใช้ปุ่มกล้อง 📷 ของ TradingView', 4200); pickFile(slot); return; }
+      const box = $('tj-chart-box');
+      let stream;
+      try{
+        if(btn) btn.disabled = true;
+        stream = await navigator.mediaDevices.getDisplayMedia({ video:{ displaySurface:'browser', frameRate:5 }, audio:false, preferCurrentTab:true, selfBrowserSurface:'include', surfaceSwitching:'exclude' });
+      }catch(e){ if(btn) btn.disabled=false; if(e && e.name!=='NotAllowedError') toast('จับภาพไม่สำเร็จ: '+(e.message||e)); return; }
+      try{
+        const track = stream.getVideoTracks()[0];
+        const video = document.createElement('video'); video.muted=true; video.playsInline=true; video.srcObject=stream;
+        await video.play();
+        await new Promise(r=>setTimeout(r, 350));   // รอให้หน้าต่างเลือกแท็บปิด + ได้เฟรมล่าสุด
+        const vw = video.videoWidth, vh = video.videoHeight;
+        const settings = track.getSettings ? track.getSettings() : {};
+        const sameTab = settings.displaySurface ? settings.displaySurface==='browser' : true;
+        const aspectOk = Math.abs(vw/vh - window.innerWidth/window.innerHeight) < 0.06;
+        let sx=0, sy=0, sw=vw, sh=vh;
+        if(sameTab && aspectOk && box){
+          const r = box.getBoundingClientRect(), k = vw / window.innerWidth;
+          sx = Math.max(0, Math.round(r.left*k)); sy = Math.max(0, Math.round(r.top*k));
+          sw = Math.min(vw-sx, Math.round(r.width*k)); sh = Math.min(vh-sy, Math.round(r.height*k));
+          if(sw<50 || sh<50){ sx=0; sy=0; sw=vw; sh=vh; }
+        }
+        const cv = document.createElement('canvas'); cv.width=sw; cv.height=sh;
+        cv.getContext('2d').drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+        stream.getTracks().forEach(t=>t.stop());
+        const blob = await new Promise(r=>cv.toBlob(r,'image/png'));
+        if(!blob) throw new Error('สร้างภาพไม่ได้');
+        const d=new Date(), p=n=>String(n).padStart(2,'0');
+        const name = 'chart-'+SLOT_LABEL[slot].toLowerCase()+'-'+curSym().replace(/[^A-Z0-9]/g,'')+'-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+'.png';
+        setShot(slot, new File([blob], name, {type:'image/png'}));
+        toast('จับภาพกราฟลงช่อง '+SLOT_LABEL[slot]+' แล้ว ✓');
+      }catch(e){
+        try{ stream.getTracks().forEach(t=>t.stop()); }catch(_){}
+        toast('จับภาพไม่สำเร็จ: '+(e.message||e));
+      }finally{ if(btn) btn.disabled=false; }
+    }
+
+    function goJournal(){
+      const f = document.querySelector('#tradeForm [name="symbol"]');
+      if(f){ const s = curSym(); f.value = s.includes(':') ? s.split(':').pop() : s; }
+      switchTab('add-trade'); window.scrollTo({top:0,behavior:'smooth'});
+      const n = SLOTS.filter(s=>slotFile(s)).length;
+      toast(n? 'แนบภาพกราฟ '+n+' ภาพไว้ในฟอร์มแล้ว' : 'ใส่ Symbol ให้แล้ว');
+    }
+
+    // ── แสดงภาพในหน้าต่างรายละเอียดเทรด ─────────────────────
+    function imgSrc(url){
+      if(!url) return '';
+      const m = /tradingview\.com\/x\/([A-Za-z0-9]+)/.exec(url);
+      if(m) return 'https://s3.tradingview.com/snapshots/'+m[1].charAt(0).toLowerCase()+'/'+m[1]+'.png';
+      if(/\.(png|jpe?g|webp|gif)(\?|$)/i.test(url) || /\/storage\/v1\/object\//.test(url)) return url;
+      return '';
+    }
+    (function hookModal(){
+      const orig = window.showTradeModal;
+      if(typeof orig!=='function'){ setTimeout(hookModal,60); return; }
+      window.showTradeModal = function(trade){
+        orig(trade);
+        const host = $('tj-modal-shots'); if(!host) return;
+        host.innerHTML = '';
+        if(!trade || trade.type==='Deposit' || trade.type==='Withdraw') return;
+        [['ก่อนเข้า (Before)', trade.chartBefore], ['หลังปิด (After)', trade.chartAfter]].forEach(([lbl,u])=>{
+          const src = imgSrc(u); if(!src) return;
+          const fig = document.createElement('figure');
+          fig.innerHTML = `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="${esc(lbl)}" loading="lazy"></a><figcaption>${esc(lbl)}</figcaption>`;
+          fig.querySelector('img').addEventListener('error',()=>fig.remove());
+          host.appendChild(fig);
+        });
+      };
+    })();
+
+    // ── wire ───────────────────────────────────────────────
+    const symInp = $('tj-chart-symbol');
+    if(symInp){ symInp.value = store.get('tj_chart_sym','XAUUSD'); symInp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); renderTV(); } }); }
+    const savedTf = store.get('tj_chart_tf','15');
+    document.querySelectorAll('#tj-chart-tf button').forEach(b=>{
+      b.classList.toggle('active', b.dataset.tf===savedTf);
+      b.addEventListener('click',()=>{ document.querySelectorAll('#tj-chart-tf button').forEach(x=>x.classList.toggle('active',x===b)); renderTV(); });
+    });
+    $('tj-chart-go') && $('tj-chart-go').addEventListener('click',()=>renderTV(true));
+    document.querySelectorAll('.tj-cap-btn[data-slot]').forEach(b=>b.addEventListener('click',()=>capture(b.dataset.slot, b)));
+    $('tj-chart-journal') && $('tj-chart-journal').addEventListener('click', goJournal);
+    if(!canCapture){ document.querySelectorAll('.tj-cap-btn[data-slot] b').forEach(b=>{ b.textContent = b.textContent.replace('จับภาพ','แนบภาพ'); }); }
+
+    function hook(name, after){
+      const orig = window[name];
+      if(typeof orig!=='function'){ setTimeout(()=>hook(name,after),60); return; }
+      window[name] = function(){ const r = orig.apply(this, arguments); try{ after.apply(this, arguments); }catch(e){ console.error(e); } return r; };
+    }
+    hook('switchTab', id => { if(id==='chart'){ buildChips(); renderTV(); renderShots(); } if(id==='add-trade') renderShots(); });
+    hook('toggleDarkMode', () => { const pg=document.querySelector('.page-section.active'); if(pg && pg.id==='chart') renderTV(); else tvKey=''; });
   })();
   </script>
 
