@@ -587,6 +587,8 @@
     .tj-modal-shots figure{margin:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel);}
     .tj-modal-shots img{width:100%;display:block;cursor:zoom-in;}
     .tj-modal-shots figcaption{font-size:.72rem;font-weight:700;padding:6px 10px;color:var(--muted);}
+    .tj-del-zone{margin-top:22px;padding-top:16px;border-top:1px dashed var(--border);}
+    .tj-del-hint{font-size:.7rem;color:var(--muted);text-align:center;margin-top:6px;}
     .tj-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--canvas);padding:10px 16px;border-radius:12px;font-size:.84rem;font-weight:600;z-index:3000;box-shadow:var(--shadow-md);max-width:calc(100% - 32px);}
     @media(min-width:992px){.tj-toast{bottom:28px;left:calc(50% + 118px);}}
   </style>
@@ -1439,6 +1441,10 @@
             <a href="#" id="modalBtnBefore" target="_blank" class="btn btn-outline-primary w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพก่อนเข้า (Before)</a>
             <a href="#" id="modalBtnAfter" target="_blank" class="btn btn-outline-success w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพหลังปิด (After)</a>
           </div>
+          <div class="tj-del-zone">
+            <button type="button" class="btn btn-outline-danger w-100 fw-bold py-2" id="tj-del-btn"><i class="fa-solid fa-trash-can me-2"></i> <span>ลบรายการนี้</span></button>
+            <div class="tj-del-hint">ใช้เมื่อบันทึกผิด · ลบแล้วกู้คืนไม่ได้</div>
+          </div>
         </div>
       </div>
     </div>
@@ -2019,6 +2025,7 @@
 
         const pnlNum = parseFloat(r.pnl);
         history.push({
+          id:          r.id,
           date:        formattedDate,
           symbol:      r.symbol || "",
           type:        r.type || "",
@@ -2052,7 +2059,17 @@
     }
 
     /* ---------- export api + เลียนแบบ google.script.run ---------- */
-    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows };
+    /* ---------- deleteTrade: ลบรายการเดียว ---------- */
+    async function deleteTrade(id) {
+      if (id === undefined || id === null || id === "") throw new Error("ไม่พบรหัสรายการ");
+      let q = sb.from(TABLE_NAME).delete().eq("id", id);
+      if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
+      const { error } = await q;
+      if (error) throw new Error(error.message);
+      return true;
+    }
+
+    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade };
 
     // Polyfill: ทำให้โค้ดเดิมที่เรียก google.script.run.xxx ใช้งานได้ทันที
     function makeRunner() {
@@ -2877,7 +2894,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v19';
+    window.APP_BUILD = '2026-09-26-v20';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3673,6 +3690,40 @@
         });
       };
     })();
+
+    // ── ลบรายการเทรด / ฝาก-ถอน ทีละรายการ ─────────────────
+    (function hookDel(){
+      const orig = window.showTradeModal;
+      if(typeof orig!=='function'){ setTimeout(hookDel,60); return; }
+      window.showTradeModal = function(trade){
+        window._tjModalTrade = trade || null;
+        const r = orig.apply(this, arguments);
+        const btn = $('tj-del-btn');
+        if(btn){
+          const isFund = trade && (trade.type==='Deposit' || trade.type==='Withdraw');
+          btn.disabled = !(trade && trade.id!=null);
+          btn.querySelector('span').textContent = isFund ? 'ลบรายการ'+(trade.type==='Deposit'?'ฝาก':'ถอน')+'นี้' : 'ลบออเดอร์นี้';
+        }
+        return r;
+      };
+    })();
+    $('tj-del-btn') && $('tj-del-btn').addEventListener('click', async ()=>{
+      const t = window._tjModalTrade; if(!t || t.id==null) return;
+      const isFund = t.type==='Deposit' || t.type==='Withdraw';
+      const pnl = parseFloat(t.pnl)||0;
+      const label = isFund ? ((t.type==='Deposit'?'ฝากเงิน ':'ถอนเงิน ')+'$'+Math.abs(pnl).toFixed(2))
+                           : ((t.symbol||'-')+' '+(t.type||'')+' '+(pnl>=0?'+':'-')+'$'+Math.abs(pnl).toFixed(2));
+      if(!confirm('ลบรายการนี้ถาวร?\n\n'+label+'\n'+(t.date||'')+'\n\nลบแล้วกู้คืนไม่ได้')) return;
+      const btn = $('tj-del-btn'); const html = btn.innerHTML;
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> กำลังลบ...';
+      try{
+        await window.api.deleteTrade(t.id);
+        const m = bootstrap.Modal.getInstance($('tradeModal')); if(m) m.hide();
+        if(typeof loadAllData==='function') loadAllData();
+        toast('ลบรายการแล้ว');
+      }catch(e){ alert('ลบไม่สำเร็จ: '+(e.message||e)); }
+      finally{ btn.disabled=false; btn.innerHTML = html; }
+    });
 
     // ── wire ───────────────────────────────────────────────
     const symInp = $('tj-chart-symbol');
