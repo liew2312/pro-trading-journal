@@ -821,7 +821,18 @@
     .tj-accents button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border);background:var(--card-bg);color:var(--ink);border-radius:99px;padding:5px 12px 5px 6px;font-size:.78rem;font-weight:600;font-family:inherit;}
     .tj-accents button span{width:18px;height:18px;border-radius:50%;display:inline-block;}
     .tj-accents button.active{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-tint);}
-  </style>
+  
+    /* ══════════ v32: รูปโปรไฟล์ ══════════ */
+    .tj-av{position:relative;width:56px;height:56px;border-radius:50%;flex-shrink:0;border:0;padding:0;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 0 0 3px var(--card-bg),0 0 0 5px var(--brand-tint);}
+    .tj-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;}
+    .tj-av .ed{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--brand);color:var(--on-brand);font-size:.62rem;display:flex;align-items:center;justify-content:center;border:2px solid var(--canvas);}
+    .tj-av.busy img,.tj-av.busy i.main{opacity:.35;}
+    .tj-av-menu{position:absolute;z-index:3200;min-width:210px;background:var(--card-bg);border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:6px;}
+    .tj-av-menu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:10px 12px;border-radius:10px;font-family:inherit;font-size:.85rem;color:var(--ink);text-align:left;}
+    .tj-av-menu button:hover{background:var(--panel);}
+    .tj-av-menu button i{width:18px;color:var(--brand);text-align:center;}
+    .tj-av-menu button.danger i,.tj-av-menu button.danger{color:var(--loss);}
+</style>
 </head>
 <body>
 
@@ -3349,7 +3360,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v31';
+    window.APP_BUILD = '2026-09-26-v32';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5698,7 +5709,7 @@
       const h = new Date().getHours();
       const g = h<5 ? 'สวัสดีตอนดึก' : (h<12 ? 'สวัสดีตอนเช้า' : (h<17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'));
       const name = String(window._currentUserName || 'Trader').split(/[\s@]/)[0];
-      host.innerHTML = `<div><div class="hi">${g}</div><h3>${esc(name)}</h3><div class="sub">เทรดตามแผน · คุมความเสี่ยง · ทบทวนทุกสัปดาห์</div></div><div class="ico"><i class="fa-solid fa-seedling"></i></div>`;
+      host.innerHTML = `<div><div class="hi">${g}</div><h3>${esc(name)}</h3><div class="sub">เทรดตามแผน · คุมความเสี่ยง · ทบทวนทุกสัปดาห์</div></div>${window.tjAvatarHTML ? window.tjAvatarHTML() : '<div class="ico"><i class="fa-solid fa-seedling"></i></div>'}`;
     }
 
     // ── การ์ดวินัย: คะแนน 30 วัน + วันทำตามกฎติดต่อกัน ──
@@ -5767,5 +5778,91 @@
   })();
   </script>
 
+
+  <!-- ══════════ v32: รูปโปรไฟล์ ══════════ -->
+  <script>
+  (function(){
+    const KEY='tj_avatar';
+    const ls={ get(){ try{ return localStorage.getItem(KEY)||''; }catch(e){ return ''; } }, set(v){ try{ v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY); }catch(e){} } };
+    let client=null;
+    function sb(){ if(client) return client; try{ const c=window.SUPABASE_CONFIG; client=window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_ANON_KEY); }catch(e){} return client; }
+    // ค่า: '' = อัตโนมัติ (รูป Google ถ้ามี) · 'icon' = ไอคอน · URL/dataURL = รูปที่อัปโหลด
+    function current(){ const v=ls.get(); if(v==='icon') return ''; if(v) return v; return window._currentUserPicture||''; }
+    const escA=s=>String(s).replace(/"/g,'&quot;');
+    window.tjAvatarHTML=function(){
+      const src=current();
+      return `<button type="button" class="tj-av" id="tj-av-btn" title="เปลี่ยนรูปโปรไฟล์" aria-label="เปลี่ยนรูปโปรไฟล์">${src?`<img src="${escA(src)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<i class="fa-solid fa-seedling main"></i>'}<span class="ed"><i class="fa-solid fa-camera"></i></span></button>`;
+    };
+    function refresh(){
+      const b=document.getElementById('tj-av-btn');
+      if(b){ const t=document.createElement('div'); t.innerHTML=window.tjAvatarHTML(); b.replaceWith(t.firstElementChild); }
+      const src=current(); const img=document.querySelector('#userProfileArea img');
+      if(img && src) img.src=src;
+    }
+    async function saveRemote(v){
+      try{ const a=sb(); if(a && !/^data:/.test(v)) await a.auth.updateUser({ data:{ tj_avatar:v } }); }catch(e){ console.warn('[avatar] save',e); }
+    }
+    async function loadRemote(){
+      try{ const a=sb(); if(!a) return; const { data }=await a.auth.getUser(); const v=data&&data.user&&data.user.user_metadata&&data.user.user_metadata.tj_avatar;
+        if(typeof v==='string' && v!==ls.get() && !/^data:/.test(ls.get()||'x')){ ls.set(v); refresh(); } }catch(e){}
+    }
+    // ย่อรูปเป็นสี่เหลี่ยมจัตุรัส (crop กลาง)
+    function squareJpeg(file,size){
+      return new Promise((res,rej)=>{
+        const img=new Image(); const url=URL.createObjectURL(file);
+        img.onload=()=>{ const m=Math.min(img.width,img.height); const c=document.createElement('canvas'); c.width=c.height=size;
+          c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,size,size); URL.revokeObjectURL(url);
+          c.toBlob(b=>b?res({blob:b,data:c.toDataURL('image/jpeg',.82)}):rej(new Error('encode')),'image/jpeg',.85); };
+        img.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error('ไฟล์นี้ไม่ใช่รูปภาพ')); };
+        img.src=url;
+      });
+    }
+    async function upload(file){
+      const btn=document.getElementById('tj-av-btn'); if(btn) btn.classList.add('busy');
+      try{
+        const sq=await squareJpeg(file,256);
+        let v='';
+        try{
+          const a=sb(); const { data }=await a.auth.getUser(); const uid=(data&&data.user&&data.user.id)||'me';
+          const path=`avatars/${uid}_${Date.now()}.jpg`; const bucket=window.SUPABASE_CONFIG.STORAGE_BUCKET;
+          const { error }=await a.storage.from(bucket).upload(path,sq.blob,{ contentType:'image/jpeg', upsert:true });
+          if(error) throw error;
+          v=a.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+        }catch(e){ console.warn('[avatar] upload',e); }
+        if(v){ ls.set(v); await saveRemote(v); }
+        else { const small=await squareJpeg(file,128); ls.set(small.data); toast('บันทึกรูปไว้ในเครื่องนี้เท่านั้น (อัปโหลดขึ้นบัญชีไม่สำเร็จ)'); }
+        refresh();
+      }catch(e){ toast(e.message||'เปลี่ยนรูปไม่สำเร็จ'); }
+      finally{ const b=document.getElementById('tj-av-btn'); if(b) b.classList.remove('busy'); }
+    }
+    function toast(m){ const o=document.querySelector('.tj-toast'); if(o) o.remove(); const t=document.createElement('div'); t.className='tj-toast'; t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),3500); }
+    function pick(){ const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.onchange=()=>{ if(i.files[0]) upload(i.files[0]); }; i.click(); }
+    let menu=null;
+    function closeMenu(){ if(menu){ menu.remove(); menu=null; } }
+    function openMenu(anchor){
+      closeMenu();
+      const v=ls.get(), g=window._currentUserPicture;
+      const items=[['fa-solid fa-image','อัปโหลดรูปใหม่',pick]];
+      if(g && (v && v!==g)) items.push(['fa-brands fa-google','ใช้รูปจากบัญชี Google',()=>{ ls.set(''); saveRemote(''); refresh(); }]);
+      if(current()) items.push(['fa-solid fa-seedling','ใช้ไอคอนแทนรูป',()=>{ ls.set('icon'); saveRemote('icon'); refresh(); }],null);
+      menu=document.createElement('div'); menu.className='tj-av-menu';
+      menu.innerHTML=items.filter(Boolean).map((it,i)=>`<button type="button" data-i="${i}"><i class="${it[0]}"></i>${it[1]}</button>`).join('');
+      const list=items.filter(Boolean);
+      menu.querySelectorAll('button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); closeMenu(); list[+b.dataset.i][2](); });
+      document.body.appendChild(menu);
+      const r=anchor.getBoundingClientRect();
+      menu.style.top=(r.bottom+window.scrollY+8)+'px';
+      menu.style.left=Math.max(8, Math.min(r.right+window.scrollX-menu.offsetWidth, window.innerWidth-menu.offsetWidth-8))+'px';
+    }
+    document.addEventListener('click',e=>{
+      const b=e.target.closest('#tj-av-btn');
+      if(b){ e.preventDefault(); menu?closeMenu():openMenu(b); return; }
+      if(menu && !e.target.closest('.tj-av-menu')) closeMenu();
+    });
+    window.addEventListener('resize',closeMenu);
+    refresh(); setTimeout(()=>{ refresh(); loadRemote(); },1500);
+    document.addEventListener('tj:rows',()=>setTimeout(refresh,50));
+  })();
+  </script>
 </body>
 </html>
