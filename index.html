@@ -926,6 +926,7 @@
     #tj-hist-head .tj-side.tj-chip,#tj-hist-head .tj-side.tj-histtab{flex:none;border:0;padding:5px 11px;border-radius:8px;font-size:.78rem;background:transparent;color:var(--muted);}
     #tj-hist-head .tj-side.active{background:var(--brand)!important;color:var(--on-brand)!important;}
     .tj-hist-bar{padding:8px 10px!important;margin-bottom:10px!important;}
+    .tj-hist-head.stuck{box-shadow:0 10px 14px -12px rgba(0,0,0,.18);}
     .tj-hist-head{position:sticky;top:58px;z-index:30;padding:6px 0 2px;margin-top:-6px;background:var(--canvas);}
     .tj-hist-head .tj-filterbar{background:var(--card-bg)!important;backdrop-filter:none!important;}
     .tj-hist-head .tj-filterbar{position:static;}
@@ -939,6 +940,13 @@
     #tj-hist-head .tj-hist-sum b{font-size:.92rem;} #tj-hist-head .tj-hist-sum .it.end b{font-size:1.02rem;}
     #history .tj-hist-list{padding:4px 0 14px!important;}
     @media(max-width:600px){ #tj-hist-head .tj-hist-sum{margin:8px 0 0!important;} .tj-hist-head{top:56px;} .tj-hist-bar .tj-filter-scroll{flex-wrap:wrap;overflow:visible;gap:6px;} .tj-hist-bar .tj-fdivider{display:none;} .tj-hist-tabs{width:100%;} .tj-hist-tabs .tj-side{flex:1!important;justify-content:center;} .tj-hist-date{flex:1;min-width:140px;} #hist-outcome-chips{width:100%;} #hist-outcome-chips .tj-side{flex:1!important;} }
+
+    /* ══════════ v38: ล็อกหัวหน้าภาพรวม (คอม) ══════════ */
+    @media(min-width:992px) and (min-height:760px){
+      .tj-dash-head{position:sticky;top:58px;z-index:25;background:var(--canvas);padding-top:8px;margin-top:-8px;padding-bottom:4px;}
+      .tj-dash-head.stuck{box-shadow:0 10px 14px -12px rgba(0,0,0,.18);}
+      .tj-dash-head .tj-disc{margin-bottom:8px;}
+    }
 </style>
 </head>
 <body>
@@ -1001,9 +1009,11 @@
       </div>
 
       <!-- ── วันนี้ (กฎคุมความเสี่ยงรายวัน) ── -->
-      <div class="tj-hello" id="tj-hello"></div>
-      <div class="tj-today" id="tj-today"></div>
-      <div class="tj-disc" id="tj-disc"></div>
+      <div class="tj-dash-head" id="tj-dash-head">
+        <div class="tj-hello" id="tj-hello"></div>
+        <div class="tj-today" id="tj-today"></div>
+        <div class="tj-disc" id="tj-disc"></div>
+      </div>
       <div id="tj-review-prompt"></div>
       <div id="tj-pending"></div>
       <div id="tj-week-goal"></div>
@@ -3485,7 +3495,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v37';
+    window.APP_BUILD = '2026-09-26-v38';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -6079,6 +6089,14 @@
     const fm=$('tradeForm'); if(fm) fm.addEventListener('reset',()=>setTimeout(paint,0));
     (function hookTab(){ const o=window.switchTab; if(typeof o!=='function'){ setTimeout(hookTab,60); return; } window.switchTab=function(id){ const r=o.apply(this,arguments); if(id==='chart') setTimeout(paint,50); return r; }; })();
     paint();
+  })();
+  </script>
+
+  <script>
+  (function(){ // เงาใต้หัวที่ล็อกไว้เมื่อเลื่อน
+    const tick=()=>{ const h=document.getElementById('tj-dash-head'), y=window.scrollY>40;
+      if(h) h.classList.toggle('stuck',y); const hh=document.getElementById('tj-hist-head'); if(hh) hh.classList.toggle('stuck',y); };
+    window.addEventListener('scroll',tick,{passive:true}); tick();
   })();
   </script>
 </body>
