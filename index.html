@@ -542,6 +542,22 @@
     .tj-fs-btn:hover{opacity:1;}
     .tj-fs-btn.close{background:var(--ink);color:var(--canvas);border-color:var(--ink);}
     .tj-fs-btn:disabled{opacity:.5;}
+    .tj-fs-btn.snap{background:var(--brand);color:var(--on-brand);border-color:var(--brand);}
+    .tj-fs-sheet,.tj-fs-pill{display:none;}
+    body.tj-chart-full .tj-fs-sheet.show{display:block;position:absolute;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(420px,calc(100% - 24px));background:var(--card-bg);color:var(--ink);border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,.35);z-index:4;}
+    .tj-fs-x{border:0;background:var(--panel);color:var(--ink);width:30px;height:30px;border-radius:8px;}
+    .tj-fs-opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);border-radius:12px;padding:10px 12px;margin-bottom:8px;font-family:inherit;}
+    .tj-fs-opt:last-child{margin-bottom:0;}
+    .tj-fs-opt i{width:32px;height:32px;border-radius:9px;background:var(--panel);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .tj-fs-opt b{display:block;font-size:.86rem;} .tj-fs-opt small{display:block;font-size:.7rem;color:var(--muted);line-height:1.35;}
+    body.tj-chart-full .tj-fs-pill.show{display:inline-flex;align-items:center;gap:8px;position:absolute;left:50%;top:calc(58px + env(safe-area-inset-top));transform:translateX(-50%);z-index:4;border:0;background:var(--brand);color:var(--on-brand);font-weight:700;font-size:.9rem;padding:12px 18px;border-radius:99px;box-shadow:0 10px 26px rgba(0,0,0,.35);font-family:inherit;white-space:nowrap;}
+    body.tj-chart-full.tj-fs-clean .tj-fs-bar,body.tj-chart-full.tj-fs-clean .tj-fs-sheet,body.tj-chart-full.tj-fs-clean .tj-fs-pill,body.tj-chart-full.tj-fs-clean .tj-toast{display:none!important;}
+    body.tj-chart-full .tj-chart-box .tj-toast{position:absolute;bottom:auto;top:calc(12px + env(safe-area-inset-top));left:50%;}
+    @media(max-width:991px){
+      body.tj-chart-full .tj-fs-bar{flex-direction:column;flex-wrap:nowrap;left:calc(6px + env(safe-area-inset-left));right:auto;bottom:calc(64px + env(safe-area-inset-bottom));max-width:none;}
+      body.tj-chart-full .tj-fs-btn{width:42px;height:42px;padding:0;justify-content:center;font-size:.95rem;}
+      body.tj-chart-full .tj-fs-btn span{display:none;}
+    }
     @media(max-width:700px){.tj-chart-actions{grid-template-columns:1fr;}}
     .tj-cap-btn{display:flex;align-items:center;gap:12px;text-align:left;border:1.5px solid var(--border);background:var(--card-bg);border-radius:12px;padding:11px 14px;cursor:pointer;color:var(--ink);font-family:inherit;}
     .tj-cap-btn i{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -901,10 +917,22 @@
           <div class="tj-fs-bar" id="tj-fs-bar">
             <button type="button" class="tj-fs-btn cap" data-slot="fileBefore" title="จับภาพลง Before"><i class="fa-solid fa-camera"></i><span>Before</span></button>
             <button type="button" class="tj-fs-btn cap" data-slot="fileAfter" title="จับภาพลง After"><i class="fa-solid fa-camera"></i><span>After</span></button>
+            <button type="button" class="tj-fs-btn snap" id="tj-fs-snap" title="จับภาพกราฟ"><i class="fa-solid fa-camera"></i><span>จับภาพ</span></button>
             <button type="button" class="tj-fs-btn" id="tj-fs-rotate" title="หมุนจอ"><i class="fa-solid fa-rotate"></i></button>
             <button type="button" class="tj-fs-btn" id="tj-fs-hide" title="ซ่อนปุ่ม 6 วินาที (เพื่อแคปหน้าจอ)"><i class="fa-regular fa-eye-slash"></i><span>ซ่อนปุ่ม</span></button>
             <button type="button" class="tj-fs-btn close" id="tj-fs-close" title="ออกจากเต็มจอ"><i class="fa-solid fa-compress"></i></button>
           </div>
+          <div class="tj-fs-sheet" id="tj-fs-sheet" role="dialog" aria-label="จับภาพกราฟ">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <b>จับภาพกราฟ</b>
+              <button type="button" class="tj-fs-x" id="tj-fs-sheet-x" aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="tj-segctl w-100 mb-3" id="tj-fs-slot"><button type="button" class="active flex-fill" data-slot="fileBefore">Before (ก่อนเข้า)</button><button type="button" class="flex-fill" data-slot="fileAfter">After (หลังปิด)</button></div>
+            <button type="button" class="tj-fs-opt" data-act="shot"><i class="fa-solid fa-mobile-screen"></i><span><b>แคปหน้าจอมือถือ</b><small>ปุ่มทั้งหมดจะซ่อน 5 วินาที ให้กดแคปหน้าจอ แล้วเลือกภาพที่แคป</small></span></button>
+            <button type="button" class="tj-fs-opt" data-act="link"><i class="fa-solid fa-link"></i><span><b>ใช้ลิงก์ภาพจาก TradingView</b><small>กดไอคอนกล้องบนกราฟ → คัดลอกลิงก์ แล้วกดปุ่มนี้</small></span></button>
+            <button type="button" class="tj-fs-opt" data-act="pick"><i class="fa-regular fa-image"></i><span><b>เลือกรูปจากเครื่อง</b><small>ภาพที่แคปไว้แล้ว</small></span></button>
+          </div>
+          <button type="button" class="tj-fs-pill" id="tj-fs-pill"><i class="fa-regular fa-image"></i> <span>แนบภาพที่แคป → Before</span></button>
         </div>
       </div>
       <div class="card card-stat p-3 mb-5">
@@ -2849,7 +2877,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v18';
+    window.APP_BUILD = '2026-09-26-v19';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3460,7 +3488,9 @@
 
     function toast(msg, ms){
       const old = document.querySelector('.tj-toast'); if(old) old.remove();
-      const t = document.createElement('div'); t.className='tj-toast'; t.textContent=msg; document.body.appendChild(t);
+      const t = document.createElement('div'); t.className='tj-toast'; t.textContent=msg;
+      const full = document.body.classList.contains('tj-chart-full') && $('tj-chart-box');
+      (full || document.body).appendChild(t);
       setTimeout(()=>t.remove(), ms||2600);
     }
 
@@ -3471,12 +3501,20 @@
       const u = urlFor(slot, file);
       return `<div class="tj-shot"><img src="${u}" alt="ภาพ ${SLOT_LABEL[slot]}"><div class="cap"><span>${SLOT_LABEL[slot]}${big?'':' · '+Math.round(file.size/1024)+' KB'}</span><button type="button" title="ลบภาพ" onclick="tjClearShot('${slot}')"><i class="fa-solid fa-xmark"></i></button></div></div>`;
     }
+    const LINK_NAME = { fileBefore:'chartBeforeUrl', fileAfter:'chartAfterUrl' };
+    function linkInput(slot){ return document.querySelector('#tradeForm [name="'+LINK_NAME[slot]+'"]'); }
+    function linkCard(slot, url){
+      const src = imgSrc(url); if(!src) return '';
+      return `<div class="tj-shot"><img src="${esc(src)}" alt="ภาพ ${SLOT_LABEL[slot]}" onerror="this.style.display='none'"><div class="cap"><span>${SLOT_LABEL[slot]} · ลิงก์ TradingView</span><button type="button" title="ลบลิงก์" onclick="tjClearShot('${slot}')"><i class="fa-solid fa-xmark"></i></button></div></div>`;
+    }
+    function slotCard(s, big){ const f=slotFile(s); if(f) return shotCard(s,f,big); const li=linkInput(s); return (li && li.value) ? linkCard(s, li.value.trim()) : ''; }
     function renderShots(){
       const list = $('tj-chart-shots');
-      if(list) list.innerHTML = SLOTS.map(s=>{ const f=slotFile(s); return f? shotCard(s,f,false):''; }).join('');
-      SLOTS.forEach(s=>{ const p=$('prev-'+s); if(p){ const f=slotFile(s); p.innerHTML = f? shotCard(s,f,true):''; } });
+      if(list) list.innerHTML = SLOTS.map(s=>slotCard(s,false)).join('');
+      SLOTS.forEach(s=>{ const p=$('prev-'+s); if(p) p.innerHTML = slotCard(s,true); });
     }
-    window.tjClearShot = function(slot){ window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value=''; renderShots(); };
+    window.tjClearShot = function(slot){ window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value=''; if(!slotFile(slot)){ const li=linkInput(slot); if(li) li.value=''; } renderShots(); };
+    SLOTS.forEach(s=>{ const li=linkInput(s); if(li) li.addEventListener('input', renderShots); });
     function setShot(slot, file){ window._tjShots[slot]=file; const inp=$(slot); if(inp) inp.value=''; renderShots(); }
 
     // getFileBase64: ถ้าไม่ได้เลือกไฟล์เอง ให้ใช้ภาพที่จับจากกราฟ / วางไว้
@@ -3668,6 +3706,8 @@
       if(!isFull()) return;
       document.body.classList.remove('tj-chart-full');
       clearTimeout(hideTimer); const bar=$('tj-fs-bar'); if(bar) bar.classList.remove('hide');
+      document.body.classList.remove('tj-fs-clean');
+      ['tj-fs-sheet','tj-fs-pill'].forEach(id=>{ const el=$(id); if(el) el.classList.remove('show'); });
       try{ if(screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); }catch(e){}
       const fe = document.fullscreenElement || document.webkitFullscreenElement;
       if(fe){ try{ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }catch(e){} }
@@ -3676,10 +3716,47 @@
     $('tj-chart-fs') && $('tj-chart-fs').addEventListener('click', enterFull);
     $('tj-chart-fs2') && $('tj-chart-fs2').addEventListener('click', enterFull);
     $('tj-fs-close') && $('tj-fs-close').addEventListener('click', ()=>exitFull(false));
-    $('tj-fs-hide') && $('tj-fs-hide').addEventListener('click', ()=>{
-      const bar=$('tj-fs-bar'); bar.classList.add('hide'); clearTimeout(hideTimer);
-      hideTimer = setTimeout(()=>bar.classList.remove('hide'), 6000);
-    });
+    function cleanFor(ms, after){
+      clearTimeout(hideTimer); document.body.classList.add('tj-fs-clean');
+      const old=document.querySelector('.tj-toast'); if(old) old.remove();
+      hideTimer = setTimeout(()=>{ document.body.classList.remove('tj-fs-clean'); if(after) after(); }, ms);
+    }
+    $('tj-fs-hide') && $('tj-fs-hide').addEventListener('click', ()=>cleanFor(6000));
+
+    // จับภาพในโหมดเต็มจอ (มือถือ): แคปหน้าจอ / ลิงก์ TradingView / เลือกรูป
+    let fsSlot = 'fileBefore';
+    const sheet = $('tj-fs-sheet'), pill = $('tj-fs-pill');
+    function openSheet(){ if(pill) pill.classList.remove('show'); if(sheet) sheet.classList.add('show'); }
+    function closeSheet(){ if(sheet) sheet.classList.remove('show'); }
+    $('tj-fs-snap') && $('tj-fs-snap').addEventListener('click', ()=>{ if(sheet && sheet.classList.contains('show')) closeSheet(); else openSheet(); });
+    $('tj-fs-sheet-x') && $('tj-fs-sheet-x').addEventListener('click', closeSheet);
+    document.querySelectorAll('#tj-fs-slot button').forEach(b=>b.addEventListener('click',()=>{
+      fsSlot=b.dataset.slot; document.querySelectorAll('#tj-fs-slot button').forEach(x=>x.classList.toggle('active',x===b)); }));
+    async function useTvLink(slot){
+      let txt = '';
+      try{ if(navigator.clipboard && navigator.clipboard.readText) txt = await navigator.clipboard.readText(); }catch(e){}
+      if(!/tradingview\.com\/x\//.test(txt||'')) txt = window.prompt('วางลิงก์ภาพจาก TradingView (เช่น https://www.tradingview.com/x/AbCd1234/)', txt||'') || '';
+      txt = txt.trim();
+      if(!txt) return;
+      const m = /https?:\/\/[^\s]+/.exec(txt); if(m) txt = m[0];
+      if(!/^https?:\/\//.test(txt)){ toast('ลิงก์ไม่ถูกต้อง'); return; }
+      const li = linkInput(slot); if(li) li.value = txt;
+      window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value='';
+      renderShots(); toast('ใส่ลิงก์ภาพ '+SLOT_LABEL[slot]+' แล้ว ✓');
+    }
+    function showPill(slot){
+      if(!pill) return;
+      pill.dataset.slot = slot; pill.querySelector('span').textContent = 'แนบภาพที่แคป → '+SLOT_LABEL[slot];
+      pill.classList.add('show');
+    }
+    pill && pill.addEventListener('click', ()=>{ pill.classList.remove('show'); pickFile(pill.dataset.slot || 'fileBefore'); });
+    sheet && sheet.querySelectorAll('.tj-fs-opt').forEach(b=>b.addEventListener('click',()=>{
+      const act=b.dataset.act, slot=fsSlot; closeSheet();
+      if(act==='shot') cleanFor(5000, ()=>showPill(slot));
+      else if(act==='link') useTvLink(slot);
+      else pickFile(slot);
+    }));
+    if(canCapture){ const sn=$('tj-fs-snap'); if(sn) sn.style.display='none'; }
     let landscape = false;
     $('tj-fs-rotate') && $('tj-fs-rotate').addEventListener('click', async ()=>{
       try{ landscape = !landscape; await screen.orientation.lock(landscape ? 'landscape' : 'portrait'); }
