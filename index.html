@@ -705,6 +705,12 @@
     .tj-rev-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
     .tj-rev-past{border-top:1px solid var(--border);padding-top:10px;margin-top:10px;font-size:.8rem;}
     .tj-rev-past .it{padding:8px 0;border-bottom:1px dashed var(--border);}
+
+    /* v7: quick log + edit */
+    form.tj-quick .tj-full-only{display:none!important;}
+    .tj-quick-note{font-size:.76rem;color:var(--muted);background:var(--panel);border-radius:10px;padding:8px 12px;margin:-4px 0 16px;text-align:center;}
+    .tj-edit-banner:empty{display:none;}
+    .tj-edit-banner{display:flex;align-items:center;gap:10px;justify-content:space-between;background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.4);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.82rem;color:var(--ink);}
   </style>
 </head>
 <body>
@@ -771,6 +777,7 @@
       <!-- ── วันนี้ (กฎคุมความเสี่ยงรายวัน) ── -->
       <div class="tj-today" id="tj-today"></div>
       <div id="tj-review-prompt"></div>
+      <div id="tj-pending"></div>
       <div id="tj-week-goal"></div>
 
       <div class="tj-news-strip print-hide" id="tj-news-strip" onclick="switchTab('news')"></div>
@@ -1278,7 +1285,11 @@
         <h4 class="mb-2 text-dark fw-bold text-center"><i class="fa-solid fa-pen-to-square text-primary me-2"></i> บันทึกออเดอร์เทรด</h4>
         <div class="text-center mb-3"><button type="button" class="tj-fbtn d-inline-flex" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i> เปิดกราฟเพื่อจับภาพ</button></div>
         <hr class="text-muted mb-4 opacity-25">
+        <div class="tj-edit-banner" id="tj-edit-banner"></div>
+        <div class="d-flex justify-content-center mb-3"><div class="tj-segctl" id="tj-form-mode"><button type="button" data-m="quick"><i class="fa-solid fa-bolt"></i> บันทึกด่วน</button><button type="button" data-m="full"><i class="fa-solid fa-list"></i> แบบเต็ม</button></div></div>
+        <div class="tj-quick-note" id="tj-quick-note">⚡ กรอกเฉพาะที่จำเป็น — เซสชัน, Risk, Revenge/Overtrade ระบบเติมให้เอง · ค่อยกลับมาเติม Setup/เกรด/ภาพ/บันทึก ทีหลัง</div>
         <form id="tradeForm" onsubmit="handleFormSubmit(event)">
+          <input type="hidden" name="emotion" id="f_emotion" value="">
           
           <div class="row g-3 mb-3">
             <div class="col-sm-4"><label class="form-label"><i class="fa-regular fa-calendar me-1"></i> วันที่เทรด</label><input type="date" class="form-control" name="tradeDate" id="f_date" required></div>
@@ -1694,8 +1705,9 @@
             <a href="#" id="modalBtnAfter" target="_blank" class="btn btn-outline-success w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพหลังปิด (After)</a>
           </div>
           <div class="tj-del-zone">
+            <button type="button" class="btn btn-primary w-100 fw-bold py-2 mb-2" id="tj-edit-btn"><i class="fa-solid fa-pen me-2"></i> <span>แก้ไข / เติมรายละเอียด</span></button>
             <button type="button" class="btn btn-outline-danger w-100 fw-bold py-2" id="tj-del-btn"><i class="fa-solid fa-trash-can me-2"></i> <span>ลบรายการนี้</span></button>
-            <div class="tj-del-hint">ใช้เมื่อบันทึกผิด · ลบแล้วกู้คืนไม่ได้</div>
+            <div class="tj-del-hint">ลบ: ใช้เมื่อบันทึกผิด · ลบแล้วกู้คืนไม่ได้</div>
           </div>
         </div>
       </div>
@@ -1754,7 +1766,7 @@
     }
 
     /* ---------- saveTradeData ---------- */
-    async function saveTradeData(data) {
+    async function buildTradeRow(data) {
       let beforeUrl = data.chartBeforeUrl || "";
       let afterUrl  = data.chartAfterUrl  || "";
 
@@ -1767,12 +1779,14 @@
         if (url) afterUrl = url;
       }
 
-      const priceInZone   = data.priceInZone   ? "Yes" : "No";
-      const confirmed     = data.confirmation  ? "Yes" : "No";
-      const violatedRule  = (priceInZone === "No" || confirmed === "No") ? "Yes" : "No";
-      const followedPlan  = data.followedPlan  ? "Yes" : "No";
-      const overtrade     = data.overtrade     ? "Yes" : "No";
-      const revenge       = data.revenge       ? "Yes" : "No";
+      // โหมดบันทึกด่วน: ช่องวินัยที่ไม่ได้กรอก = "-" (ไม่นับในคะแนนวินัย) ยกเว้นที่ระบบตรวจพบเอง
+      const quick = String(data.emotion || "") === "QUICK";
+      const priceInZone   = quick ? "-" : (data.priceInZone   ? "Yes" : "No");
+      const confirmed     = quick ? "-" : (data.confirmation  ? "Yes" : "No");
+      const violatedRule  = quick ? "-" : ((priceInZone === "No" || confirmed === "No") ? "Yes" : "No");
+      const followedPlan  = quick ? "-" : (data.followedPlan  ? "Yes" : "No");
+      const overtrade     = data.overtrade ? "Yes" : (quick ? "-" : "No");
+      const revenge       = data.revenge   ? "Yes" : (quick ? "-" : "No");
       const lotRespected  = data.lotRespected  ? "Yes" : "No";
 
       const ent  = parseFloat(data.entryPrice);
@@ -1830,11 +1844,32 @@
                      : new Date(yy, mm - 1, dd, now.getHours(), now.getMinutes(), now.getSeconds());
         if (!isNaN(d)) row.created_at = d.toISOString();
       }
+      return row;
+    }
 
+    async function saveTradeData(data) {
+      const row = await buildTradeRow(data);
       let { error } = await sb.from(TABLE_NAME).insert(row);
       if (error && row.created_at && /created_at/i.test(error.message || "")) {
         delete row.created_at;
         ({ error } = await sb.from(TABLE_NAME).insert(row));
+      }
+      if (error) throw new Error(error.message);
+      return true;
+    }
+
+    /* ---------- updateTradeData: แก้ไขออเดอร์ที่บันทึกไว้ ---------- */
+    async function updateTradeData(id, data) {
+      const row = await buildTradeRow(data);
+      delete row.user_id;
+      let q = sb.from(TABLE_NAME).update(row).eq("id", id);
+      if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
+      let { error } = await q;
+      if (error && row.created_at && /created_at/i.test(error.message || "")) {
+        delete row.created_at;
+        q = sb.from(TABLE_NAME).update(row).eq("id", id);
+        if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
+        ({ error } = await q);
       }
       if (error) throw new Error(error.message);
       return true;
@@ -2369,7 +2404,7 @@
       return ids.length;
     }
 
-    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
+    window.api = { saveTradeData, updateTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
 
     // Polyfill: ทำให้โค้ดเดิมที่เรียก google.script.run.xxx ใช้งานได้ทันที
     function makeRunner() {
@@ -2815,6 +2850,7 @@
           else if (oc === 'SL') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);">SL</span>';
           else if (oc === 'BE') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ap-warn);">BE</span>';
           else if (oc === 'Manual') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ink);">' + (pnlValue >= 0 ? 'M.Win' : 'Cut') + '</span>';
+          if (trade.emotion === 'QUICK') ocTag += '<span class="tj-hist-tag" style="background:rgba(217,119,6,.14);color:var(--ap-warn);">ยังไม่ครบ</span>';
           let warn = (trade.overtrade === 'Yes' || trade.revenge === 'Yes') ? ' <span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);">⚠</span>' : '';
           const rNum = parseFloat(trade.rMult);
           const rDisp = (!isNaN(rNum)) ? `<div class="tj-hist-r">${rNum >= 0 ? '+' : ''}${rNum.toFixed(1)}R</div>` : '';
@@ -3195,7 +3231,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v28';
+    window.APP_BUILD = '2026-09-26-v29';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -4704,6 +4740,7 @@
       if(fb){ const s2 = dayStatus(($('f_date')||{}).value || dkey(new Date())); fb.innerHTML = s2.reasons.length ? '⛔ วันนั้นถึงลิมิตแล้ว: '+s2.reasons.map(esc).join(' · ')+' — ถ้าเป็นไม้ที่เทรดไปแล้วบันทึกได้ แต่อย่าเปิดไม้ใหม่' : ''; }
     }
     function stopOverlay(){
+      if(window.tjIsEditing && window.tjIsEditing()!=null) return;
       const st = dayStatus(dkey(new Date()));
       if(st.level!=='stop') return;
       const ackKey = 'tj_stop_ack_'+dkey(new Date());
@@ -4764,7 +4801,8 @@
       const et = ($('f_etime')||{}).value; const em = /^(\d{1,2}):(\d{2})/.exec(et||'');
       const entryMin = em ? (+em[1])*60+(+em[2]) : (new Date().getHours()*60+new Date().getMinutes());
       const lots = parseFloat(($('f_lots')||{}).value);
-      const before = dayTrades(date).filter(r=>minutesOf(r) <= entryMin);
+      const editId = window.tjIsEditing ? window.tjIsEditing() : null;
+      const before = dayTrades(date).filter(r=>minutesOf(r) <= entryMin && (editId==null || String(r.id)!==String(editId)));
       const R = prefs.rules, msgs = [];
       let revenge = false, over = false;
       const last = before[before.length-1];
@@ -5223,6 +5261,180 @@
     renderToday();
     setInterval(()=>{ const pg=document.querySelector('.page-section.active'); if(pg && pg.id==='dashboard') renderToday(); }, 60000);
     setTimeout(loadPrefs, 800);
+  })();
+  </script>
+
+  <!-- ══════════ v7: บันทึกด่วน + แก้ไขออเดอร์ ══════════ -->
+  <script>
+  (function(){
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const pad = n => String(n).padStart(2,'0');
+    const fmt$ = (n, signed) => { n = Number(n)||0; return (n<0?'-':(signed&&n>0?'+':''))+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+    const ls = { get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+    function toast(msg){ const o=document.querySelector('.tj-toast'); if(o) o.remove(); const t=document.createElement('div'); t.className='tj-toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(), 2800); }
+    const form = $('tradeForm'); if(!form) return;
+    const F = n => form.querySelector('[name="'+n+'"]');
+
+    // ══════════ โหมดบันทึกด่วน / แบบเต็ม ══════════
+    const fullOnly = [];
+    const mark = el => { if(el && !fullOnly.includes(el)){ el.classList.add('tj-full-only'); fullOnly.push(el); } };
+    mark($('f_setup') && $('f_setup').closest('.row'));
+    mark($('tj-pb-check'));
+    mark(F('marketContext') && F('marketContext').closest('.row'));
+    form.querySelectorAll('.confluence-box, .god-rule-box, .discipline-box, .upload-box').forEach(mark);
+    mark($('f_mae') && $('f_mae').closest('.row'));
+    mark(F('notes') && F('notes').closest('div'));
+    form.querySelectorAll('hr').forEach(h=>{ const n = h.nextElementSibling; if(n && n.classList.contains('upload-box')) mark(h); });
+
+    let mode = ls.get('tj_form_mode', window.innerWidth < 768 ? 'quick' : 'full');
+    let editing = null;   // { id, wasQuick }
+    function applyMode(){
+      const quick = mode==='quick';
+      form.classList.toggle('tj-quick', quick);
+      document.querySelectorAll('#tj-form-mode button').forEach(b=>b.classList.toggle('active', b.dataset.m===mode));
+      const note = $('tj-quick-note'); if(note) note.style.display = quick ? '' : 'none';
+      $('f_emotion').value = quick ? 'QUICK' : '';
+      const btn = $('submitBtn');
+      if(btn && !btn.disabled) btn.innerHTML = editing ? '<i class="fa-solid fa-floppy-disk me-2"></i> บันทึกการแก้ไข' : (quick ? '<i class="fa-solid fa-bolt me-2"></i> บันทึกด่วน' : '<i class="fa-solid fa-save me-2"></i> บันทึกข้อมูลการเทรด');
+    }
+    document.querySelectorAll('#tj-form-mode button').forEach(b=>b.addEventListener('click', ()=>{ mode = b.dataset.m; if(!editing) ls.set('tj_form_mode', mode); applyMode(); }));
+    form.addEventListener('reset', ()=>setTimeout(applyMode, 0));
+    applyMode();
+
+    // ══════════ แก้ไขออเดอร์ ══════════
+    function rowById(id){ return (window._tjRows||[]).find(r=>String(r.id)===String(id)); }
+    function setVal(name, v){ const el = F(name); if(el) el.value = (v==null ? '' : v); }
+    function setChk(id, on){ const el = $(id); if(el){ el.checked = !!on; el.dispatchEvent(new Event('change')); } }
+    function startEdit(id){
+      const r = rowById(id); if(!r){ alert('ไม่พบข้อมูลออเดอร์ (ลองรีเฟรชหน้า)'); return; }
+      form.reset();
+      setTimeout(()=>{
+        editing = { id: r.id, wasQuick: r.emotion==='QUICK' };
+        mode = 'full';
+        const d = new Date(r.created_at);
+        setVal('tradeDate', d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()));
+        setVal('entryTime', r.entry_time || (pad(d.getHours())+':'+pad(d.getMinutes())));
+        setVal('exitTime', r.exit_time || '');
+        setVal('symbol', r.symbol); setVal('type', r.type);
+        setVal('entryPrice', r.entry_price); setVal('slPrice', r.sl_price); setVal('tpPrice', r.tp_price);
+        setVal('lots', r.lots); setVal('pnl', r.pnl);
+        const rm = parseFloat(r.r_mult), p = parseFloat(r.pnl);
+        if(isFinite(rm) && rm!==0 && isFinite(p)){ setVal('riskAmount', Math.abs(p/rm).toFixed(2)); $('f_risk').dispatchEvent(new Event('input')); }
+        if(r.setup){ const sel = $('f_setup'); if(![...sel.options].some(o=>o.value===r.setup)){ const o=document.createElement('option'); o.value=r.setup; o.textContent=r.setup; sel.appendChild(o); } sel.value = r.setup; sel.dispatchEvent(new Event('change')); }
+        if(r.grade){ $('f_grade').value = r.grade; const b = $('tj-grade-badge'); if(b){ b.textContent = 'เกรดเดิม '+r.grade+' · ติ๊กใหม่เพื่อเปลี่ยน'; b.className = 'tj-grade gB'; } }
+        if(r.session){ const s = F('session'); if(![...s.options].some(o=>o.value===r.session)){ const o=document.createElement('option'); o.value=r.session; o.textContent=r.session; s.appendChild(o); } s.value = r.session; s.dispatchEvent(new Event('change')); }
+        setVal('marketContext', r.market_context); setVal('confidence', r.confidence);
+        setVal('outcome', r.outcome);
+        setVal('mae', r.mae); setVal('mfe', r.mfe);
+        setVal('chartBeforeUrl', r.chart_before); setVal('chartAfterUrl', r.chart_after);
+        setVal('notes', r.notes);
+        const conf = String(r.confluences||'').split(',').map(x=>x.trim());
+        form.querySelectorAll('.conf-check').forEach(c=>{ c.checked = conf.includes(c.value); c.dispatchEvent(new Event('change')); });
+        const yes = v => v==='Yes';
+        $('priceInZone').checked = yes(r.price_in_zone); $('confirmation').checked = yes(r.confirmation);
+        setChk('followedPlan', r.followed_plan==='-' ? true : yes(r.followed_plan));
+        setChk('lotRespected', r.lot_respected==='-' ? true : yes(r.lot_respected));
+        setChk('overtrade', yes(r.overtrade)); setChk('revenge', yes(r.revenge));
+        ['f_entry','f_sl','f_lots','f_mae'].forEach(i=>{ const el=$(i); if(el) el.dispatchEvent(new Event('input')); });
+        if(typeof autoCalcRR==='function') autoCalcRR();
+        const ban = $('tj-edit-banner');
+        ban.innerHTML = `<div><b><i class="fa-solid fa-pen me-1"></i> กำลังแก้ไขออเดอร์</b> ${esc(r.symbol)} ${esc(r.type)} ${fmt$(r.pnl,true)} · ${d.getDate()}/${d.getMonth()+1}${editing.wasQuick?' · <span class="text-warning">บันทึกด่วน — เติมให้ครบแล้วกดบันทึก</span>':''}</div><button type="button" class="btn btn-sm btn-outline-secondary" id="tj-edit-cancel">ยกเลิก</button>`;
+        $('tj-edit-cancel').onclick = cancelEdit;
+        applyMode();
+        switchTab('add-trade'); window.scrollTo({top:0, behavior:'smooth'});
+      }, 30);
+    }
+    function cancelEdit(){
+      editing = null; $('tj-edit-banner').innerHTML = '';
+      mode = ls.get('tj_form_mode', mode);
+      form.reset(); applyMode();
+    }
+    window.tjEditTrade = startEdit;
+    window.tjIsEditing = () => editing ? editing.id : null;
+
+    // ปุ่มแก้ไขในหน้าต่างรายละเอียด
+    (function hookModal(){
+      const orig = window.showTradeModal;
+      if(typeof orig!=='function'){ setTimeout(hookModal,60); return; }
+      window.showTradeModal = function(trade){
+        const r = orig.apply(this, arguments);
+        const b = $('tj-edit-btn');
+        if(b){ const isFund = trade && (trade.type==='Deposit' || trade.type==='Withdraw'); b.style.display = (trade && trade.id!=null && !isFund) ? '' : 'none'; b.dataset.id = trade && trade.id; }
+        return r;
+      };
+    })();
+    $('tj-edit-btn') && $('tj-edit-btn').addEventListener('click', ()=>{
+      const id = $('tj-edit-btn').dataset.id;
+      const m = bootstrap.Modal.getInstance($('tradeModal')); if(m) m.hide();
+      startEdit(id);
+    });
+
+    // ส่งฟอร์ม: ถ้าอยู่ในโหมดแก้ไข → update แทน insert
+    (function hookSubmit(){
+      const orig = window.handleFormSubmit;
+      if(typeof orig!=='function'){ setTimeout(hookSubmit,60); return; }
+      window.handleFormSubmit = async function(event){
+        if(!editing) return orig.apply(this, arguments);
+        event.preventDefault();
+        const btn = $('submitBtn'); btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> กำลังบันทึกการแก้ไข...';
+        const data = Object.fromEntries(new FormData(form).entries());
+        data.followedPlan = $('followedPlan').checked ? 'on' : '';
+        data.lotRespected = $('lotRespected').checked ? 'on' : '';
+        data.overtrade = $('overtrade').checked ? 'on' : '';
+        data.revenge = $('revenge').checked ? 'on' : '';
+        data.priceInZone = $('priceInZone').checked ? 'on' : '';
+        data.confirmation = $('confirmation').checked ? 'on' : '';
+        const checks = []; form.querySelectorAll('.conf-check:checked').forEach(c=>checks.push(c.value)); data.confluences = checks.join(', ');
+        data.emotion = mode==='quick' ? 'QUICK' : '';
+        try{
+          data.fileBeforeObj = await getFileBase64('fileBefore');
+          data.fileAfterObj = await getFileBase64('fileAfter');
+          await window.api.updateTradeData(editing.id, data);
+          editing = null; $('tj-edit-banner').innerHTML = '';
+          btn.disabled = false; mode = ls.get('tj_form_mode', 'full');
+          form.reset(); applyMode();
+          toast('บันทึกการแก้ไขแล้ว');
+          loadAllData(); switchTab('history'); window.scrollTo(0,0);
+        }catch(err){ alert('แก้ไขไม่สำเร็จ: '+(err.message||err)); btn.disabled = false; applyMode(); }
+      };
+    })();
+
+    // ══════════ ไม้ที่ยังไม่ครบ (บันทึกด่วน / นำเข้า MT5 ที่ยังไม่มี Setup) ══════════
+    function pending(){
+      return (window._tjRows||[]).filter(r=>(r.type==='Buy'||r.type==='Sell') && (r.emotion==='QUICK' || (/^นำเข้าจาก MT5/.test(String(r.notes||'')) && !r.setup)))
+        .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    }
+    function renderPending(){
+      const host = $('tj-pending'); if(!host) return;
+      const list = pending();
+      host.innerHTML = list.length ? `<div class="tj-goal" style="border-style:solid;border-color:rgba(217,119,6,.45);cursor:pointer" onclick="tjOpenPending()"><span style="font-size:1.1rem">✍️</span><div><b>มี ${list.length} ไม้ที่ยังกรอกไม่ครบ</b><div class="small text-muted" style="font-size:.72rem">เติม Setup / เกรด / บันทึก เพื่อให้สถิติ Playbook และวินัยแม่นขึ้น</div></div><button class="tj-linkbtn">เติมเลย ›</button></div>` : '';
+    }
+    window.tjOpenPending = function(){
+      const list = pending();
+      let el = $('tjPendingModal');
+      if(!el){ el = document.createElement('div'); el.className='modal fade print-hide'; el.id='tjPendingModal'; el.tabIndex=-1;
+        el.innerHTML = '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold">✍️ ไม้ที่ยังกรอกไม่ครบ</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"></div></div></div>';
+        document.body.appendChild(el); }
+      const fmtD = d => d.getDate()+'/'+(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+      el.querySelector('.modal-body').innerHTML = !list.length ? '<div class="tj-empty"><i class="fa-solid fa-check"></i><div>ครบทุกไม้แล้ว 👍</div></div>' :
+        `<div class="small text-muted mb-2">เรียงจากล่าสุด · กด “เติม” เพื่อเปิดฟอร์มแก้ไข</div>` + list.map(r=>`<div class="d-flex align-items-center gap-2 py-2" style="border-bottom:1px solid var(--border)">
+          <div style="min-width:90px" class="small text-muted">${fmtD(new Date(r.created_at))}</div>
+          <div class="fw-semibold" style="flex:1">${esc(r.symbol)} ${esc(r.type)} <span class="${r.pnl>0?'text-gain':(r.pnl<0?'text-loss':'')}">${fmt$(r.pnl,true)}</span>
+            <span class="tj-hist-tag" style="background:rgba(217,119,6,.14);color:var(--ap-warn);">${r.emotion==='QUICK'?'บันทึกด่วน':'นำเข้า MT5'}</span></div>
+          <button class="btn btn-sm btn-primary" data-id="${esc(r.id)}">เติม</button></div>`).join('');
+      el.querySelectorAll('[data-id]').forEach(b=>b.onclick = ()=>{ bootstrap.Modal.getInstance(el).hide(); startEdit(b.dataset.id); });
+      bootstrap.Modal.getOrCreateInstance(el).show();
+    };
+    document.addEventListener('tj:rows', renderPending);
+    renderPending();
+
+    // ออกจากหน้าฟอร์มระหว่างแก้ไข → ยกเลิกโหมดแก้ไข
+    (function hookTab(){
+      const orig = window.switchTab;
+      if(typeof orig!=='function'){ setTimeout(hookTab,60); return; }
+      window.switchTab = function(id){ if(editing && id!=='add-trade' && id!=='chart'){ cancelEdit(); } return orig.apply(this, arguments); };
+    })();
   })();
   </script>
 
