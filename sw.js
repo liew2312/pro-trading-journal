@@ -1,5 +1,5 @@
 // อัปเดตเวอร์ชันของ Cache เป็น v17 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-18 · ตัดให้เหลือแก่น: สถิติเชิงลึก + R-distribution + Edge leaderboard + ตัวกรอง)
-const CACHE_NAME = 'tradejournal-cache-v23';
+const CACHE_NAME = 'tradejournal-cache-v26';
 const urlsToCache = [
   './index.html',
   './manifest.json'
@@ -56,6 +56,25 @@ self.addEventListener('fetch', event => {
     );
     return;
   }
-  // ทรัพยากรอื่น → cache-first
+  // ทรัพยากรอื่น: cache-first เฉพาะไฟล์ static ของแอปเอง (โดเมนเดียวกัน, GET)
+  // ข้อมูลจาก Supabase / ข่าว / CDN / TradingView ปล่อยผ่านเครือข่ายตามปกติ (ไม่ cache เพื่อไม่ให้ข้อมูลค้าง)
+  const url = new URL(req.url);
+  if (req.method !== 'GET' || url.origin !== self.location.origin || url.pathname.indexOf('/api/') !== -1) return;
   event.respondWith(
-    caches.match(req).t
+    caches.match(req).then(r => r || fetch(req).then(res => {
+      if (res && res.ok) { const c = res.clone(); caches.open(CACHE_NAME).then(cache => cache.put(req, c)); }
+      return res;
+    }))
+  );
+});
+
+// กดที่การแจ้งเตือนข่าว → เปิด/โฟกัสแอป
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+      for (const c of list) { if ('focus' in c) return c.focus(); }
+      if (self.clients.openWindow) return self.clients.openWindow('./index.html');
+    })
+  );
+});

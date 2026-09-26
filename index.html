@@ -593,6 +593,45 @@
     .tj-sess-hint:empty{display:none;}
     .tj-sess-chip{font-size:.66rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--panel);color:var(--ink);border:1px solid var(--border);}
     .tj-sess-chip.on{background:var(--ink);color:var(--canvas);border-color:var(--ink);}
+    /* News */
+    .tj-news-dot{display:none;width:8px;height:8px;border-radius:50%;background:var(--loss);margin-left:auto;}
+    .tj-news-dot.on{display:inline-block;}
+    #tj-news-dot-bottom.on{position:absolute;top:2px;right:calc(50% - 16px);margin:0;}
+    .tj-news-strip:empty{display:none;}
+    .tj-news-strip{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--card-border);border-left:4px solid var(--loss);border-radius:14px;padding:10px 14px;margin-bottom:18px;cursor:pointer;font-size:.84rem;}
+    .tj-news-strip b{color:var(--ink);} .tj-news-strip .cd{margin-left:auto;font-weight:700;color:var(--loss);white-space:nowrap;font-variant-numeric:tabular-nums;}
+    .tj-news-next:empty{display:none;}
+    .tj-news-next{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+    .tj-news-next::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--loss);}
+    .tj-news-next .lbl{font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+    .tj-news-next .ttl{font-size:1.05rem;font-weight:700;color:var(--ink);}
+    .tj-news-next .meta{font-size:.78rem;color:var(--muted);}
+    .tj-news-next .cd{margin-left:auto;text-align:right;}
+    .tj-news-next .cd b{display:block;font-size:1.6rem;font-weight:800;color:var(--loss);font-variant-numeric:tabular-nums;letter-spacing:-.5px;line-height:1.1;}
+    .tj-news-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+    .tj-news-ccy{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+    .tj-news-ccy button{border:1px solid var(--border);background:var(--card-bg);color:var(--muted);font-weight:700;font-size:.74rem;padding:4px 10px;border-radius:99px;cursor:pointer;font-family:inherit;}
+    .tj-news-ccy button.active{background:var(--ink);color:var(--canvas);border-color:var(--ink);}
+    .tj-news-alert{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+    .tj-imp{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;}
+    .tj-imp.high{background:var(--loss);} .tj-imp.medium{background:var(--ap-warn);} .tj-imp.low{background:#EAB308;} .tj-imp.holiday{background:var(--muted);}
+    .tj-news-day{padding:10px 16px;font-size:.74rem;font-weight:700;color:var(--muted);background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0;}
+    .tj-news-row{display:grid;grid-template-columns:54px 50px 1fr auto;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid var(--stat-list-border);font-size:.86rem;}
+    .tj-news-row:last-child{border-bottom:0;}
+    .tj-news-row .t{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
+    .tj-news-row .c{font-weight:800;font-size:.76rem;display:flex;align-items:center;gap:5px;color:var(--ink);}
+    .tj-news-row .ti{font-weight:600;color:var(--ink);min-width:0;}
+    .tj-news-row .ti small{display:block;font-weight:500;color:var(--muted);font-size:.7rem;}
+    .tj-news-row .fp{font-size:.7rem;color:var(--muted);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
+    .tj-news-row.past{opacity:.45;}
+    .tj-news-row.soon{background:var(--loss-bg);}
+    .tj-news-row.traded .ti::after{content:" · มีเทรด";font-size:.66rem;font-weight:700;color:var(--brand);}
+    @media(max-width:600px){.tj-news-row{grid-template-columns:46px 44px 1fr;}.tj-news-row .fp{grid-column:3;text-align:left;}}
+    .tj-news-warn:empty{display:none;}
+    .tj-news-warn{margin-top:8px;font-size:.74rem;font-weight:600;color:var(--loss);background:var(--loss-bg);border-radius:10px;padding:7px 10px;line-height:1.4;}
+    .tj-news-banner{position:fixed;top:calc(66px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:3500;background:var(--card-bg);border:1px solid var(--loss);border-left:5px solid var(--loss);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow-md);width:min(460px,calc(100% - 24px));display:flex;gap:12px;align-items:flex-start;font-size:.86rem;color:var(--ink);}
+    .tj-news-banner button{border:0;background:transparent;color:var(--muted);margin-left:auto;}
+    .tj-news-tvwrap{height:560px;}
     .tj-del-zone{margin-top:22px;padding-top:16px;border-top:1px dashed var(--border);}
     .tj-del-hint{font-size:.7rem;color:var(--muted);text-align:center;margin-top:6px;}
     .tj-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--canvas);padding:10px 16px;border-radius:12px;font-size:.84rem;font-weight:600;z-index:3000;box-shadow:var(--shadow-md);max-width:calc(100% - 32px);}
@@ -612,6 +651,7 @@
     <button class="tj-side-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i> ภาพรวม</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i> ปฏิทิน</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i> กราฟ</button>
+    <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('news')"><i class="fa-regular fa-newspaper"></i> ข่าวเศรษฐกิจ <span class="tj-news-dot" id="tj-news-dot-side"></span></button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i> Performance</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติ</button>
     <div class="tj-side-label">บัญชี</div>
@@ -686,6 +726,8 @@
         </div>
         <div class="tj-chip-row" id="tj-active-chips"></div>
       </div>
+
+      <div class="tj-news-strip print-hide" id="tj-news-strip" onclick="switchTab('news')"></div>
 
       <div class="d-none d-print-block text-center fw-bold fs-5 text-dark mb-3" id="print-header-title">
         สรุปการเทรด (Trading Report)
@@ -959,6 +1001,45 @@
       </div>
     </div>
 
+    <!-- ══════════ NEWS PAGE ══════════ -->
+    <div id="news" class="page-section print-hide">
+      <div class="tj-page-head">
+        <div><h4>ข่าวเศรษฐกิจ</h4><div class="sub">ข่าวที่มีผลแรงต่อตลาด ย้อนหลัง 7 วัน – ล่วงหน้า 14 วัน · เวลาตามเครื่องของคุณ</div></div>
+        <button class="tj-fbtn" id="tj-news-refresh"><i class="fa-solid fa-rotate"></i> รีเฟรช</button>
+      </div>
+
+      <div class="tj-news-next" id="tj-news-next"></div>
+
+      <div class="card card-stat p-3 mb-3">
+        <div class="tj-news-controls">
+          <div class="tj-segctl" id="tj-news-impact">
+            <button data-imp="High" class="active"><span class="tj-imp high"></span> แรง</button>
+            <button data-imp="Medium"><span class="tj-imp medium"></span> แรง + กลาง</button>
+            <button data-imp="All">ทั้งหมด</button>
+          </div>
+          <div class="tj-segctl" id="tj-news-range">
+            <button data-r="upcoming" class="active">ที่กำลังจะมา</button>
+            <button data-r="week">ย้อนหลัง + ล่วงหน้า</button>
+          </div>
+        </div>
+        <div class="tj-news-ccy" id="tj-news-ccy"></div>
+        <div class="tj-news-alert">
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" id="tj-news-alert-on"><label class="form-check-label fw-semibold" for="tj-news-alert-on">แจ้งเตือนก่อนข่าวแรงออก</label></div>
+            <select class="form-select form-select-sm" id="tj-news-alert-min" style="width:auto;">
+              <option value="5">5 นาที</option><option value="15" selected>15 นาที</option><option value="30">30 นาที</option><option value="60">1 ชั่วโมง</option>
+            </select>
+            <span class="small text-muted" id="tj-news-alert-status"></span>
+          </div>
+          <div class="small text-muted mt-1" style="font-size:.7rem;">แจ้งเตือนเฉพาะข่าวแรง (High) ของสกุลเงินที่เลือก · ทำงานขณะเปิดแอปอยู่ (รวมถึงเปิดค้างไว้ในแท็บ/เบื้องหลัง)</div>
+        </div>
+      </div>
+
+      <div class="card card-stat p-0 mb-5 overflow-hidden">
+        <div id="tj-news-list"><div class="tj-empty"><i class="fa-solid fa-spinner fa-spin"></i><div>กำลังโหลดข่าว...</div></div></div>
+      </div>
+    </div>
+
     <!-- ══════════ CALENDAR PAGE ══════════ -->
     <div id="calendar" class="page-section print-hide">
       <div class="tj-page-head">
@@ -1033,6 +1114,16 @@
             <div class="section-header"><div class="icon-wrap"><i class="fa-solid fa-earth-asia"></i></div><h6 class="title">P&amp;L ตามเซสชัน (Sydney / Tokyo / London / New York)</h6></div>
             <div id="tj-sess-perf"></div>
             <div class="small text-muted mt-2" style="font-size:.7rem;">ไม้ที่ไม่ได้เลือกเซสชันไว้ ระบบคำนวณให้จากเวลาเข้าออเดอร์ (หรือเวลาที่บันทึก) · ช่วงที่ตลาดเปิดซ้อนกันนับเป็นเซสชันที่เปิดทีหลัง</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card card-stat p-4">
+            <div class="section-header"><div class="icon-wrap"><i class="fa-regular fa-newspaper"></i></div><h6 class="title">เทรดช่วงข่าวแรง vs ช่วงปกติ</h6></div>
+            <div id="tj-news-perf"></div>
+            <div class="small text-muted mt-2" style="font-size:.7rem;">นับจากไม้ที่ติ๊ก “เทรดช่วงข่าวแรง” ในฟอร์ม (ระบบติ๊กให้อัตโนมัติเมื่อเวลาเข้าออเดอร์อยู่ภายใน ±30 นาทีจากข่าวแรง)</div>
           </div>
         </div>
       </div>
@@ -1149,6 +1240,7 @@
                 <option value="Asian">Asian (เอเชีย · แบบเดิม)</option><option value="Off-session">นอกเวลาตลาดหลัก</option>
               </select>
               <div class="tj-sess-hint" id="tj-sess-hint"></div>
+              <div class="tj-news-warn" id="tj-news-warn"></div>
             </div>
           </div>
 
@@ -1182,6 +1274,7 @@
               <div class="col-6"><div class="form-check"><input class="form-check-input conf-check" type="checkbox" value="OB" id="conf2"><label class="form-check-label" for="conf2">Order Block</label></div></div>
               <div class="col-6"><div class="form-check"><input class="form-check-input conf-check" type="checkbox" value="LIQ" id="conf3"><label class="form-check-label" for="conf3">Liquidity Sweep</label></div></div>
               <div class="col-6"><div class="form-check"><input class="form-check-input conf-check" type="checkbox" value="BOS" id="conf4"><label class="form-check-label" for="conf4">BOS / CHOCH</label></div></div>
+              <div class="col-12"><div class="form-check"><input class="form-check-input conf-check" type="checkbox" value="NEWS" id="conf5"><label class="form-check-label" for="conf5">📰 เทรดช่วงข่าวแรง (±30 นาที)</label></div></div>
             </div>
             <input type="hidden" name="confluences" id="confluences-hidden">
           </div>
@@ -2772,7 +2865,8 @@
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>ภาพรวม</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i><span>ปฏิทิน</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i><span>กราฟ</span></a>
-      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>Performance</span></a>
+      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('news')" style="position:relative"><i class="fa-regular fa-newspaper"></i><span>ข่าว</span><span class="tj-news-dot" id="tj-news-dot-bottom"></span></a>
+      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>สถิติ</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
     </div>
   </nav>
@@ -2912,7 +3006,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v21';
+    window.APP_BUILD = '2026-09-26-v24';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3240,7 +3334,7 @@
           if(fm!=='all' && (d.getMonth()+1)!=fm) continue;
           if(fy!=='all' && d.getFullYear()!=fy) continue;
         }
-        out.push({ d, pnl: parseFloat(r.pnl), type, sym, hour: tradeHour(r,d), r: parseFloat(r.r_mult), sess: String(r.session||'').trim(), et: String(r.entry_time||'').trim() });
+        out.push({ d, pnl: parseFloat(r.pnl), type, sym, hour: tradeHour(r,d), r: parseFloat(r.r_mult), sess: String(r.session||'').trim(), et: String(r.entry_time||'').trim(), news: /(^|,)\s*NEWS\s*(,|$)/.test(String(r.confluences||'')) });
       }
       out.sort((a,b)=>a.d-b.d);
       return out;
@@ -3425,6 +3519,23 @@
       renderHeatmap(trades);
       renderLongShort(trades);
       renderSessions(trades);
+      renderNewsPerf(trades);
+    }
+
+    function renderNewsPerf(trades){
+      const host = document.getElementById('tj-news-perf'); if(!host) return;
+      if(!trades.length){ host.innerHTML = '<div class="tj-empty"><i class="fa-regular fa-newspaper"></i><div>ยังไม่มีข้อมูล</div></div>'; return; }
+      const N = summarize(trades.filter(t=>t.news)), R = summarize(trades.filter(t=>!t.news));
+      const row = (name, sub, x) => `<div class="tj-ls-row"><div class="fw-semibold">${name}<div class="h" style="text-align:left">${sub}</div></div>
+        <div><div class="h">ไม้</div><div class="n">${x.n}</div></div>
+        <div><div class="h">Win</div><div class="n">${x.n? x.wr.toFixed(0)+'%':'—'}</div></div>
+        <div><div class="h">P&amp;L</div><div class="n money ${x.net>0?'text-gain':(x.net<0?'text-loss':'')}">${fmt$(x.net,true)}</div></div></div>`;
+      let tip = '';
+      if(N.n>=3 && R.n>=3){
+        const d = N.wr - R.wr;
+        tip = `<div class="small mt-2 fw-semibold ${d<0?'text-loss':'text-gain'}">${d<0?'⚠️ ช่วงข่าวแรง win rate ต่ำกว่าปกติ '+Math.abs(d).toFixed(0)+'% — พิจารณาหลีกเลี่ยงการเข้าออเดอร์ช่วงข่าว':'✓ ช่วงข่าวแรง win rate สูงกว่าปกติ '+d.toFixed(0)+'%'}</div>`;
+      }
+      host.innerHTML = row('📰 ช่วงข่าวแรง','±30 นาทีจากข่าว',N) + row('ช่วงปกติ','ไม่มีข่าวแรงใกล้เวลาเข้า',R) + tip;
     }
 
     function renderSessions(trades){
@@ -3514,6 +3625,8 @@
         const rows = await window.api.getAllRows();
         if(seq!==_loadSeq) return;
         state.rows = rows || [];
+        window._tjRows = state.rows;
+        try{ document.dispatchEvent(new CustomEvent('tj:rows')); }catch(e){}
         renderAll();
       }catch(e){ console.error('[v2] load rows', e); }
     }
@@ -3954,6 +4067,271 @@
     })();
     setInterval(()=>{ const pg=document.querySelector('.page-section.active'); if(pg && pg.id==='add-trade' && !(et && et.value)) update(); }, 60000);
     update();
+  })();
+  </script>
+
+  <!-- ══════════ v5: ข่าวเศรษฐกิจ + แจ้งเตือนก่อนข่าว ══════════ -->
+  <script>
+  (function(){
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:JSON.parse(v); }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} } };
+    const pad = n => String(n).padStart(2,'0');
+    const ALL_CCY = ['USD','EUR','GBP','JPY','AUD','CAD','CHF','NZD','CNY'];
+    const FLAG = { USD:'🇺🇸', EUR:'🇪🇺', GBP:'🇬🇧', JPY:'🇯🇵', AUD:'🇦🇺', CAD:'🇨🇦', CHF:'🇨🇭', NZD:'🇳🇿', CNY:'🇨🇳' };
+    const TH_DAYS = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+    const TH_MON = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+    const NEWS_WORKER = 'https://liewtrade-news.lewclassic.workers.dev/api/calendar';
+    const WORKER = 'https://liewtrade.lewclassic.workers.dev/api/calendar';
+    const URLS = [NEWS_WORKER, WORKER];
+    const CACHE_KEY = 'tj_news_cache_v1', TTL = 15*60*1000;
+    const NEAR_MIN = 30;
+
+    const st = {
+      events: [], loaded: false, error: '', updated: null,
+      impact: store.get('tj_news_imp','High'), range: 'upcoming',
+      ccy: store.get('tj_news_ccy', null),
+      alertOn: store.get('tj_news_alert_on', false), alertMin: store.get('tj_news_alert_min', 15),
+      notified: store.get('tj_news_notified', [])
+    };
+
+    // ── สกุลเงินที่เกี่ยวกับ Symbol ──
+    function ccyOfSymbol(sym){
+      sym = String(sym||'').toUpperCase().replace(/^[A-Z]+:/,'');
+      const out = new Set();
+      ALL_CCY.forEach(c=>{ if(sym.includes(c)) out.add(c); });
+      if(/XAU|XAG|GOLD|SILVER|OIL|WTI|BTC|ETH|US30|US500|SPX|NAS|NDX|DJ|US100/.test(sym)) out.add('USD');
+      if(/GER|DE40|DAX|EU50|FRA/.test(sym)) out.add('EUR');
+      if(/UK100|FTSE/.test(sym)) out.add('GBP');
+      if(/JP225|NIK/.test(sym)) out.add('JPY');
+      if(/AUS200/.test(sym)) out.add('AUD');
+      return Array.from(out);
+    }
+    function defaultCcy(){
+      const set = new Set(['USD']);
+      (window._tjRows||[]).forEach(r=>{ if(r.type==='Buy'||r.type==='Sell') ccyOfSymbol(r.symbol).forEach(c=>set.add(c)); });
+      return ALL_CCY.filter(c=>set.has(c));
+    }
+    function selCcy(){ return st.ccy && st.ccy.length ? st.ccy : defaultCcy(); }
+
+    // ── โหลดข่าว ──
+    function normalize(arr){
+      return (arr||[]).map(e=>{
+        const t = new Date(e.date);
+        return { id: (e.country||'')+'|'+(e.title||'')+'|'+(e.date||''), title: e.title||'', ccy: String(e.country||'').toUpperCase(), t, impact: e.impact||'', forecast: e.forecast||'', previous: e.previous||'', actual: e.actual||'' };
+      }).filter(e=>!isNaN(e.t)).sort((a,b)=>a.t-b.t);
+    }
+    async function load(force){
+      const c = store.get(CACHE_KEY, null);
+      if(!force && c && Date.now()-c.ts < TTL && c.events){ st.source = c.source || 'forexfactory'; st.events = normalize(c.events); st.loaded = true; st.error=''; st.updated = new Date(c.ts); renderAll(); return; }
+      let lastErr = '';
+      for(const u of URLS){
+        try{
+          const ctl = new AbortController(); const to = setTimeout(()=>ctl.abort(), 12000);
+          const r = await fetch(u, { signal: ctl.signal, cache:'no-store' }); clearTimeout(to);
+          if(!r.ok) throw new Error('HTTP '+r.status);
+          const j = await r.json();
+          const arr = Array.isArray(j) ? j : j.events;
+          if(!Array.isArray(arr)) throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
+          st.source = (j && j.source) || 'forexfactory';
+          store.set(CACHE_KEY, { ts: Date.now(), events: arr, source: st.source });
+          st.events = normalize(arr); st.loaded = true; st.error=''; st.updated = new Date(); renderAll(); return;
+        }catch(e){ lastErr = e.name==='AbortError' ? 'หมดเวลาเชื่อมต่อ' : (e.message||String(e)); }
+      }
+      if(c && c.events){ st.events = normalize(c.events); st.loaded = true; st.updated = new Date(c.ts); st.error = 'ใช้ข้อมูลที่เก็บไว้ (อัปเดตไม่สำเร็จ: '+lastErr+')'; }
+      else { st.loaded = false; st.error = lastErr || 'โหลดไม่สำเร็จ'; }
+      renderAll();
+    }
+
+    // ── helper ──
+    function filtered(opts){
+      opts = opts||{};
+      const ccy = selCcy(), now = Date.now();
+      return st.events.filter(e=>{
+        if(!ccy.includes(e.ccy)) return false;
+        const imp = opts.impact || st.impact;
+        if(imp==='High' && e.impact!=='High') return false;
+        if(imp==='Medium' && !(e.impact==='High' || e.impact==='Medium')) return false;
+        if(opts.upcoming && e.t.getTime() < now - 60*1000) return false;
+        return true;
+      });
+    }
+    function nextHigh(){ const now = Date.now(); return filtered({impact:'High'}).find(e=>e.t.getTime() >= now - 60*1000) || null; }
+    function cdText(ms){
+      if(ms <= 0) return 'กำลังประกาศ';
+      const m = Math.floor(ms/60000), h = Math.floor(m/60), d = Math.floor(h/24);
+      if(d>=1) return d+' วัน '+(h%24)+' ชม.';
+      if(h>=1) return h+' ชม. '+(m%60)+' นาที';
+      const s = Math.floor(ms/1000)%60;
+      return m+':'+pad(s)+' นาที';
+    }
+    const fmtTime = d => pad(d.getHours())+':'+pad(d.getMinutes());
+    const fmtDay = d => TH_DAYS[d.getDay()]+' '+d.getDate()+' '+TH_MON[d.getMonth()];
+    function tradedNear(e){
+      const rows = window._tjRows||[]; const t = e.t.getTime();
+      return rows.some(r=>{
+        if(r.type!=='Buy' && r.type!=='Sell') return false;
+        if(!ccyOfSymbol(r.symbol).includes(e.ccy)) return false;
+        let d = new Date(r.created_at);
+        const m = /^(\d{1,2}):(\d{2})/.exec(String(r.entry_time||'')); if(m) d.setHours(+m[1],+m[2],0,0);
+        return Math.abs(d.getTime()-t) <= NEAR_MIN*60000;
+      });
+    }
+
+    // ── render ──
+    function renderControls(){
+      const ccy = selCcy();
+      const host = $('tj-news-ccy');
+      if(host){
+        host.innerHTML = ALL_CCY.map(c=>`<button type="button" data-c="${c}" class="${ccy.includes(c)?'active':''}">${FLAG[c]||''} ${c}</button>`).join('');
+        host.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+          const cur = new Set(selCcy()); cur.has(b.dataset.c) ? cur.delete(b.dataset.c) : cur.add(b.dataset.c);
+          st.ccy = ALL_CCY.filter(c=>cur.has(c)); if(!st.ccy.length) st.ccy = ['USD'];
+          store.set('tj_news_ccy', st.ccy); renderAll();
+        }));
+      }
+      document.querySelectorAll('#tj-news-impact button').forEach(b=>b.classList.toggle('active', b.dataset.imp===st.impact));
+      document.querySelectorAll('#tj-news-range button').forEach(b=>b.classList.toggle('active', b.dataset.r===st.range));
+      const on=$('tj-news-alert-on'); if(on) on.checked = !!st.alertOn;
+      const mi=$('tj-news-alert-min'); if(mi) mi.value = String(st.alertMin);
+      alertStatus();
+    }
+    let tvLoaded = false;
+    function renderFallback(){
+      const list = $('tj-news-list'); if(!list) return;
+      list.innerHTML = `<div class="p-3 small" style="color:var(--muted)"><i class="fa-solid fa-triangle-exclamation text-warning me-1"></i> โหลดข้อมูลข่าวไม่ได้ (${esc(st.error)}) — แสดงปฏิทินข่าวจาก TradingView แทน · ระบบแจ้งเตือนและการวิเคราะห์ต้องใช้ข้อมูลข่าว (ดูวิธีตั้งค่า Worker ด้านล่าง)</div><div class="tj-news-tvwrap" id="tj-news-tv"></div>
+        <div class="p-3 small" style="color:var(--muted);font-size:.72rem;border-top:1px solid var(--border)">วิธีเปิดใช้: สร้าง Cloudflare Worker ชื่อ <b>liewtrade-news</b> แล้ววางโค้ดจากไฟล์ <b>news-worker.js</b> กด Deploy</div>`;
+      const box = $('tj-news-tv'); if(!box) return;
+      const dark = document.documentElement.getAttribute('data-theme')==='dark';
+      const wrap = document.createElement('div'); wrap.className='tradingview-widget-container'; wrap.style.height='100%';
+      const inner = document.createElement('div'); inner.className='tradingview-widget-container__widget'; inner.style.height='100%';
+      const sc = document.createElement('script'); sc.src='https://s3.tradingview.com/external-embedding/embed-widget-events.js'; sc.async=true;
+      sc.text = JSON.stringify({ colorTheme: dark?'dark':'light', isTransparent:true, width:'100%', height:'100%', locale:'th_TH', importanceFilter:'0,1', countryFilter:'us,eu,gb,jp,au,ca,ch,nz,cn' });
+      wrap.appendChild(inner); wrap.appendChild(sc); box.appendChild(wrap);
+    }
+    function renderList(){
+      const list = $('tj-news-list'); if(!list) return;
+      if(!st.loaded){ if(st.error) renderFallback(); return; }
+      const evs = filtered({ upcoming: st.range==='upcoming' });
+      if(!evs.length){ list.innerHTML = '<div class="tj-empty"><i class="fa-regular fa-newspaper"></i><div>ไม่มีข่าวตามตัวกรองนี้</div></div>'; return; }
+      const now = Date.now(); let html = '', lastDay = '';
+      evs.forEach(e=>{
+        const dk = e.t.toDateString();
+        if(dk!==lastDay){ lastDay = dk; html += `<div class="tj-news-day">${fmtDay(e.t)}${dk===new Date().toDateString()?' · วันนี้':''}</div>`; }
+        const diff = e.t.getTime() - now;
+        const cls = ['tj-news-row', diff < -60000 ? 'past' : '', (diff >= -60000 && diff <= 60*60000 && e.impact==='High') ? 'soon' : '', (diff < 0 && tradedNear(e)) ? 'traded' : ''].join(' ');
+        const imp = (e.impact||'').toLowerCase();
+        const fp = [e.actual?'A: '+esc(e.actual):'', e.forecast?'F: '+esc(e.forecast):'', e.previous?'P: '+esc(e.previous):''].filter(Boolean).join(' · ');
+        const allDay = e.t.getHours()===0 && e.t.getMinutes()===0 && e.impact==='Holiday';
+        html += `<div class="${cls}"><div class="t">${allDay?'ทั้งวัน':fmtTime(e.t)}</div><div class="c"><span class="tj-imp ${imp}" title="${esc(e.impact)}"></span>${esc(e.ccy)}</div>
+          <div class="ti">${esc(e.title)}${diff>0 && diff<=24*3600000 ? `<small>อีก ${cdText(diff)}</small>`:''}</div><div class="fp">${fp}</div></div>`;
+      });
+      const upd = st.updated ? `อัปเดต ${fmtTime(st.updated)}` : '';
+      list.innerHTML = html + `<div class="p-2 px-3 small" style="font-size:.68rem;color:var(--muted);border-top:1px solid var(--border)">ที่มา: ${st.source==='tradingview'?'TradingView Economic Calendar':'ForexFactory'} · ${upd}${st.error? ' · '+esc(st.error):''} · A = ค่าจริง, F = คาดการณ์, P = ก่อนหน้า</div>`;
+    }
+    function renderNext(){
+      const e = st.loaded ? nextHigh() : null;
+      const host = $('tj-news-next'), strip = $('tj-news-strip');
+      const dots = [$('tj-news-dot-side'), $('tj-news-dot-bottom')];
+      if(!e){ if(host) host.innerHTML=''; if(strip) strip.innerHTML=''; dots.forEach(d=>d&&d.classList.remove('on')); return; }
+      const diff = e.t.getTime() - Date.now();
+      if(host) host.innerHTML = `<div><div class="lbl">ข่าวแรงถัดไป</div><div class="ttl">${FLAG[e.ccy]||''} ${esc(e.ccy)} — ${esc(e.title)}</div>
+        <div class="meta">${fmtDay(e.t)} · ${fmtTime(e.t)} น.${e.forecast?' · คาด '+esc(e.forecast):''}${e.previous?' · ก่อนหน้า '+esc(e.previous):''}</div></div>
+        <div class="cd"><div class="lbl">อีก</div><b data-cd="${e.t.getTime()}">${cdText(diff)}</b></div>`;
+      if(strip) strip.innerHTML = diff <= 24*3600000 ? `<i class="fa-regular fa-newspaper" style="color:var(--loss)"></i><span>ข่าวแรง <b>${esc(e.ccy)} ${esc(e.title)}</b> · ${fmtTime(e.t)} น.</span><span class="cd" data-cd="${e.t.getTime()}">${cdText(diff)}</span>` : '';
+      dots.forEach(d=>d && d.classList.toggle('on', diff <= 60*60000));
+    }
+    function tick(){
+      document.querySelectorAll('[data-cd]').forEach(el=>{ el.textContent = cdText(+el.dataset.cd - Date.now()); });
+    }
+    function renderAll(){ renderControls(); renderList(); renderNext(); formWarn(); }
+
+    // ── แจ้งเตือน ──
+    function alertStatus(){
+      const el = $('tj-news-alert-status'); if(!el) return;
+      if(!st.alertOn){ el.textContent=''; return; }
+      if(!('Notification' in window)) el.textContent = 'อุปกรณ์นี้ไม่รองรับการแจ้งเตือน — จะแสดงแถบเตือนในแอปแทน';
+      else if(Notification.permission==='granted') el.textContent = '✓ เปิดการแจ้งเตือนแล้ว';
+      else if(Notification.permission==='denied') el.textContent = 'เบราว์เซอร์บล็อกการแจ้งเตือน — จะแสดงแถบเตือนในแอปแทน (เปิดได้ในตั้งค่าเว็บไซต์)';
+      else el.textContent = 'รอการอนุญาตแจ้งเตือน';
+    }
+    async function notify(e){
+      const mins = Math.max(0, Math.round((e.t.getTime()-Date.now())/60000));
+      const title = `ข่าวแรงอีก ${mins} นาที: ${e.ccy}`;
+      const body = `${e.title} · ${fmtTime(e.t)} น.${e.forecast?' · คาด '+e.forecast:''}${e.previous?' · ก่อนหน้า '+e.previous:''}`;
+      banner(title, body);
+      try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(_){}
+      if(!('Notification' in window) || Notification.permission!=='granted') return;
+      const opts = { body, tag: e.id, icon: 'app-icon.svg', badge: 'app-icon.svg', requireInteraction: true };
+      try{
+        if(navigator.serviceWorker){ const reg = await navigator.serviceWorker.getRegistration(); if(reg && reg.showNotification){ await reg.showNotification(title, opts); return; } }
+      }catch(_){}
+      try{ new Notification(title, opts); }catch(_){}
+    }
+    function banner(title, body){
+      const old = document.querySelector('.tj-news-banner'); if(old) old.remove();
+      const b = document.createElement('div'); b.className='tj-news-banner';
+      b.innerHTML = `<i class="fa-solid fa-bell" style="color:var(--loss);margin-top:3px"></i><div><b>${esc(title)}</b><div style="color:var(--muted);font-size:.8rem">${esc(body)}</div></div><button type="button" aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>`;
+      b.querySelector('button').addEventListener('click', ev=>{ ev.stopPropagation(); b.remove(); });
+      b.addEventListener('click', ()=>{ b.remove(); switchTab('news'); });
+      document.body.appendChild(b);
+      setTimeout(()=>{ if(b.isConnected) b.remove(); }, 60000);
+    }
+    function checkAlerts(){
+      if(!st.alertOn || !st.loaded) return;
+      const now = Date.now(), win = st.alertMin*60000;
+      filtered({impact:'High'}).forEach(e=>{
+        const diff = e.t.getTime() - now;
+        if(diff > 0 && diff <= win && !st.notified.includes(e.id)){
+          st.notified.push(e.id); st.notified = st.notified.slice(-200); store.set('tj_news_notified', st.notified);
+          notify(e);
+        }
+      });
+    }
+
+    // ── ฟอร์มบันทึกออเดอร์: เตือนข่าวใกล้เวลาเข้า + ติ๊ก NEWS อัตโนมัติ ──
+    let newsTouched = false;
+    function formWarn(){
+      const box = $('tj-news-warn'); if(!box) return;
+      const form = $('tradeForm'); if(!form || !st.loaded){ box.innerHTML=''; return; }
+      const sym = (form.querySelector('[name="symbol"]')||{}).value || '';
+      const et = (form.querySelector('[name="entryTime"]')||{}).value || '';
+      const ccy = sym ? ccyOfSymbol(sym) : selCcy();
+      let d = new Date(); const m = /^(\d{1,2}):(\d{2})/.exec(et); if(m) d.setHours(+m[1],+m[2],0,0);
+      const near = st.events.filter(e=> e.impact==='High' && ccy.includes(e.ccy) && Math.abs(e.t.getTime()-d.getTime()) <= NEAR_MIN*60000);
+      box.innerHTML = near.length ? '📰 ข่าวแรงใกล้เวลาเข้า: ' + near.map(e=>{ const dm = Math.round((e.t.getTime()-d.getTime())/60000); return `<b>${esc(e.ccy)} ${esc(e.title)}</b> ${fmtTime(e.t)} (${dm>=0?'อีก '+dm:'ผ่านมา '+(-dm)} นาที)`; }).join(', ') : '';
+      const cb = $('conf5');
+      if(cb && !newsTouched) cb.checked = near.length > 0;
+    }
+    (function wireForm(){
+      const form = $('tradeForm'); if(!form) return;
+      ['symbol','entryTime'].forEach(n=>{ const el=form.querySelector('[name="'+n+'"]'); if(el){ el.addEventListener('input', formWarn); el.addEventListener('change', formWarn); } });
+      const cb = $('conf5'); if(cb) cb.addEventListener('change', ()=>{ newsTouched = true; });
+      form.addEventListener('reset', ()=>{ newsTouched = false; setTimeout(formWarn, 0); });
+    })();
+
+    // ── wire ──
+    document.querySelectorAll('#tj-news-impact button').forEach(b=>b.addEventListener('click',()=>{ st.impact=b.dataset.imp; store.set('tj_news_imp', st.impact); renderAll(); }));
+    document.querySelectorAll('#tj-news-range button').forEach(b=>b.addEventListener('click',()=>{ st.range=b.dataset.r; renderAll(); }));
+    $('tj-news-refresh') && $('tj-news-refresh').addEventListener('click', ()=>{ const l=$('tj-news-list'); if(l) l.innerHTML='<div class="tj-empty"><i class="fa-solid fa-spinner fa-spin"></i><div>กำลังโหลดข่าว...</div></div>'; load(true); });
+    $('tj-news-alert-on') && $('tj-news-alert-on').addEventListener('change', async ev=>{
+      st.alertOn = ev.target.checked; store.set('tj_news_alert_on', st.alertOn);
+      if(st.alertOn && 'Notification' in window && Notification.permission==='default'){ try{ await Notification.requestPermission(); }catch(_){} }
+      alertStatus(); checkAlerts();
+    });
+    $('tj-news-alert-min') && $('tj-news-alert-min').addEventListener('change', ev=>{ st.alertMin = +ev.target.value||15; store.set('tj_news_alert_min', st.alertMin); checkAlerts(); });
+    document.addEventListener('tj:rows', ()=>{ if(!st.ccy) renderAll(); else renderList(); });
+    (function hook(){
+      const orig = window.switchTab;
+      if(typeof orig!=='function'){ setTimeout(hook,60); return; }
+      window.switchTab = function(id){ const r = orig.apply(this, arguments); if(id==='news'){ renderAll(); if(!st.updated || Date.now()-st.updated.getTime() > TTL) load(false); } if(id==='add-trade') formWarn(); return r; };
+    })();
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden){ if(!st.updated || Date.now()-st.updated.getTime() > TTL) load(false); checkAlerts(); renderNext(); } });
+    setInterval(tick, 1000);
+    setInterval(()=>{ checkAlerts(); renderNext(); }, 20000);
+    setInterval(()=>{ load(false); }, TTL);
+    window.tjNews = { reload: ()=>load(true), state: st, ccyOfSymbol };
+    load(false);
   })();
   </script>
 
