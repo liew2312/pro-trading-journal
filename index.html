@@ -714,6 +714,29 @@
     form.tj-quick .tj-full-only{display:none!important;}
     .tj-quick-note{font-size:.76rem;color:var(--muted);background:var(--panel);border-radius:10px;padding:8px 12px;margin:-4px 0 16px;text-align:center;}
     .tj-edit-banner:empty{display:none;}
+    form.tj-wizard .tj-wiz-hide{display:none!important;}
+    form.tj-wizard ~ *{}
+    .tj-wiz-head{margin-bottom:18px;}
+    .tj-wiz-num{font-size:.78rem;font-weight:800;color:var(--brand);background:var(--brand-tint);border-radius:10px;padding:4px 10px;}
+    .tj-wiz-bar{flex:1;height:6px;border-radius:99px;background:var(--panel);overflow:hidden;}
+    .tj-wiz-bar span{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .25s;}
+    .tj-wiz-title{font-size:1.35rem;font-weight:800;color:var(--ink);margin-top:6px;}
+    .tj-wiz-sub{font-size:.8rem;color:var(--muted);}
+    .tj-wiz-nav{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:8px;}
+    .tj-wiz-nav .btn{padding:12px 16px;font-weight:700;border-radius:14px!important;}
+    .tj-wiz-nav #tj-wiz-skip{grid-column:1/-1;padding:6px;}
+    form.tj-wizard #submitBtn{margin-top:4px;}
+    .tj-sum-card{border:1px solid var(--border);border-radius:18px;padding:14px 16px;margin-bottom:14px;background:var(--card-bg);}
+    .tj-sum-top{display:flex;justify-content:space-between;gap:10px;padding-bottom:10px;margin-bottom:6px;border-bottom:1px solid var(--border);}
+    .tj-sum-top .sym{font-size:1.15rem;font-weight:800;color:var(--ink);}
+    .tj-sum-top .pnl{font-size:1.3rem;font-weight:800;}
+    .tj-sum-row{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--border);font-size:.84rem;}
+    .tj-sum-row:last-child{border-bottom:0;}
+    .tj-sum-row span{color:var(--muted);} .tj-sum-row b{color:var(--ink);font-weight:600;}
+    .tj-sym-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+    .tj-sym-chips:empty{display:none;}
+    .tj-sym-chips button{border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-weight:700;font-size:.74rem;padding:4px 10px;border-radius:99px;font-family:inherit;}
+    .tj-sym-chips button:hover{border-color:var(--brand);color:var(--brand);}
     .tj-edit-banner{display:flex;align-items:center;gap:10px;justify-content:space-between;background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.4);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.82rem;color:var(--ink);}
 
     /* ══════════ v8: Soft minimal theme + accents ══════════ */
@@ -771,7 +794,8 @@
     .tj-bottomnav-inner{align-items:flex-end;}
     .tj-nav-plus{flex:none;width:56px;height:56px;border-radius:50%;border:4px solid var(--canvas);background:var(--brand);color:var(--on-brand);font-size:1.35rem;display:flex;align-items:center;justify-content:center;margin-top:-26px;box-shadow:0 8px 20px rgba(0,0,0,.18);cursor:pointer;}
     .tj-nav-item.active,.tj-nav-item:hover{color:var(--brand)!important;}
-    .tj-fab-add{display:none!important;}
+    .tj-fab-add{background:var(--brand)!important;color:var(--on-brand)!important;border-radius:20px!important;width:58px!important;height:58px!important;box-shadow:0 10px 24px rgba(0,0,0,.2)!important;}
+    @media(min-width:992px){ .tj-fab-add{display:none!important;} }
     @media(max-width:991px){ body{padding-bottom:96px;} }
 
     /* แผ่นเมนู (mobile) */
@@ -1372,7 +1396,7 @@
         <div class="text-center mb-3"><button type="button" class="tj-fbtn d-inline-flex" onclick="switchTab('chart')"><i class="fa-solid fa-chart-simple"></i> เปิดกราฟเพื่อจับภาพ</button></div>
         <hr class="text-muted mb-4 opacity-25">
         <div class="tj-edit-banner" id="tj-edit-banner"></div>
-        <div class="d-flex justify-content-center mb-3"><div class="tj-segctl" id="tj-form-mode"><button type="button" data-m="quick"><i class="fa-solid fa-bolt"></i> บันทึกด่วน</button><button type="button" data-m="full"><i class="fa-solid fa-list"></i> แบบเต็ม</button></div></div>
+        <div class="d-flex justify-content-center mb-3"><div class="tj-segctl" id="tj-form-mode"><button type="button" data-m="wizard"><i class="fa-solid fa-shoe-prints"></i> ทีละขั้น</button><button type="button" data-m="quick"><i class="fa-solid fa-bolt"></i> ด่วน</button><button type="button" data-m="full"><i class="fa-solid fa-list"></i> แบบเต็ม</button></div></div>
         <div class="tj-quick-note" id="tj-quick-note">⚡ กรอกเฉพาะที่จำเป็น — เซสชัน, Risk, Revenge/Overtrade ระบบเติมให้เอง · ค่อยกลับมาเติม Setup/เกรด/ภาพ/บันทึก ทีหลัง</div>
         <form id="tradeForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" name="emotion" id="f_emotion" value="">
@@ -1414,19 +1438,10 @@
           </div>
           
           <div class="row g-3 mb-4">
-            <div class="col-sm-4"><label class="form-label">Lot Size</label><input type="number" step="0.01" id="f_lots" class="form-control form-control-lg fw-bold" name="lots" placeholder="0.00" oninput="autoCalcRR()" required></div>
-            <div class="col-sm-4"><label class="form-label">Risk $ (เงินที่เสี่ยง)</label><input type="number" step="0.01" min="0.01" id="f_risk" class="form-control form-control-lg fw-bold text-danger" name="riskAmount" placeholder="คำนวณจาก SL" oninput="autoCalcRR()" required></div>
-            <div class="col-sm-4"><label class="form-label">Net P/L ($)</label><input type="number" step="0.01" id="f_pnl" class="form-control form-control-lg fw-bold" name="pnl" placeholder="กำไร/ขาดทุน สุทธิ" oninput="autoCalcRR()" required></div>
+            <div class="col-6"><label class="form-label">Lot Size</label><input type="number" step="0.01" id="f_lots" class="form-control form-control-lg fw-bold" name="lots" placeholder="0.00" oninput="autoCalcRR()" required></div>
+            <div class="col-6"><label class="form-label">Risk $ (เงินที่เสี่ยง)</label><input type="number" step="0.01" min="0.01" id="f_risk" class="form-control form-control-lg fw-bold text-danger" name="riskAmount" placeholder="คำนวณจาก SL" oninput="autoCalcRR()" required></div>
           </div>
           <div class="tj-risk-info" id="tj-risk-info"></div>
-
-          <!-- R-Multiple Preview -->
-          <div id="rmult-preview" class="mb-4 d-none rounded-3 px-4 py-3 text-center" style="background:var(--panel);border:1px solid var(--border);">
-            <div style="font-size:0.75rem;font-weight:700;color:#70707A;letter-spacing:0.5px;text-transform:uppercase;">R-Multiple ที่ได้ (คำนวณอัตโนมัติ)</div>
-            <div id="rmult-value" class="fw-bold mt-1" style="font-size:1.6rem;color:#276B44;">—</div>
-            <div style="font-size:0.75rem;color:#70707A;">R = Net P/L ÷ Risk$</div>
-          </div>
-
 
           <div class="row g-3 mb-4">
             <div class="col-sm-6">
@@ -1514,14 +1529,23 @@
             </div>
           </div>
 
-          <div class="mb-4">
-            <label class="form-label">ผลลัพธ์ (Outcome)</label>
+          <div class="row g-3 mb-4" id="tj-outcome-row">
+            <div class="col-sm-6"><label class="form-label">ผลลัพธ์ (Outcome)</label>
             <select class="form-select form-select-lg fw-bold" name="outcome" required>
               <option value="" disabled selected>-- เลือกผลลัพธ์ --</option>
               <option value="TP" class="text-success">✅ ชน TP (Take Profit)</option><option value="SL" class="text-danger">❌ ชน SL (Stop Loss)</option>
               <option value="BE" class="text-warning">🛡️ ชนกันทุน (Break Even)</option><option value="Manual" class="text-primary">✋ ปิดมือเอง (Manual Close)</option>
-            </select>
+            </select></div>
+            <div class="col-sm-6"><label class="form-label">Net P/L ($)</label><input type="number" step="0.01" id="f_pnl" class="form-control form-control-lg fw-bold" name="pnl" placeholder="กำไร/ขาดทุน สุทธิ" oninput="autoCalcRR()" required></div>
           </div>
+          <!-- R-Multiple Preview -->
+          <div id="rmult-preview" class="mb-4 d-none rounded-3 px-4 py-3 text-center" style="background:var(--panel);border:1px solid var(--border);">
+            <div style="font-size:0.75rem;font-weight:700;color:#70707A;letter-spacing:0.5px;text-transform:uppercase;">R-Multiple ที่ได้ (คำนวณอัตโนมัติ)</div>
+            <div id="rmult-value" class="fw-bold mt-1" style="font-size:1.6rem;color:#276B44;">—</div>
+            <div style="font-size:0.75rem;color:#70707A;">R = Net P/L ÷ Risk$</div>
+          </div>
+
+
 
           <div class="row g-3 mb-4">
             <div class="col-6"><label class="form-label">MAE · ราคาที่สวนไกลสุด</label><input type="number" step="any" class="form-control" name="mae" id="f_mae" placeholder="ราคา เช่น 4281.5"></div>
@@ -3184,7 +3208,7 @@
     <div class="tj-bottomnav-inner">
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>ภาพรวม</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-regular fa-file-lines"></i><span>ประวัติ</span></a>
-      <button class="tj-nav-plus" onclick="switchTab('add-trade')" aria-label="บันทึกเทรด"><i class="fa-solid fa-plus"></i></button>
+      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i><span>ปฏิทิน</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>สถิติ</span></a>
       <button class="tj-nav-item" onclick="tjOpenMenu()" style="position:relative"><i class="fa-solid fa-grip"></i><span>เมนู</span><span class="tj-news-dot" id="tj-news-dot-bottom"></span></button>
     </div>
@@ -3325,7 +3349,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v30';
+    window.APP_BUILD = '2026-09-26-v31';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5381,8 +5405,112 @@
     mark(F('notes') && F('notes').closest('div'));
     form.querySelectorAll('hr').forEach(h=>{ const n = h.nextElementSibling; if(n && n.classList.contains('upload-box')) mark(h); });
 
-    let mode = ls.get('tj_form_mode', window.innerWidth < 768 ? 'quick' : 'full');
+    let mode = ls.get('tj_form_mode', window.innerWidth < 768 ? 'wizard' : 'full');
     let editing = null;   // { id, wasQuick }
+    // ══════════ โหมดทีละขั้น (Wizard) ══════════
+    const STEPS = [
+      { t:'เทรดอะไร', s:'คู่เงิน · ทิศทาง · วันเวลาเข้า' },
+      { t:'แผน & ความเสี่ยง', s:'Entry · SL · TP · Lot' },
+      { t:'Setup', s:'เลือก Setup และติ๊กเงื่อนไขที่เป็นจริง', skip:true },
+      { t:'ผลลัพธ์', s:'ปิดแบบไหน ได้/เสียเท่าไร' },
+      { t:'วินัย', s:'ทำตามแผนไหม · ระบบตรวจพฤติกรรมให้', skip:true },
+      { t:'ภาพ & บทเรียน', s:'ภาพก่อน/หลัง และบันทึกสั้นๆ', skip:true },
+      { t:'ตรวจสอบก่อนบันทึก', s:'ดูสรุป แล้วกดบันทึก' }
+    ];
+    const stepOf = (el, n) => { if(el){ el.dataset.step = n; } };
+    const rowOf = sel => { const e = form.querySelector(sel); return e ? e.closest('.row') : null; };
+    stepOf(rowOf('#f_date'),1); stepOf($('tj-stop-form'),1); stepOf(rowOf('[name="symbol"]'),1);
+    stepOf(rowOf('#f_entry'),2); stepOf($('rr-preview-box'),2); stepOf(rowOf('#f_lots'),2); stepOf($('tj-risk-info'),2);
+    stepOf(rowOf('#f_setup'),3); stepOf($('tj-pb-check'),3); stepOf(rowOf('[name="marketContext"]'),3); stepOf(form.querySelector('.confluence-box'),3);
+    stepOf($('tj-outcome-row'),4); stepOf($('rmult-preview'),4); stepOf(rowOf('#f_mae'),4);
+    stepOf(form.querySelector('.god-rule-box'),5); stepOf($('tj-behave-warn'),5); stepOf(form.querySelector('.discipline-box'),5);
+    form.querySelectorAll('.upload-box').forEach(e=>stepOf(e,6)); stepOf(F('notes') && F('notes').closest('div'),6);
+    form.querySelectorAll(':scope > hr').forEach(h=>{ h.dataset.step = 'x'; });
+
+    const head = document.createElement('div'); head.id='tj-wiz-head'; head.className='tj-wiz-head';
+    const summary = document.createElement('div'); summary.id='tj-wiz-summary'; summary.className='tj-wiz-summary';
+    const nav = document.createElement('div'); nav.id='tj-wiz-nav'; nav.className='tj-wiz-nav';
+    nav.innerHTML = '<button type="button" class="btn btn-outline-secondary" id="tj-wiz-back"><i class="fa-solid fa-chevron-left me-1"></i> ย้อนกลับ</button><button type="button" class="btn btn-primary" id="tj-wiz-next">ถัดไป <i class="fa-solid fa-chevron-right ms-1"></i></button><button type="button" class="tj-linkbtn w-100 text-center" id="tj-wiz-skip" style="margin:0">ข้ามขั้นนี้</button>';
+    form.insertBefore(head, form.firstElementChild.nextElementSibling);
+    const submitBtn = $('submitBtn');
+    form.insertBefore(summary, submitBtn);
+    form.insertBefore(nav, submitBtn);
+    let step = 1;
+
+    function stepEls(n){ return [...form.querySelectorAll(':scope > [data-step="'+n+'"]')]; }
+    function validStep(n){
+      for(const el of stepEls(n)){
+        for(const inp of el.querySelectorAll('input,select,textarea')){
+          if(inp.offsetParent !== null && !inp.checkValidity()){ inp.reportValidity(); return false; }
+        }
+      }
+      return true;
+    }
+    function showStep(n){
+      step = Math.max(1, Math.min(STEPS.length, n));
+      const st = STEPS[step-1];
+      [...form.children].forEach(el=>{
+        if(el===head || el===nav || el===summary || el.tagName==='INPUT' && el.type==='hidden') return;
+        if(el===submitBtn){ el.style.display = step===STEPS.length ? '' : 'none'; return; }
+        el.classList.toggle('tj-wiz-hide', String(el.dataset.step)!==String(step));
+      });
+      head.innerHTML = `<div class="d-flex align-items-center gap-2 mb-2"><span class="tj-wiz-num">${step}/${STEPS.length}</span><div class="tj-wiz-bar"><span style="width:${step/STEPS.length*100}%"></span></div></div><div class="tj-wiz-title">${st.t}</div><div class="tj-wiz-sub">${st.s}</div>`;
+      $('tj-wiz-back').style.visibility = step>1 ? 'visible' : 'hidden';
+      $('tj-wiz-next').style.display = step<STEPS.length ? '' : 'none';
+      $('tj-wiz-skip').style.display = st.skip ? '' : 'none';
+      summary.style.display = step===STEPS.length ? '' : 'none';
+      if(step===STEPS.length) renderSummary();
+      if(step===2 || step===4){ ['f_entry','f_lots'].forEach(i=>{ const e=$(i); if(e) e.dispatchEvent(new Event('input')); }); }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function nextStep(){ if(!validStep(step)) return; showStep(step+1); }
+    $('tj-wiz-next').onclick = nextStep;
+    $('tj-wiz-back').onclick = ()=>showStep(step-1);
+    $('tj-wiz-skip').onclick = ()=>showStep(step+1);
+
+    function renderSummary(){
+      const v = n => (F(n)||{}).value || '';
+      const risk = parseFloat(v('riskAmount')), pnl = parseFloat(v('pnl'));
+      const rr = (()=>{ const e=parseFloat(v('entryPrice')), sl=parseFloat(v('slPrice')), tp=parseFloat(v('tpPrice')); return (e&&sl&&tp&&e!==sl) ? '1 : '+(Math.abs(tp-e)/Math.abs(e-sl)).toFixed(2) : '—'; })();
+      const r = risk>0 && isFinite(pnl) ? (pnl/risk) : null;
+      const g = $('f_grade').value;
+      const flags = [$('revenge').checked?'Revenge':'', $('overtrade').checked?'Overtrade':'', !$('lotRespected').checked?'OverLot':'', !$('followedPlan').checked?'ไม่ทำตามแผน':''].filter(Boolean);
+      const ocTxt = { TP:'ชน TP', SL:'ชน SL', BE:'Break Even', Manual:'ปิดเอง' }[v('outcome')] || '—';
+      const riskInfo = ($('tj-risk-info')||{}).textContent || '';
+      const pct = /=\s*([\d.]+%)/.exec(riskInfo);
+      const row = (k, val, go) => `<div class="tj-sum-row"><span>${k}</span><b>${val}</b><button type="button" class="tj-linkbtn" data-go="${go}">แก้</button></div>`;
+      summary.innerHTML = `<div class="tj-sum-card">
+        <div class="tj-sum-top"><div><div class="sym">${esc(v('symbol').toUpperCase()||'—')} <span class="tj-hist-tag" style="background:var(--brand-tint);color:var(--brand)">${esc(v('type'))}</span></div><div class="small text-muted">${esc(v('tradeDate'))} ${esc(v('entryTime'))}${v('session')?' · '+esc(v('session')):''}</div></div>
+        <div class="text-end"><div class="pnl ${pnl>0?'text-gain':(pnl<0?'text-loss':'')}">${isFinite(pnl)?fmt$(pnl,true):'—'}</div><div class="small fw-bold ${r>0?'text-gain':(r<0?'text-loss':'')}">${r!=null?(r>0?'+':'')+r.toFixed(2)+'R':''}</div></div></div>
+        ${row('Entry / SL / TP', `${esc(v('entryPrice')||'—')} / ${esc(v('slPrice')||'—')} / ${esc(v('tpPrice')||'—')}`, 2)}
+        ${row('Lot · Risk', `${esc(v('lots')||'—')} lot · ${isFinite(risk)?fmt$(risk):'—'}${pct?' ('+pct[1]+')':''} · R:R ${rr}`, 2)}
+        ${row('Setup', `${esc(($('f_setup').selectedOptions[0]||{}).textContent && $('f_setup').value ? $('f_setup').selectedOptions[0].textContent : '—')}${g?` <span class="tj-grade ${g==='A+'?'gAp':('g'+g)}" style="margin-left:6px">${g}</span>`:''}`, 3)}
+        ${row('ผลลัพธ์', ocTxt, 4)}
+        ${row('วินัย', flags.length ? `<span class="text-loss">${flags.join(' · ')}</span>` : '<span class="text-gain">ตามกฎ ✓</span>', 5)}
+        ${row('ภาพ / บันทึก', [(v('chartBeforeUrl')||($('fileBefore').files||[]).length||(window._tjShots&&window._tjShots.fileBefore))?'ภาพก่อน ✓':'', (v('chartAfterUrl')||($('fileAfter').files||[]).length||(window._tjShots&&window._tjShots.fileAfter))?'ภาพหลัง ✓':'', v('notes')?'มีบันทึก ✓':''].filter(Boolean).join(' · ') || '—', 6)}
+      </div>`;
+      summary.querySelectorAll('[data-go]').forEach(b=>b.onclick = ()=>showStep(+b.dataset.go));
+    }
+    function wizApply(){
+      const on = mode==='wizard';
+      form.classList.toggle('tj-wizard', on);
+      head.style.display = on ? '' : 'none'; nav.style.display = on ? '' : 'none';
+      if(on){ showStep(1); }
+      else { [...form.children].forEach(el=>el.classList.remove('tj-wiz-hide')); summary.style.display='none'; submitBtn.style.display=''; }
+    }
+    // Enter ระหว่างขั้น → ไปขั้นถัดไป แทนการส่งฟอร์ม
+    form.addEventListener('keydown', e=>{ if(mode==='wizard' && e.key==='Enter' && e.target.tagName!=='TEXTAREA' && step<STEPS.length){ e.preventDefault(); nextStep(); } });
+    // สัญลักษณ์ใช้บ่อย → ปุ่มลัดในขั้นที่ 1
+    (function symChips(){
+      const inp = F('symbol'); if(!inp) return;
+      const box = document.createElement('div'); box.className='tj-sym-chips'; inp.parentNode.appendChild(box);
+      const draw = ()=>{ const cnt = {}; (window._tjRows||[]).forEach(r=>{ if(r.type==='Buy'||r.type==='Sell'){ const s=String(r.symbol||'').toUpperCase(); cnt[s]=(cnt[s]||0)+1; } });
+        const top = Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).slice(0,5); if(!top.length) top.push('XAUUSD');
+        box.innerHTML = top.map(s=>`<button type="button" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+        box.querySelectorAll('button').forEach(b=>b.onclick = ()=>{ inp.value = b.dataset.s; inp.dispatchEvent(new Event('input')); }); };
+      draw(); document.addEventListener('tj:rows', draw);
+    })();
+
     function applyMode(){
       const quick = mode==='quick';
       form.classList.toggle('tj-quick', quick);
@@ -5391,6 +5519,7 @@
       $('f_emotion').value = quick ? 'QUICK' : '';
       const btn = $('submitBtn');
       if(btn && !btn.disabled) btn.innerHTML = editing ? '<i class="fa-solid fa-floppy-disk me-2"></i> บันทึกการแก้ไข' : (quick ? '<i class="fa-solid fa-bolt me-2"></i> บันทึกด่วน' : '<i class="fa-solid fa-save me-2"></i> บันทึกข้อมูลการเทรด');
+      wizApply();
     }
     document.querySelectorAll('#tj-form-mode button').forEach(b=>b.addEventListener('click', ()=>{ mode = b.dataset.m; if(!editing) ls.set('tj_form_mode', mode); applyMode(); }));
     form.addEventListener('reset', ()=>setTimeout(applyMode, 0));
@@ -5609,7 +5738,7 @@
         bg = document.createElement('div'); bg.className='tj-sheet-bg'; bg.onclick = close;
         sheet = document.createElement('div'); sheet.className='tj-sheet';
         const items = [
-          ['fa-regular fa-calendar','ปฏิทิน',()=>switchTab('calendar')],
+          ['fa-solid fa-file-arrow-up','นำเข้า MT5',()=>tjOpenImport()],
           ['fa-solid fa-chart-simple','กราฟ',()=>switchTab('chart')],
           ['fa-regular fa-newspaper','ข่าว',()=>switchTab('news'),'news'],
           ['fa-solid fa-book','Playbook',()=>tjOpenPlaybook()],
