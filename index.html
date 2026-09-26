@@ -1617,6 +1617,11 @@
             <div style="text-align:left;flex:1;"><div style="font-size:.9rem;font-weight:700;color:var(--section-title);">นำเข้าออเดอร์จาก MT5</div><div style="font-size:.75rem;color:var(--metric-label-color);">ไฟล์ Report (HTML/CSV) จาก MetaTrader 5</div></div>
             <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:.85rem;"></i>
           </div>
+          <div class="d-flex align-items-center gap-3 px-2 py-3" style="cursor:pointer;border-radius:14px;" onclick="tjHideSettings();tjOpenImported()">
+            <div style="width:38px;height:38px;border-radius:11px;background:var(--loss-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-solid fa-trash-can" style="color:var(--loss);"></i></div>
+            <div style="text-align:left;flex:1;"><div style="font-size:.9rem;font-weight:700;color:var(--section-title);">ลบออเดอร์ที่นำเข้าจาก MT5</div><div style="font-size:.75rem;color:var(--metric-label-color);">เลือกลบทีละหลายรายการ หรือลบทั้งหมดที่นำเข้า</div></div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--metric-label-color);font-size:.85rem;"></i>
+          </div>
           <hr class="text-muted opacity-25">
           <!-- ── ข้อมูล ── -->
           <div class="text-start text-muted fw-bold mb-2" style="font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;">ข้อมูล</div>
@@ -2353,7 +2358,18 @@
       return true;
     }
 
-    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow };
+    async function deleteMany(ids) {
+      ids = (ids || []).filter(v => v !== null && v !== undefined && v !== "");
+      for (let i = 0; i < ids.length; i += 200) {
+        let q = sb.from(TABLE_NAME).delete().in("id", ids.slice(i, i + 200));
+        if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
+        const { error } = await q;
+        if (error) throw new Error(error.message);
+      }
+      return ids.length;
+    }
+
+    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
 
     // Polyfill: ทำให้โค้ดเดิมที่เรียก google.script.run.xxx ใช้งานได้ทันที
     function makeRunner() {
@@ -3179,7 +3195,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v27';
+    window.APP_BUILD = '2026-09-26-v28';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5124,7 +5140,8 @@
         <div class="row g-2 mb-3"><div class="col-sm-7"><input type="file" class="form-control" id="tj-imp-file" accept=".html,.htm,.csv,.txt"></div>
         <div class="col-sm-5"><select class="form-select" id="tj-imp-off">${offs.map(o=>`<option value="${o}" ${o===ls.get('tj_mt5_off',3)?'selected':''}>เวลาเซิร์ฟเวอร์ GMT${o>=0?'+':''}${o}</option>`).join('')}</select></div></div>
         <div class="small text-muted mb-2">เวลาเซิร์ฟเวอร์ดูได้ที่ Market Watch ของ MT5 เทียบกับเวลาไทย (GMT+7) — เช่น เวลา MT5 ช้ากว่าไทย 4 ชม. = GMT+3</div>
-        <div id="tj-imp-prev"></div>`,
+        <div id="tj-imp-prev"></div>
+        <div class="small mt-2"><a href="javascript:void(0)" onclick="bootstrap.Modal.getInstance(document.getElementById('tjImportModal')).hide();tjOpenImported()"><i class="fa-solid fa-trash-can"></i> จัดการ / ลบออเดอร์ที่นำเข้าไปแล้ว</a></div>`,
         '<button class="btn btn-primary w-100" id="tj-imp-go" disabled>นำเข้า</button>', 'modal-xl');
       let parsed = [];
       const fileI = el.querySelector('#tj-imp-file'), offI = el.querySelector('#tj-imp-off'), prev = el.querySelector('#tj-imp-prev'), go = el.querySelector('#tj-imp-go');
@@ -5156,6 +5173,34 @@
       };
     };
     window.tjParseMT5 = parseMT5;   // สำหรับทดสอบ
+
+    // ── จัดการ / ลบออเดอร์ที่นำเข้าจาก MT5 ──
+    window.tjOpenImported = function(){
+      const list = rows().filter(r=>/^นำเข้าจาก MT5/.test(String(r.notes||''))).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+      const fmtD = d => d.getDate()+'/'+(d.getMonth()+1)+'/'+String(d.getFullYear()).slice(2)+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+      const body = !list.length ? '<div class="tj-empty"><i class="fa-solid fa-inbox"></i><div>ไม่มีออเดอร์ที่นำเข้าจาก MT5</div></div>' :
+        `<div class="d-flex align-items-center gap-2 mb-2 flex-wrap"><label class="d-flex align-items-center gap-2 fw-semibold small m-0"><input type="checkbox" class="form-check-input m-0" id="tj-im-all"> เลือกทั้งหมด (${list.length})</label>
+          <span class="small text-muted ms-auto" id="tj-im-sum">เลือก 0 รายการ</span></div>
+        <div style="max-height:420px;overflow:auto;border:1px solid var(--border);border-radius:10px"><table class="tj-imp-table"><thead><tr><th></th><th>เปิด</th><th>Symbol</th><th>Type</th><th>Lot</th><th>Entry</th><th>P&amp;L</th><th>อ้างอิง</th></tr></thead><tbody>
+        ${list.map(r=>`<tr><td><input type="checkbox" class="form-check-input tj-im-cb" value="${esc(r.id)}" data-p="${parseFloat(r.pnl)||0}"></td><td>${fmtD(new Date(r.created_at))}</td><td>${esc(r.symbol)}</td><td>${esc(r.type)}</td><td>${esc(r.lots)}</td><td>${esc(r.entry_price)}</td><td class="${r.pnl>0?'text-gain':(r.pnl<0?'text-loss':'')}">${fmt$(r.pnl,true)}</td><td class="text-muted">${esc(String(r.notes).replace('นำเข้าจาก MT5 ',''))}</td></tr>`).join('')}
+        </tbody></table></div><div class="small text-muted mt-2">ลบแล้วกู้คืนไม่ได้ · ถ้าต้องการนำเข้าใหม่ ลบแล้วนำเข้าไฟล์เดิมได้เลย</div>`;
+      const el = modal('tjImportedModal','<i class="fa-solid fa-trash-can me-2" style="color:var(--loss)"></i> ออเดอร์ที่นำเข้าจาก MT5', body,
+        list.length ? '<button class="btn btn-outline-danger w-100" id="tj-im-del" disabled>ลบรายการที่เลือก</button>' : '', 'modal-lg');
+      if(!list.length) return;
+      const cbs = [...el.querySelectorAll('.tj-im-cb')], all = el.querySelector('#tj-im-all'), del = el.querySelector('#tj-im-del'), sum = el.querySelector('#tj-im-sum');
+      const upd = ()=>{ const sel = cbs.filter(c=>c.checked); const p = sel.reduce((a,c)=>a+(+c.dataset.p),0);
+        sum.textContent = `เลือก ${sel.length} รายการ · P&L ${fmt$(p,true)}`; del.disabled = !sel.length; del.textContent = sel.length ? `ลบ ${sel.length} รายการที่เลือก` : 'ลบรายการที่เลือก';
+        all.checked = sel.length===cbs.length; all.indeterminate = sel.length>0 && sel.length<cbs.length; };
+      cbs.forEach(c=>c.addEventListener('change', upd));
+      all.addEventListener('change', ()=>{ cbs.forEach(c=>c.checked = all.checked); upd(); });
+      del.onclick = async ()=>{
+        const ids = cbs.filter(c=>c.checked).map(c=>{ const r = list.find(x=>String(x.id)===c.value); return r ? r.id : c.value; });
+        if(!ids.length || !confirm(`ลบออเดอร์ที่นำเข้า ${ids.length} รายการถาวร?\nลบแล้วกู้คืนไม่ได้`)) return;
+        del.disabled = true; del.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> กำลังลบ...';
+        try{ const n = await window.api.deleteMany(ids); bootstrap.Modal.getInstance(el).hide(); toast('ลบ '+n+' รายการแล้ว'); if(typeof loadAllData==='function') loadAllData(); }
+        catch(e){ alert('ลบไม่สำเร็จ: '+(e.message||e)); upd(); }
+      };
+    };
 
     // ══════════ hooks ══════════
     function refreshAll(){ try{ renderToday(); }catch(e){ console.error(e); } try{ renderReviewWidgets(); }catch(e){ console.error(e); } try{ renderExtraPerf(); }catch(e){ console.error(e); } try{ formChecks(); }catch(e){} }
