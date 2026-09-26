@@ -832,6 +832,25 @@
     .tj-av-menu button:hover{background:var(--panel);}
     .tj-av-menu button i{width:18px;color:var(--brand);text-align:center;}
     .tj-av-menu button.danger i,.tj-av-menu button.danger{color:var(--loss);}
+
+    /* ══════════ v33: TradingView ของฉัน ══════════ */
+    .tj-mytv-top{display:flex;align-items:center;gap:12px;}
+    .tj-mytv-top b{display:block;font-size:.95rem;color:var(--ink);} .tj-mytv-top small{display:block;font-size:.74rem;color:var(--muted);}
+    .tj-mytv-ico{width:40px;height:40px;border-radius:12px;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    #tj-mytv-set{white-space:nowrap;flex-shrink:0;}
+    .tj-mytv-setup{margin-top:12px;padding:12px;border-radius:14px;background:var(--panel);}
+    .tj-mytv-steps{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:10px;margin-top:12px;}
+    @media(max-width:900px){.tj-mytv-steps{grid-template-columns:1fr;}}
+    .tj-mytv-step{display:flex;align-items:center;gap:10px;text-align:left;border:1.5px solid var(--border);background:var(--card-bg);border-radius:14px;padding:10px 12px;color:var(--ink);font-family:inherit;}
+    .tj-mytv-step b{display:block;font-size:.84rem;} .tj-mytv-step small{display:block;font-size:.7rem;color:var(--muted);}
+    .tj-mytv-step .n{width:24px;height:24px;border-radius:50%;background:var(--panel);color:var(--muted);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .tj-mytv-step.main{cursor:pointer;background:var(--brand);border-color:var(--brand);color:var(--on-brand);}
+    .tj-mytv-step.main small{color:inherit;opacity:.8;} .tj-mytv-step.main .n{background:rgba(255,255,255,.22);color:inherit;}
+    .tj-mytv-step.main:hover{background:var(--brand-2);}
+    .tj-mytv-step.paste.pulse{border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-tint);}
+    .tj-mytv-pbtn{flex:1;border:1.5px solid var(--border);background:var(--panel);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:.78rem;font-weight:700;font-family:inherit;}
+    .tj-mytv-pbtn:hover{border-color:var(--brand);color:var(--brand);}
+    .tj-mytv-pbtn.done{background:var(--brand-tint);border-color:var(--brand);color:var(--brand);}
 </style>
 </head>
 <body>
@@ -1017,6 +1036,30 @@
             <button type="button" class="tj-fs-opt" data-act="pick"><i class="fa-regular fa-image"></i><span><b>เลือกรูปจากเครื่อง</b><small>ภาพที่แคปไว้แล้ว</small></span></button>
           </div>
           <button type="button" class="tj-fs-pill" id="tj-fs-pill"><i class="fa-regular fa-image"></i> <span>แนบภาพที่แคป → Before</span></button>
+        </div>
+      </div>
+      <div class="card card-stat p-3 mb-3 tj-mytv" id="tj-mytv">
+        <div class="tj-mytv-top">
+          <div class="tj-mytv-ico"><i class="fa-solid fa-chart-line"></i></div>
+          <div class="flex-grow-1" style="min-width:0">
+            <b>TradingView ของฉัน</b>
+            <small id="tj-mytv-sub">เปิดกราฟในบัญชีของคุณ (เส้นที่วาดไว้อยู่ครบ) แล้วส่งภาพกลับมาที่นี่</small>
+          </div>
+          <button type="button" class="tj-linkbtn" id="tj-mytv-set"><i class="fa-solid fa-gear me-1"></i>ตั้งค่า</button>
+        </div>
+        <div class="tj-mytv-setup" id="tj-mytv-setup" style="display:none">
+          <label class="small fw-bold mb-1">ลิงก์ Layout ของคุณ (ไม่บังคับ)</label>
+          <div class="d-flex gap-2">
+            <input type="url" class="form-control" id="tj-mytv-url" placeholder="https://www.tradingview.com/chart/AbCd1234/">
+            <button type="button" class="btn btn-primary px-3" id="tj-mytv-save">บันทึก</button>
+          </div>
+          <div class="small text-muted mt-1">เปิดกราฟที่ใช้ประจำใน TradingView แล้วคัดลอกลิงก์จากแถบที่อยู่ของเบราว์เซอร์มาวาง · ถ้าเว้นว่าง ระบบจะเปิด Layout ล่าสุดที่คุณใช้</div>
+        </div>
+        <div class="tj-mytv-steps">
+          <button type="button" class="tj-mytv-step main" id="tj-mytv-open"><span class="n">1</span><span><b>เปิดใน TradingView ของฉัน</b><small id="tj-mytv-open-sub">XAUUSD · 15m</small></span><i class="fa-solid fa-arrow-up-right-from-square ms-auto"></i></button>
+          <div class="tj-mytv-step info"><span class="n">2</span><span><b>วาด แล้วกดไอคอนกล้อง 📷</b><small>เลือก “Copy link” / “คัดลอกลิงก์”</small></span></div>
+          <div class="tj-mytv-step paste"><span class="n">3</span><span class="flex-grow-1"><b>วางลิงก์ภาพกลับมา</b>
+            <span class="d-flex gap-2 mt-1"><button type="button" class="tj-mytv-pbtn" data-slot="fileBefore"><i class="fa-solid fa-paste"></i> Before</button><button type="button" class="tj-mytv-pbtn" data-slot="fileAfter"><i class="fa-solid fa-paste"></i> After</button></span></span></div>
         </div>
       </div>
       <div class="card card-stat p-3 mb-5">
@@ -3360,7 +3403,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v32';
+    window.APP_BUILD = '2026-09-26-v33';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -4310,6 +4353,7 @@
       window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value='';
       renderShots(); toast('ใส่ลิงก์ภาพ '+SLOT_LABEL[slot]+' แล้ว ✓');
     }
+    window.tjUseTvLink = useTvLink; window.tjChartState = ()=>({ sym: curSym(), tf: curTf() });
     function showPill(slot){
       if(!pill) return;
       pill.dataset.slot = slot; pill.querySelector('span').textContent = 'แนบภาพที่แคป → '+SLOT_LABEL[slot];
@@ -5862,6 +5906,54 @@
     window.addEventListener('resize',closeMenu);
     refresh(); setTimeout(()=>{ refresh(); loadRemote(); },1500);
     document.addEventListener('tj:rows',()=>setTimeout(refresh,50));
+  })();
+  </script>
+
+  <!-- ══════════ v33: TradingView ของฉัน (เปิดบัญชีตัวเอง + วางลิงก์ภาพกลับ) ══════════ -->
+  <script>
+  (function(){
+    const $=id=>document.getElementById(id);
+    const KEY='tj_tv_layout';
+    const get=()=>{ try{ return localStorage.getItem(KEY)||''; }catch(e){ return ''; } };
+    const set=v=>{ try{ v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY); }catch(e){} };
+    let client=null;
+    function sb(){ if(client) return client; try{ const c=window.SUPABASE_CONFIG; client=window.supabase.createClient(c.SUPABASE_URL,c.SUPABASE_ANON_KEY); }catch(e){} return client; }
+    const TFN={ '1':'1m','5':'5m','15':'15m','30':'30m','60':'1H','240':'4H','D':'1D','W':'1W' };
+    function state(){ return window.tjChartState ? window.tjChartState() : { sym:'XAUUSD', tf:'15' }; }
+    function layoutId(v){ const m=/tradingview\.com\/chart\/([A-Za-z0-9]+)/i.exec(v||''); return m?m[1]:''; }
+    function tvUrl(){
+      const { sym, tf }=state(); const id=layoutId(get());
+      return 'https://www.tradingview.com/chart/'+(id?id+'/':'')+'?symbol='+encodeURIComponent(sym)+'&interval='+encodeURIComponent(tf);
+    }
+    function paint(){
+      const { sym, tf }=state(); const id=layoutId(get());
+      const o=$('tj-mytv-open-sub'); if(o) o.textContent=sym+' · '+(TFN[tf]||tf)+(id?' · Layout ของฉัน':'');
+      const u=$('tj-mytv-url'); if(u && document.activeElement!==u) u.value=get();
+      const f=document.querySelector('#tradeForm [name="chartBeforeUrl"]'), a=document.querySelector('#tradeForm [name="chartAfterUrl"]');
+      document.querySelectorAll('.tj-mytv-pbtn').forEach(b=>{ const inp=b.dataset.slot==='fileBefore'?f:a; b.classList.toggle('done', !!(inp && /tradingview\.com\/x\//.test(inp.value))); });
+    }
+    let opened=false;
+    $('tj-mytv-open') && $('tj-mytv-open').addEventListener('click',()=>{ opened=true; window.open(tvUrl(),'_blank','noopener'); });
+    // กลับมาจาก TradingView → ไฮไลต์ขั้นที่ 3
+    document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && opened){ opened=false; const p=document.querySelector('.tj-mytv-step.paste'); if(p){ p.classList.add('pulse'); setTimeout(()=>p.classList.remove('pulse'),6000); } } });
+    document.querySelectorAll('.tj-mytv-pbtn').forEach(b=>b.addEventListener('click',async()=>{ if(window.tjUseTvLink){ await window.tjUseTvLink(b.dataset.slot); paint(); } }));
+    $('tj-mytv-set') && $('tj-mytv-set').addEventListener('click',()=>{ const e=$('tj-mytv-setup'); e.style.display = e.style.display==='none' ? '' : 'none'; paint(); });
+    $('tj-mytv-save') && $('tj-mytv-save').addEventListener('click',async()=>{
+      const v=($('tj-mytv-url').value||'').trim();
+      if(v && !layoutId(v)){ alertBox('ลิงก์ต้องเป็นแบบ tradingview.com/chart/xxxx/'); return; }
+      set(v); $('tj-mytv-setup').style.display='none'; paint();
+      try{ const c=sb(); if(c) await c.auth.updateUser({ data:{ tj_tv_layout:v } }); }catch(e){}
+      alertBox(v?'บันทึก Layout แล้ว ✓':'ล้าง Layout แล้ว — จะเปิด Layout ล่าสุดของคุณ');
+    });
+    function alertBox(m){ const o=document.querySelector('.tj-toast'); if(o) o.remove(); const t=document.createElement('div'); t.className='tj-toast'; t.textContent=m; document.body.appendChild(t); setTimeout(()=>t.remove(),3200); }
+    (async function load(){ try{ const c=sb(); if(!c) return; const { data }=await c.auth.getUser(); const v=data&&data.user&&data.user.user_metadata&&data.user.user_metadata.tj_tv_layout; if(typeof v==='string' && v!==get()){ set(v); paint(); } }catch(e){} })();
+    // อัปเดตข้อความเมื่อเปลี่ยน symbol / TF
+    document.addEventListener('click',e=>{ if(e.target.closest('#tj-chart-tf,#tj-chart-chips,#tj-chart-go')) setTimeout(paint,50); });
+    const si=$('tj-chart-symbol'); if(si) si.addEventListener('change',()=>setTimeout(paint,50));
+    ['chartBeforeUrl','chartAfterUrl'].forEach(n=>{ const i=document.querySelector('#tradeForm [name="'+n+'"]'); if(i) i.addEventListener('input',paint); });
+    const fm=$('tradeForm'); if(fm) fm.addEventListener('reset',()=>setTimeout(paint,0));
+    (function hookTab(){ const o=window.switchTab; if(typeof o!=='function'){ setTimeout(hookTab,60); return; } window.switchTab=function(id){ const r=o.apply(this,arguments); if(id==='chart') setTimeout(paint,50); return r; }; })();
+    paint();
   })();
   </script>
 </body>
