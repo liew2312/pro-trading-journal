@@ -888,6 +888,19 @@
       .tj-cal-net{display:block;width:max-content;margin:2px auto 0;}
       .tj-cal2 .dsk{display:none;}
     }
+
+    /* v35: แก้โปรไฟล์ในตั้งค่า */
+    .tj-av{cursor:pointer;}
+    .tj-prof{display:flex;flex-direction:column;align-items:center;gap:12px;}
+    .tj-prof-av{width:88px;height:88px;border-radius:50%;background:var(--brand-tint);color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:0 0 0 3px var(--card-bg),0 0 0 5px var(--brand-tint);overflow:hidden;}
+    .tj-prof-av img{width:100%;height:100%;object-fit:cover;}
+    .tj-prof-btns{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;}
+    .tj-prof-btn{border:1.5px solid var(--border);background:var(--card-bg);color:var(--ink);border-radius:99px;padding:5px 12px;font-size:.78rem;font-weight:600;font-family:inherit;}
+    .tj-prof-btn:hover{border-color:var(--brand);color:var(--brand);}
+    .tj-prof-btn.main{background:var(--brand);border-color:var(--brand);color:var(--on-brand);}
+    .tj-prof-field{width:100%;text-align:left;} .tj-prof-field label{font-size:.76rem;font-weight:700;color:var(--muted);margin-bottom:4px;}
+    .tj-prof-mail{font-size:.76rem;color:var(--muted);text-align:center;}
+    .tj-prof-ok{display:inline-block;margin-left:6px;color:var(--brand);font-weight:600;}
 </style>
 </head>
 <body>
@@ -3440,7 +3453,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v34';
+    window.APP_BUILD = '2026-09-26-v35';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5790,7 +5803,8 @@
       const host = $('tj-hello'); if(!host) return;
       const h = new Date().getHours();
       const g = h<5 ? 'สวัสดีตอนดึก' : (h<12 ? 'สวัสดีตอนเช้า' : (h<17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'));
-      const name = String(window._currentUserName || 'Trader').split(/[\s@]/)[0];
+      let _dn=''; try{ _dn=localStorage.getItem('tj_name')||''; }catch(e){}
+      const name = _dn || String(window._currentUserName || 'Trader').split(/[\s@]/)[0];
       host.innerHTML = `<div><div class="hi">${g}</div><h3>${esc(name)}</h3><div class="sub">เทรดตามแผน · คุมความเสี่ยง · ทบทวนทุกสัปดาห์</div></div>${window.tjAvatarHTML ? window.tjAvatarHTML() : '<div class="ico"><i class="fa-solid fa-seedling"></i></div>'}`;
     }
 
@@ -5850,6 +5864,7 @@
     function close(){ if(!sheet) return; sheet.classList.remove('open'); bg.classList.remove('open'); setTimeout(()=>{ bg.style.display='none'; }, 220); }
 
     document.addEventListener('tj:rows', ()=>{ renderHello(); renderDisc(); });
+    document.addEventListener('tj:hello', renderHello);
     (function hookTab(){
       const orig = window.switchTab;
       if(typeof orig!=='function'){ setTimeout(hookTab,60); return; }
@@ -5873,13 +5888,12 @@
     const escA=s=>String(s).replace(/"/g,'&quot;');
     window.tjAvatarHTML=function(){
       const src=current();
-      return `<button type="button" class="tj-av" id="tj-av-btn" title="เปลี่ยนรูปโปรไฟล์" aria-label="เปลี่ยนรูปโปรไฟล์">${src?`<img src="${escA(src)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<i class="fa-solid fa-seedling main"></i>'}<span class="ed"><i class="fa-solid fa-camera"></i></span></button>`;
+      return `<button type="button" class="tj-av" id="tj-av-btn" title="โปรไฟล์ · ตั้งค่า" aria-label="เปิดตั้งค่าโปรไฟล์">${src?`<img src="${escA(src)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<i class="fa-solid fa-seedling main"></i>'}</button>`;
     };
     function refresh(){
       const b=document.getElementById('tj-av-btn');
       if(b){ const t=document.createElement('div'); t.innerHTML=window.tjAvatarHTML(); b.replaceWith(t.firstElementChild); }
-      const src=current(); const img=document.querySelector('#userProfileArea img');
-      if(img && src) img.src=src;
+      renderProfile();
     }
     async function saveRemote(v){
       try{ const a=sb(); if(a && !/^data:/.test(v)) await a.auth.updateUser({ data:{ tj_avatar:v } }); }catch(e){ console.warn('[avatar] save',e); }
@@ -5938,9 +5952,50 @@
     }
     document.addEventListener('click',e=>{
       const b=e.target.closest('#tj-av-btn');
-      if(b){ e.preventDefault(); menu?closeMenu():openMenu(b); return; }
+      if(b){ e.preventDefault(); const m=document.getElementById('settingsModal'); if(m && window.bootstrap) bootstrap.Modal.getOrCreateInstance(m).show(); return; }
       if(menu && !e.target.closest('.tj-av-menu')) closeMenu();
     });
+    // ── ตัวแก้ไขโปรไฟล์ในหน้าตั้งค่า ──
+    const NKEY='tj_name';
+    const getName=()=>{ try{ return localStorage.getItem(NKEY)||''; }catch(e){ return ''; } };
+    const setName=v=>{ try{ v?localStorage.setItem(NKEY,v):localStorage.removeItem(NKEY); }catch(e){} };
+    const escH=t=>String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    function defaultName(){ return String(window._currentUserName||'Trader').split(/[\s@]/)[0]; }
+    function renderProfile(){
+      const host=document.getElementById('userProfileArea'); if(!host) return;
+      if(!window._currentUserEmail && !window._currentUserName) return;
+      const src=current(), v=ls.get(), g=window._currentUserPicture;
+      const nameInp=document.getElementById('tj-prof-name');
+      const typing = nameInp && document.activeElement===nameInp ? nameInp.value : null;
+      host.innerHTML=`<div class="tj-prof">
+        <div class="tj-prof-av" id="tj-prof-av">${src?`<img src="${escA(src)}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">`:'<i class="fa-solid fa-seedling"></i>'}</div>
+        <div class="tj-prof-btns">
+          <button type="button" class="tj-prof-btn main" data-act="pick"><i class="fa-solid fa-camera"></i> เปลี่ยนรูป</button>
+          ${g && v && v!==g ? '<button type="button" class="tj-prof-btn" data-act="google"><i class="fa-brands fa-google"></i> ใช้รูป Google</button>' : ''}
+          ${src ? '<button type="button" class="tj-prof-btn" data-act="icon"><i class="fa-solid fa-seedling"></i> ใช้ไอคอน</button>' : ''}
+        </div>
+        <div class="tj-prof-field">
+          <label for="tj-prof-name">ชื่อที่แสดงบนหน้าแรก</label>
+          <div class="d-flex gap-2"><input type="text" class="form-control" id="tj-prof-name" maxlength="30" placeholder="${escH(defaultName())}" value="${escH(typing!=null?typing:getName())}"><button type="button" class="btn btn-primary px-3" id="tj-prof-save">บันทึก</button></div>
+        </div>
+        <div class="tj-prof-mail"><i class="fa-regular fa-envelope me-1"></i>${escH(window._currentUserEmail||'')} <span class="tj-prof-ok"><i class="fa-solid fa-circle-check"></i> เชื่อมต่อบัญชีแล้ว</span></div>
+      </div>`;
+      host.querySelectorAll('.tj-prof-btn').forEach(b=>b.onclick=()=>{
+        const a=b.dataset.act;
+        if(a==='pick') pick();
+        else if(a==='google'){ ls.set(''); saveRemote(''); refresh(); }
+        else if(a==='icon'){ ls.set('icon'); saveRemote('icon'); refresh(); }
+      });
+      const save=async()=>{ const n=(document.getElementById('tj-prof-name').value||'').trim().slice(0,30); setName(n);
+        try{ const a=sb(); if(a) await a.auth.updateUser({ data:{ tj_name:n } }); }catch(e){}
+        rerenderHello(); toast(n?'บันทึกชื่อแล้ว ✓':'ใช้ชื่อจากบัญชี Google'); };
+      document.getElementById('tj-prof-save').onclick=save;
+      document.getElementById('tj-prof-name').onkeydown=e=>{ if(e.key==='Enter'){ e.preventDefault(); save(); } };
+    }
+    function rerenderHello(){ document.dispatchEvent(new CustomEvent('tj:hello')); }
+    (async function loadName(){ try{ const a=sb(); if(!a) return; const { data }=await a.auth.getUser(); const n=data&&data.user&&data.user.user_metadata&&data.user.user_metadata.tj_name; if(typeof n==='string' && n!==getName()){ setName(n); rerenderHello(); renderProfile(); } }catch(e){} })();
+    const sm=document.getElementById('settingsModal'); if(sm) sm.addEventListener('show.bs.modal',renderProfile);
+    setTimeout(renderProfile,700); setTimeout(renderProfile,2500);
     window.addEventListener('resize',closeMenu);
     refresh(); setTimeout(()=>{ refresh(); loadRemote(); },1500);
     document.addEventListener('tj:rows',()=>setTimeout(refresh,50));
