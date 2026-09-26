@@ -920,6 +920,25 @@
     .tj-hist-r{font-size:.64rem!important;}
     .tj-hist-no{min-width:30px;font-size:.7rem;font-weight:800;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums;flex-shrink:0;}
     @media(max-width:600px){ .tj-hist-sum{margin:0 10px;padding:9px 12px;} .tj-hist-list{padding:8px 10px 12px!important;} .tj-hist-no{min-width:24px;font-size:.64rem;} }
+
+    /* ══════════ v37: หัวประวัติแบบแถบกรอง (ล็อกด้านบน) ══════════ */
+    .tj-hist-wrap{max-width:1000px;margin:0 auto;}
+    #tj-hist-head .tj-side.tj-chip,#tj-hist-head .tj-side.tj-histtab{flex:none;border:0;padding:5px 11px;border-radius:8px;font-size:.78rem;background:transparent;color:var(--muted);}
+    #tj-hist-head .tj-side.active{background:var(--brand)!important;color:var(--on-brand)!important;}
+    .tj-hist-bar{padding:8px 10px!important;margin-bottom:10px!important;}
+    .tj-hist-head{position:sticky;top:58px;z-index:30;padding:6px 0 2px;margin-top:-6px;background:var(--canvas);}
+    .tj-hist-head .tj-filterbar{background:var(--card-bg)!important;backdrop-filter:none!important;}
+    .tj-hist-head .tj-filterbar{position:static;}
+    .tj-hist-tabs .tj-side{display:inline-flex;align-items:center;gap:5px;}
+    .tj-hist-tabs .tj-side span{font-size:.64rem;background:rgba(0,0,0,.08);padding:0 6px;border-radius:99px;line-height:1.5;}
+    .tj-hist-tabs .tj-side.active span{background:rgba(255,255,255,.25);}
+    .tj-hist-sel,.tj-hist-date{border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-weight:700;font-size:.78rem;padding:5px 10px;border-radius:10px;font-family:inherit;flex-shrink:0;height:32px;}
+    .tj-hist-sel{padding-right:6px;}
+    .tj-hist-date{min-width:0;width:auto;}
+    #tj-hist-head .tj-hist-sum{margin:8px 0 0!important;padding:8px 12px!important;border-radius:10px;}
+    #tj-hist-head .tj-hist-sum b{font-size:.92rem;} #tj-hist-head .tj-hist-sum .it.end b{font-size:1.02rem;}
+    #history .tj-hist-list{padding:4px 0 14px!important;}
+    @media(max-width:600px){ #tj-hist-head .tj-hist-sum{margin:8px 0 0!important;} .tj-hist-head{top:56px;} .tj-hist-bar .tj-filter-scroll{flex-wrap:wrap;overflow:visible;gap:6px;} .tj-hist-bar .tj-fdivider{display:none;} .tj-hist-tabs{width:100%;} .tj-hist-tabs .tj-side{flex:1!important;justify-content:center;} .tj-hist-date{flex:1;min-width:140px;} #hist-outcome-chips{width:100%;} #hist-outcome-chips .tj-side{flex:1!important;} }
 </style>
 </head>
 <body>
@@ -1708,43 +1727,40 @@
     </div>
 
     <div id="history" class="page-section print-hide">
-      <div class="card card-stat p-0 overflow-hidden mx-auto" style="max-width: 1000px;">
-        <div class="p-4 border-bottom">
-          <h4 class="mb-3 fw-bold" style="color:var(--ink);">ประวัติ</h4>
-          <div class="row g-2 mb-3">
-            <div class="col-5">
-              <select id="history-filter-type" class="form-select form-select-sm fw-bold" onchange="toggleHistoryFilterInput()">
+      <div class="tj-hist-wrap">
+        <div class="tj-page-head"><div><h4>ประวัติ</h4><div class="sub">คลิกการ์ดเพื่อดูรายละเอียด / แก้ไข</div></div></div>
+        <div class="tj-hist-head" id="tj-hist-head">
+          <div class="tj-filterbar tj-hist-bar">
+            <div class="tj-filter-scroll">
+              <div class="tj-side-group tj-hist-tabs">
+                <button id="tab-btn-trades" class="tj-side tj-histtab active" onclick="switchHistoryTab('trades')"><i class="fa-solid fa-chart-line"></i> เทรด <span id="tab-badge-trades">0</span></button>
+                <button id="tab-btn-funding" class="tj-side tj-histtab" onclick="switchHistoryTab('funding')"><i class="fa-solid fa-wallet"></i> ฝาก/ถอน <span id="tab-badge-funding">0</span></button>
+              </div>
+              <span class="tj-fdivider"></span>
+              <select id="history-filter-type" class="tj-hist-sel" onchange="toggleHistoryFilterInput()" aria-label="ช่วงเวลา">
                 <option value="day">รายวัน</option>
                 <option value="week">สัปดาห์</option>
                 <option value="month">รายเดือน</option>
-                <option value="all">ทั้งช่วงเวลา</option>
+                <option value="all">ทั้งหมด</option>
               </select>
+              <input type="date" id="history-filter-day" class="tj-hist-date" onchange="loadHistoryData()" aria-label="วันที่">
+              <input type="week" id="history-filter-week" class="tj-hist-date d-none" onchange="loadHistoryData()" aria-label="สัปดาห์">
+              <input type="month" id="history-filter-month" class="tj-hist-date d-none" onchange="loadHistoryData()" aria-label="เดือน">
+              <span class="tj-fdivider"></span>
+              <div class="tj-side-group" id="hist-outcome-chips">
+                <button class="tj-side tj-chip active" onclick="setHistFilter('all',this)">ทั้งหมด</button>
+                <button class="tj-side tj-chip" onclick="setHistFilter('win',this)">กำไร</button>
+                <button class="tj-side tj-chip" onclick="setHistFilter('loss',this)">ขาดทุน</button>
+              </div>
             </div>
-            <div class="col-7">
-              <input type="date" id="history-filter-day" class="form-control form-control-sm fw-bold" onchange="loadHistoryData()">
-              <input type="week" id="history-filter-week" class="form-control form-control-sm fw-bold d-none" onchange="loadHistoryData()">
-              <input type="month" id="history-filter-month" class="form-control form-control-sm fw-bold d-none" onchange="loadHistoryData()">
-            </div>
-          </div>
-          <div class="tj-chips">
-            <button class="tj-chip active" onclick="setHistFilter('all',this)">ทั้งหมด</button>
-            <button class="tj-chip" onclick="setHistFilter('win',this)">กำไร</button>
-            <button class="tj-chip" onclick="setHistFilter('loss',this)">ขาดทุน</button>
+            <div id="history-summary-footer" class="tj-hist-sum" style="display:none !important;"></div>
+            <div id="funding-summary-footer" class="tj-hist-sum" style="display:none !important;"></div>
           </div>
         </div>
-
-          <div class="tj-histtabs mb-3">
-            <button id="tab-btn-trades" class="tj-histtab active" onclick="switchHistoryTab('trades')"><i class="fa-solid fa-chart-line"></i> เทรด <span id="tab-badge-trades">0</span></button>
-            <button id="tab-btn-funding" class="tj-histtab" onclick="switchHistoryTab('funding')"><i class="fa-solid fa-wallet"></i> ฝาก / ถอน <span id="tab-badge-funding">0</span></button>
-          </div>
-        </div>
-
         <div id="history-panel-trades">
-          <div id="history-summary-footer" class="tj-hist-sum" style="display:none !important;"></div>
           <div id="history-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</div></div>
         </div>
         <div id="history-panel-funding" style="display:none;">
-          <div id="funding-summary-footer" class="tj-hist-sum" style="display:none !important;"></div>
           <div id="funding-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold">กำลังโหลด...</div></div>
         </div>
       </div>
@@ -3048,6 +3064,7 @@
       }
       return _tnoMap[id] || '–';
     };
+    document.addEventListener('tj:rows', ()=>{ document.querySelectorAll('.tj-hist-no[data-id]').forEach(el=>{ el.textContent = '#'+window.tjTradeNo(el.dataset.id); }); });
     function updateHistoryUI(historyData) {
       globalTradeHistory = historyData; 
       const tbody       = document.getElementById('history-table-body'); 
@@ -3108,7 +3125,7 @@
           const rDisp = (!isNaN(rNum)) ? `<div class="tj-hist-r">${rNum >= 0 ? '+' : ''}${rNum.toFixed(1)}R</div>` : '';
           tbody.innerHTML += `
             <div class="tj-hist-row hist-${winCls}" onclick="openTradeModal(${index})">
-              <div class="tj-hist-no" title="เทรดลำดับที่ (นับจากไม้แรก)">#${window.tjTradeNo ? window.tjTradeNo(trade.id) : totalTrades}</div>
+              <div class="tj-hist-no" data-id="${trade.id}" title="เทรดลำดับที่ (นับจากไม้แรก)">#${window.tjTradeNo ? window.tjTradeNo(trade.id) : totalTrades}</div>
               ${window.tjThumb && window.tjThumb(trade.chartBefore || trade.chartAfter) ? `<img class="tj-hist-thumb" src="${window.tjThumb(trade.chartBefore || trade.chartAfter)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}&quot;><i class=&quot;fa-solid ${arrow}&quot;></i></div>'">` : `<div class="tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}"><i class="fa-solid ${arrow}"></i></div>`}
               <div class="tj-hist-main">
                 <div class="tj-hist-sym">${trade.symbol || '-'} ${ocTag}${warn}</div>
@@ -3468,7 +3485,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v36';
+    window.APP_BUILD = '2026-09-26-v37';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
