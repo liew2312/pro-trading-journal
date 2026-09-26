@@ -851,6 +851,43 @@
     .tj-mytv-pbtn{flex:1;border:1.5px solid var(--border);background:var(--panel);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:.78rem;font-weight:700;font-family:inherit;}
     .tj-mytv-pbtn:hover{border-color:var(--brand);color:var(--brand);}
     .tj-mytv-pbtn.done{background:var(--brand-tint);border-color:var(--brand);color:var(--brand);}
+
+    /* ══════════ v34: ปฏิทินแบบตาราง + สรุปรายสัปดาห์ ══════════ */
+    .tj-cal2{gap:0!important;border:1px solid var(--cal-cell-border);border-radius:14px;overflow:hidden;background:var(--cal-cell-bg);grid-template-columns:repeat(7,minmax(0,1fr)) minmax(0,1.05fr)!important;}
+    .tj-cal2-h{padding:9px 0!important;background:var(--panel);border-bottom:1px solid var(--cal-cell-border);font-size:.66rem!important;letter-spacing:.4px;}
+    .tj-cal2-h.wk{display:block!important;color:var(--ink);font-weight:700;}
+    .tj-cal2-d{border:0!important;border-right:1px solid var(--cal-cell-border)!important;border-bottom:1px solid var(--cal-cell-border)!important;border-radius:0!important;min-height:92px;padding:7px 8px!important;}
+    .tj-cal2-d.out{background:var(--cal-cell-empty)!important;}
+    .tj-cal2-d.today{box-shadow:inset 0 0 0 2px var(--brand);}
+    .tj-cal2-d.has:hover{outline:0!important;box-shadow:inset 0 0 0 2px var(--ink);}
+    .tj-cal2-top{display:flex;align-items:center;justify-content:space-between;gap:4px;}
+    .tj-cal2-num{font-size:.78rem!important;color:var(--ink)!important;font-weight:600!important;justify-content:flex-start!important;}
+    .tj-cal2-d.today .tj-cal2-num{justify-content:center!important;width:auto!important;min-width:22px;padding:0 5px;}
+    .tj-cal2-cnt{display:inline-flex;align-items:center;gap:3px;font-size:.62rem;font-weight:600;color:var(--muted);background:var(--card-bg);border:1px solid var(--cal-cell-border);border-radius:99px;padding:1px 7px;}
+    .tj-cal2-pnl{font-size:.9rem!important;}
+    .tj-cal2-w{border:0!important;border-bottom:1px solid var(--cal-cell-border)!important;border-radius:0!important;background:var(--panel)!important;align-items:center;text-align:center;min-height:92px;padding:6px!important;}
+    .tj-cal2-w .lbl{text-transform:uppercase;letter-spacing:.3px;font-size:.6rem!important;}
+    .tj-cal2-w .val{font-size:.95rem!important;margin:2px 0;}
+    .tj-cal2-w .sub{font-size:.6rem;color:var(--muted);white-space:nowrap;}
+    .tj-cal2-w.g{background:linear-gradient(0deg,var(--gain-bg),var(--gain-bg)),var(--panel)!important;}
+    .tj-cal2-w.l{background:linear-gradient(0deg,var(--loss-bg),var(--loss-bg)),var(--panel)!important;}
+    .tj-cal2 > :nth-last-child(-n+8){border-bottom:0!important;}
+    .tj-cal-net{display:inline-block;vertical-align:middle;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--panel);color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums;}
+    .tj-cal-net.g{background:var(--gain-bg);color:var(--profit);} .tj-cal-net.l{background:var(--loss-bg);color:var(--loss);}
+    @media(max-width:600px){
+      .tj-cal2{grid-template-columns:repeat(7,minmax(0,1fr)) minmax(0,1.25fr)!important;border-radius:10px;}
+      .tj-cal2-w{display:flex!important;min-height:58px;padding:3px 2px!important;}
+      .tj-cal2-w .lbl,.tj-cal2-w .sub.wr{display:none;}
+      .tj-cal2-w .val{font-size:.62rem!important;} .tj-cal2-w .sub{font-size:.52rem;}
+      .tj-cal2-h{font-size:.58rem!important;padding:6px 0!important;}
+      .tj-cal2-d{min-height:58px;padding:3px 3px!important;}
+      .tj-cal2-cnt{display:none;}
+      .tj-cal2-num{font-size:.62rem!important;}
+      .tj-cal2-pnl{font-size:.58rem!important;}
+      .tj-cal-weeks{display:none!important;}
+      .tj-cal-net{display:block;width:max-content;margin:2px auto 0;}
+      .tj-cal2 .dsk{display:none;}
+    }
 </style>
 </head>
 <body>
@@ -3403,7 +3440,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v33';
+    window.APP_BUILD = '2026-09-26-v34';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -3779,41 +3816,42 @@
       title.textContent = TH_MONTHS[m] + ' ' + y;
       const first = new Date(y,m,1), dim = new Date(y,m+1,0).getDate();
       const lead = first.getDay();
-      let html = '<div class="tj-cal2">' + DOW_S.map(d=>`<div class="tj-cal2-h">${d}</div>`).join('') + '<div class="tj-cal2-h wk">สัปดาห์</div>';
+      let html = '<div class="tj-cal2">' + DOW_S.map(d=>`<div class="tj-cal2-h">${d}</div>`).join('') + '<div class="tj-cal2-h wk"><span class="dsk">ราย</span>สัปดาห์</div>';
       let cells = [];
       for(let i=0;i<lead;i++) cells.push(null);
       for(let d=1; d<=dim; d++) cells.push(d);
       while(cells.length%7) cells.push(null);
       const weekTotals = [];
       for(let w=0; w<cells.length/7; w++){
-        let wp=0, wn=0, wd=0;
+        let wp=0, wn=0, wd=0, ww=0;
         for(let c=0;c<7;c++){
           const d = cells[w*7+c];
           if(d===null){ html += '<div class="tj-cal2-d out"></div>'; continue; }
           const k = y+'-'+pad(m+1)+'-'+pad(d); const s = days[k];
           const isToday = d===today.getDate() && m===today.getMonth() && y===today.getFullYear();
           let cls = 'tj-cal2-d' + (isToday?' today':'');
-          let inner = `<div><span class="tj-cal2-num">${d}</span></div>`;
+          let inner = `<div class="tj-cal2-top"><span class="tj-cal2-num">${d}</span>${s?`<span class="tj-cal2-cnt"><i class="fa-regular fa-file-lines"></i>${s.n}</span>`:''}</div>`;
           let style = '';
           if(s){
-            wp+=s.pnl; wn+=s.n; wd++;
+            wp+=s.pnl; wn+=s.n; wd++; ww+=s.w;
             cls += ' has ' + (s.pnl>0?'g':(s.pnl<0?'l':''));
             const a = s.pnl>0 ? 'gain' : 'loss';
             if(s.pnl!==0) style = `background:var(--${a}-bg);border-color:transparent;`;
-            inner += `<div class="tj-cal2-pnl">${fmtShort(s.pnl)}</div><div class="tj-cal2-meta">${s.n} ไม้ · ${Math.round(s.w/s.n*100)}%</div>`;
+            inner += `<div class="tj-cal2-pnl">${fmtShort(s.pnl)}</div><div class="tj-cal2-meta">Win ${Math.round(s.w/s.n*100)}%</div>`;
           }
           html += `<div class="${cls}" ${s?`data-k="${k}" title="${k}: ${fmt$(s.pnl,true)} · ${s.n} ไม้"`:''} style="${style}">${inner}</div>`;
         }
-        weekTotals.push({wp,wn,wd});
-        html += `<div class="tj-cal2-w"><div class="lbl">สัปดาห์ ${w+1}</div><div class="val ${wp>0?'text-gain':(wp<0?'text-loss':'')}">${wn? fmtShort(wp):'—'}</div><div class="lbl">${wd? wd+' วัน · '+wn+' ไม้':''}</div></div>`;
+        weekTotals.push({wp,wn,wd,ww});
+        html += `<div class="tj-cal2-w ${wp>0?'g':(wp<0?'l':'')}"><div class="lbl">สัปดาห์ ${w+1}</div><div class="val ${wp>0?'text-gain':(wp<0?'text-loss':'')}">${wn? fmtShort(wp):'$0'}</div><div class="sub">${wn?`<span class="dsk">${wd} วัน · </span>${wn} ไม้`:`${wd} วัน`}</div>${wn?`<div class="sub wr">Win ${Math.round(ww/wn*100)}%</div>`:''}</div>`;
       }
       html += '</div>';
       body.innerHTML = html;
-      weeksM.innerHTML = weekTotals.map((w,i)=>`<div class="tj-cal2-w" style="min-height:0"><div class="lbl">สัปดาห์ ${i+1}</div><div class="val ${w.wp>0?'text-gain':(w.wp<0?'text-loss':'')}">${w.wn? fmtShort(w.wp):'—'}</div></div>`).join('');
+      weeksM.innerHTML = ''; void weekTotals.map((w,i)=>`<div class="tj-cal2-w" style="min-height:0"><div class="lbl">สัปดาห์ ${i+1}</div><div class="val ${w.wp>0?'text-gain':(w.wp<0?'text-loss':'')}">${w.wn? fmtShort(w.wp):'—'}</div></div>`).join('');
       body.querySelectorAll('.tj-cal2-d.has').forEach(el=>el.addEventListener('click',()=>openDay(el.dataset.k)));
 
       const mt = trades.filter(t=>t.d.getFullYear()===y && t.d.getMonth()===m);
       const s = summarize(mt);
+      title.innerHTML = TH_MONTHS[m] + ' ' + y + ` <span class="tj-cal-net ${s.net>0?'g':(s.net<0?'l':'')}">${fmt$(s.net,true)}</span>`;
       const dk = Object.keys(days).filter(k=>k.startsWith(y+'-'+pad(m+1)+'-'));
       const gd = dk.filter(k=>days[k].pnl>0).length, ld = dk.filter(k=>days[k].pnl<0).length;
       let bestK=null; dk.forEach(k=>{ if(!bestK || days[k].pnl>days[bestK].pnl) bestK=k; });
