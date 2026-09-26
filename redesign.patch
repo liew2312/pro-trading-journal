@@ -1,0 +1,891 @@
+From b821ab68e5b5c342e25022277fe5b780bc999f70 Mon Sep 17 00:00:00 2001
+From: liew2312 <lewclassic@gmail.com>
+Date: Sat, 26 Sep 2026 10:25:34 +0700
+Subject: [PATCH] Redesign: minimal theme + sidebar, Calendar P&L page,
+ Performance page with heatmap
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+- Clean minimal light/dark theme (neutral surfaces, vivid profit/loss colors, brand red accent)
+- Desktop sidebar navigation; mobile bottom nav: ภาพรวม/ปฏิทิน/Performance/ประวัติ/ตั้งค่า
+- Calendar page: monthly P&L grid with weekly totals, month/year views, KPIs, click day -> history
+- Performance page: KPIs, cumulative P&L, daily P&L, day x hour heatmap, weekday/hour bars, long vs short
+- Theme-aware charts; bump build + SW cache
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_015kkCBKp73xvtVZA1nGWamr
+---
+ index.html | 698 +++++++++++++++++++++++++++++++++++++++++++++++------
+ sw.js      |   2 +-
+ 2 files changed, 619 insertions(+), 81 deletions(-)
+
+diff --git a/index.html b/index.html
+index 65ddfed..eaa32cd 100644
+--- a/index.html
++++ b/index.html
+@@ -7,7 +7,7 @@
+   <title>Pro Trading Journal</title>
+ 
+   <!-- ======= PWA Meta Tags ======= -->
+-  <meta name="theme-color" content="#921C1E">
++  <meta name="theme-color" content="#111114">
+   <meta name="mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+@@ -38,55 +38,59 @@
+   <style>
+     /* ══ PRO TRADING JOURNAL — AP THAILAND REDESIGN ══ */
+     :root {
+-      --brand:#921C1E; --brand-2:#6E1214; --profit:#2F7A4F; --loss:#B93033;
+-      --ink:#131317; --muted:#70707A; --canvas:#F8F7F3; --border:#E4E1D8; --ap-warn:#B5791A;
+-      --bg-body:#F8F7F3; --color-body:#131317;
+-      --topbar-bg:rgba(248,247,243,.82);
+-      --card-bg:#FFFFFF; --card-border:#E4E1D8;
+-      --card-shadow:0 2px 4px rgba(20,14,14,.06),0 1px 2px rgba(20,14,14,.04);
+-      --shadow-md:0 8px 20px rgba(20,14,14,.10),0 2px 4px rgba(20,14,14,.05);
+-      --input-bg:#FFFFFF; --input-border:#C9C6BC; --input-color:#131317; --input-focus-bg:#fff;
+-      --form-label:#4A4A52; --section-title:#131317;
+-      --calendar-bg:#fff; --calendar-border:#E4E1D8; --calendar-header-bg:#F2F0EA; --calendar-header-border:#E4E1D8;
+-      --cal-cell-bg:#fff; --cal-cell-empty:#F2F0EA; --cal-cell-today:#FAEBEB; --cal-date-color:#9C9CA4; --cal-cell-border:#EDEAE2;
+-      --cal-count-bg:#F2F0EA; --cal-count-border:#E4E1D8; --cal-count-color:#70707A;
+-      --table-th-bg:#F2F0EA; --table-th-border:#E4E1D8; --table-th-color:#4A4A52; --table-td-border:#EDEAE2;
+-      --stat-list-border:#EDEAE2;
+-      --quote-box-bg:#F2F0EA; --quote-box-color:#4A4A52;
+-      --confluence-box-bg:#F8F7F3; --confluence-box-border:#E4E1D8;
+-      --god-rule-bg:#FAEBEB; --god-rule-border:rgba(146,28,30,.28);
+-      --discipline-box-bg:#E8F1EC; --discipline-box-border:rgba(47,122,79,.30);
+-      --upload-box-bg:#F8F7F3; --upload-box-border:#C9C6BC;
+-      --switch-label-color:#4A4A52;
+-      --metric-mae-bg:#FAEBEB; --metric-mfe-bg:#E8F1EC; --metric-r-bg:#F2F0EA;
+-      --metric-label-color:#70707A;
+-      --discipline-ring-border:#E4E1D8; --discipline-ring-bg:#fff;
+-      --scrollbar-thumb:#C9C6BC; --row-hover:#F8F7F3;
++      --brand:#921C1E; --brand-2:#6E1214; --on-brand:#fff; --profit:#16A34A; --loss:#DC2626;
++      --ink:#111114; --muted:#71717A; --canvas:#F6F6F7; --border:#E7E7EA; --ap-warn:#D97706;
++      --bg-body:#F6F6F7; --color-body:#111114; --panel:#F4F4F5;
++      --topbar-bg:rgba(246,246,247,.85);
++      --card-bg:#FFFFFF; --card-border:#E7E7EA;
++      --card-shadow:0 1px 2px rgba(16,16,20,.04);
++      --shadow-md:0 6px 16px rgba(16,16,20,.08);
++      --input-bg:#FFFFFF; --input-border:#DCDCE0; --input-color:#111114; --input-focus-bg:#fff;
++      --form-label:#3F3F46; --section-title:#111114;
++      --calendar-bg:#fff; --calendar-border:#E7E7EA; --calendar-header-bg:#F4F4F5; --calendar-header-border:#E7E7EA;
++      --cal-cell-bg:#fff; --cal-cell-empty:#F4F4F5; --cal-cell-today:#FCEDED; --cal-date-color:#A1A1AA; --cal-cell-border:#EDEDF0;
++      --cal-count-bg:#F4F4F5; --cal-count-border:#E7E7EA; --cal-count-color:#71717A;
++      --table-th-bg:#F4F4F5; --table-th-border:#E7E7EA; --table-th-color:#3F3F46; --table-td-border:#EDEDF0;
++      --stat-list-border:#EFEFF1;
++      --quote-box-bg:#F4F4F5; --quote-box-color:#52525B;
++      --confluence-box-bg:#FAFAFA; --confluence-box-border:#E7E7EA;
++      --god-rule-bg:#FEF2F2; --god-rule-border:rgba(220,38,38,.22);
++      --discipline-box-bg:#F0FDF4; --discipline-box-border:rgba(22,163,74,.25);
++      --upload-box-bg:#FAFAFA; --upload-box-border:#DCDCE0;
++      --switch-label-color:#3F3F46;
++      --metric-mae-bg:#FEF2F2; --metric-mfe-bg:#F0FDF4; --metric-r-bg:#F4F4F5;
++      --gain-bg:#DCFCE7; --loss-bg:#FEE2E2; --gain-strong:#16A34A; --loss-strong:#DC2626;
++      --metric-label-color:#71717A;
++      --discipline-ring-border:#E7E7EA; --discipline-ring-bg:#fff;
++      --scrollbar-thumb:#D4D4D8; --row-hover:#F7F7F8;
++      --sidebar-bg:#FFFFFF;
+     }
+     [data-theme="dark"] {
+-      --brand:#C6494B; --profit:#5CB585; --loss:#E0797B;
+-      --ink:#F3F1EA; --muted:#A09E94; --canvas:#17140F; --border:rgba(255,255,255,.09); --ap-warn:#D9A44A;
+-      --bg-body:#17140F; --color-body:#F3F1EA;
+-      --topbar-bg:rgba(23,20,15,.82);
+-      --card-bg:#221E18; --card-border:rgba(255,255,255,.09);
+-      --card-shadow:0 2px 8px rgba(0,0,0,.45); --shadow-md:0 10px 26px rgba(0,0,0,.55);
+-      --input-bg:#2B261F; --input-border:rgba(255,255,255,.16); --input-color:#F3F1EA; --input-focus-bg:#2B261F;
+-      --form-label:#C9C6BC; --section-title:#F3F1EA;
+-      --calendar-bg:#221E18; --calendar-border:rgba(255,255,255,.09); --calendar-header-bg:#2B261F; --calendar-header-border:rgba(255,255,255,.12);
+-      --cal-cell-bg:#221E18; --cal-cell-empty:#1B1813; --cal-cell-today:rgba(146,28,30,.32); --cal-date-color:#70707A; --cal-cell-border:rgba(255,255,255,.07);
+-      --cal-count-bg:#2B261F; --cal-count-border:rgba(255,255,255,.10); --cal-count-color:#A09E94;
+-      --table-th-bg:#2B261F; --table-th-border:rgba(255,255,255,.12); --table-th-color:#C9C6BC; --table-td-border:rgba(255,255,255,.06);
+-      --stat-list-border:rgba(255,255,255,.08);
+-      --quote-box-bg:#2B261F; --quote-box-color:#C9C6BC;
+-      --confluence-box-bg:#2B261F; --confluence-box-border:rgba(255,255,255,.10);
+-      --god-rule-bg:rgba(146,28,30,.22); --god-rule-border:rgba(224,121,123,.40);
+-      --discipline-box-bg:rgba(47,122,79,.20); --discipline-box-border:rgba(92,181,133,.40);
+-      --upload-box-bg:#2B261F; --upload-box-border:rgba(255,255,255,.16);
+-      --switch-label-color:#C9C6BC;
+-      --metric-mae-bg:rgba(146,28,30,.20); --metric-mfe-bg:rgba(47,122,79,.20); --metric-r-bg:#2B261F;
+-      --metric-label-color:#A09E94;
+-      --discipline-ring-border:rgba(255,255,255,.12); --discipline-ring-bg:#221E18;
+-      --scrollbar-thumb:#4A4A52; --row-hover:#2B261F;
++      --brand:#E0484C; --brand-2:#C03236; --on-brand:#fff; --profit:#22C55E; --loss:#F87171;
++      --ink:#F4F4F5; --muted:#A1A1AA; --canvas:#0E0E10; --border:rgba(255,255,255,.08); --ap-warn:#F59E0B;
++      --bg-body:#0E0E10; --color-body:#F4F4F5; --panel:#1C1C20;
++      --topbar-bg:rgba(14,14,16,.85);
++      --card-bg:#16161A; --card-border:rgba(255,255,255,.07);
++      --card-shadow:none; --shadow-md:0 8px 22px rgba(0,0,0,.5);
++      --input-bg:#1C1C20; --input-border:rgba(255,255,255,.12); --input-color:#F4F4F5; --input-focus-bg:#1C1C20;
++      --form-label:#D4D4D8; --section-title:#F4F4F5;
++      --calendar-bg:#16161A; --calendar-border:rgba(255,255,255,.07); --calendar-header-bg:#1C1C20; --calendar-header-border:rgba(255,255,255,.1);
++      --cal-cell-bg:#16161A; --cal-cell-empty:#121215; --cal-cell-today:rgba(224,72,76,.18); --cal-date-color:#71717A; --cal-cell-border:rgba(255,255,255,.06);
++      --cal-count-bg:#1C1C20; --cal-count-border:rgba(255,255,255,.1); --cal-count-color:#A1A1AA;
++      --table-th-bg:#1C1C20; --table-th-border:rgba(255,255,255,.1); --table-th-color:#D4D4D8; --table-td-border:rgba(255,255,255,.06);
++      --stat-list-border:rgba(255,255,255,.06);
++      --quote-box-bg:#1C1C20; --quote-box-color:#D4D4D8;
++      --confluence-box-bg:#1C1C20; --confluence-box-border:rgba(255,255,255,.08);
++      --god-rule-bg:rgba(248,113,113,.10); --god-rule-border:rgba(248,113,113,.30);
++      --discipline-box-bg:rgba(34,197,94,.10); --discipline-box-border:rgba(34,197,94,.30);
++      --upload-box-bg:#1C1C20; --upload-box-border:rgba(255,255,255,.14);
++      --switch-label-color:#D4D4D8;
++      --metric-mae-bg:rgba(248,113,113,.10); --metric-mfe-bg:rgba(34,197,94,.10); --metric-r-bg:#1C1C20;
++      --gain-bg:rgba(34,197,94,.16); --loss-bg:rgba(248,113,113,.16); --gain-strong:#22C55E; --loss-strong:#F87171;
++      --metric-label-color:#A1A1AA;
++      --discipline-ring-border:rgba(255,255,255,.1); --discipline-ring-bg:#16161A;
++      --scrollbar-thumb:#3F3F46; --row-hover:#1C1C20;
++      --sidebar-bg:#121215;
+     }
+     *,*::before,*::after{box-sizing:border-box;}
+     html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+@@ -137,12 +141,14 @@
+     .stat-icon-badge{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1rem;margin:0 auto 10px;background:rgba(146,28,30,.09)!important;}
+     .stat-icon-badge i{color:var(--brand)!important;}
+ 
+-    /* ── Balance hero (AP red, hard-edged, layered paper) ── */
+-    .balance-card{background:#921C1E!important;color:#fff!important;border:none!important;border-radius:0!important;overflow:visible!important;position:relative;box-shadow:12px 12px 0 rgba(146,28,30,.20),24px 24px 0 rgba(146,28,30,.09),0 10px 30px rgba(20,14,14,.14)!important;}
+-    .balance-card::before,.balance-card::after,.balance-card .shimmer-line{display:none!important;}
+-    .balance-card small,.balance-card .text-white-50{color:rgba(255,255,255,.72)!important;}
+-    .balance-card .text-info,.balance-card .text-success,.balance-card .text-warning{color:rgba(255,255,255,.9)!important;}
+-    .balance-card .trades-box{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.24)!important;border-radius:12px!important;padding:12px 18px;text-align:center;}
++    /* ── Balance hero (clean minimal) ── */
++    .balance-card{background:var(--card-bg)!important;color:var(--ink)!important;border:1px solid var(--card-border)!important;border-radius:18px!important;box-shadow:var(--card-shadow)!important;position:relative;overflow:hidden;}
++    .balance-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand);}
++    .balance-card::after,.balance-card .shimmer-line{display:none!important;}
++    .balance-card small,.balance-card .text-white-50{color:var(--muted)!important;}
++    .balance-card .text-info{color:var(--muted)!important;}
++    .balance-card .text-success{color:var(--profit)!important;} .balance-card .text-warning{color:var(--ap-warn)!important;}
++    .balance-card .trades-box{background:var(--panel)!important;border:1px solid var(--border)!important;border-radius:14px!important;padding:12px 18px;text-align:center;}
+ 
+     /* ── Metric cards ── */
+     .metric-card{border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1.5px solid transparent;transition:transform .2s;}
+@@ -303,7 +309,8 @@
+     .nav-tabs{border-bottom-color:var(--border)!important;}
+     .nav-tabs .nav-link{color:var(--muted)!important;} .nav-tabs .nav-link.active{background:var(--card-bg)!important;color:var(--ink)!important;border-color:var(--border) var(--border) var(--card-bg)!important;}
+     .fw-bold,h1,h2,h3,h4,h5,h6{color:var(--ink);}
+-    .balance-card h1,.balance-card h5,.balance-card .fw-bold,.balance-card strong,.balance-card span{color:#fff;}
++    .balance-card h1,.balance-card h5,.balance-card .fw-bold,.balance-card strong,.balance-card span{color:var(--ink)!important;text-shadow:none!important;}
++    .balance-card .text-white{color:var(--ink)!important;}
+ 
+     /* ── Print ── */
+     @media print{
+@@ -391,10 +398,146 @@
+     @media(prefers-reduced-motion:reduce){
+       *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;}
+     }
++    /* ══════════ MINIMAL LAYOUT v2: Sidebar · Calendar · Performance ══════════ */
++    body{font-size:14px;}
++    .card{color:var(--ink);--bs-card-color:var(--ink);}
++    .card-stat{border-radius:16px!important;}
++    .card-stat:hover,.metric-card:hover,.cal-cell:hover{transform:none;}
++    .card-stat:hover{box-shadow:var(--card-shadow)!important;}
++    .tj-pnl-hero{background:var(--card-bg)!important;}
++    .section-header .icon-wrap{background:var(--panel)!important;}
++    .section-header .icon-wrap i{color:var(--ink)!important;}
++    .stat-icon-badge{background:var(--panel)!important;} .stat-icon-badge i{color:var(--ink)!important;}
++    .quote-box{font-size:.85rem;}
++    .tj-nav-fab,.tj-fab-add{background:var(--brand)!important;}
++    .tj-brand-mark{box-shadow:none!important;border-radius:10px!important;border:1px solid var(--border);}
++    [data-theme="dark"] #stat-pnl{text-shadow:none;}
++    @media print{ .balance-card{background:#fff!important;} .tj-sidebar{display:none!important;} body{padding-left:0!important;} }
++
++    /* Sidebar (desktop) */
++    .tj-sidebar{display:none;}
++    @media(min-width:992px){
++      body{padding-left:236px;padding-bottom:32px;}
++      .tj-sidebar{display:flex;flex-direction:column;position:fixed;left:0;top:0;bottom:0;width:236px;z-index:1050;background:var(--sidebar-bg);border-right:1px solid var(--card-border);padding:18px 14px;}
++      .tj-bottomnav,.tj-fab-add{display:none!important;}
++      .tj-topbar .tj-brand{visibility:hidden;}
++      .tj-topbar-inner{max-width:1180px;padding:0 28px;}
++      .container{max-width:1180px!important;padding-left:28px!important;padding-right:28px!important;}
++    }
++    .tj-side-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px;cursor:pointer;}
++    .tj-side-brand img{width:34px;height:34px;border-radius:10px;background:#F8F7F3;}
++    .tj-side-brand b{display:block;font-size:.9rem;color:var(--ink);line-height:1.1;}
++    .tj-side-brand span{font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
++    .tj-side-add{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--brand);color:var(--on-brand)!important;border:0;border-radius:12px;padding:10px 12px;font-weight:700;font-size:.88rem;margin-bottom:18px;cursor:pointer;font-family:inherit;}
++    .tj-side-add:hover{background:var(--brand-2);}
++    .tj-side-label{font-size:.62rem;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;padding:10px 10px 6px;}
++    .tj-side-item{display:flex;align-items:center;gap:12px;width:100%;padding:9px 12px;border-radius:10px;border:0;background:transparent;color:var(--muted);font-weight:600;font-size:.88rem;cursor:pointer;text-align:left;font-family:inherit;}
++    .tj-side-item i{width:18px;text-align:center;font-size:.95rem;}
++    .tj-side-item:hover{background:var(--panel);color:var(--ink);}
++    .tj-side-item.active{background:var(--panel);color:var(--ink);box-shadow:inset 3px 0 0 var(--brand);}
++    .tj-side-item.active i{color:var(--brand);}
++    .tj-side-foot{margin-top:auto;border-top:1px solid var(--border);padding-top:12px;}
++
++    /* Page title */
++    .tj-page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
++    .tj-page-head h4{font-weight:700;margin:0;color:var(--ink);font-size:1.3rem;letter-spacing:-.2px;}
++    .tj-page-head .sub{color:var(--muted);font-size:.8rem;font-weight:500;}
++
++    /* KPI tiles */
++    .tj-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
++    @media(max-width:767px){.tj-kpis{grid-template-columns:repeat(2,1fr);}}
++    .tj-kpi{background:var(--card-bg);border:1px solid var(--card-border);border-radius:14px;padding:14px 16px;}
++    .tj-kpi-label{font-size:.7rem;font-weight:600;color:var(--muted);margin-bottom:4px;}
++    .tj-kpi-value{font-size:1.3rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:-.3px;line-height:1.2;}
++    .tj-kpi-sub{font-size:.7rem;color:var(--muted);font-weight:500;margin-top:2px;font-variant-numeric:tabular-nums;}
++    .tj-kpi.pos .tj-kpi-value{color:var(--profit);} .tj-kpi.neg .tj-kpi-value{color:var(--loss);}
++
++    /* Segmented control */
++    .tj-segctl{display:inline-flex;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:3px;gap:2px;}
++    .tj-segctl button{border:0;background:transparent;color:var(--muted);font-weight:600;font-size:.78rem;padding:5px 12px;border-radius:7px;cursor:pointer;font-family:inherit;}
++    .tj-segctl button.active{background:var(--card-bg);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);}
++    .tj-iconbtn2{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;}
++    .tj-iconbtn2:hover{background:var(--panel);}
++
++    /* Calendar v2 */
++    .tj-cal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;}
++    .tj-cal-month{font-weight:700;font-size:1.05rem;color:var(--ink);min-width:150px;text-align:center;}
++    .tj-cal2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr)) minmax(0,1.1fr);gap:6px;}
++    .tj-cal2-h{font-size:.68rem;font-weight:600;color:var(--muted);text-align:center;padding:2px 0 4px;}
++    .tj-cal2-d{position:relative;min-height:84px;border:1px solid var(--cal-cell-border);border-radius:10px;background:var(--cal-cell-bg);padding:6px 7px;display:flex;flex-direction:column;cursor:default;min-width:0;}
++    .tj-cal2-d.out{background:transparent;border-color:transparent;}
++    .tj-cal2-d.has{cursor:pointer;}
++    .tj-cal2-d.has:hover{outline:2px solid var(--ink);outline-offset:-1px;}
++    .tj-cal2-d.today .tj-cal2-num{background:var(--brand);color:var(--on-brand);}
++    .tj-cal2-num{font-size:.68rem;font-weight:600;color:var(--cal-date-color);width:20px;height:20px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;}
++    .tj-cal2-pnl{margin-top:auto;font-weight:700;font-size:.85rem;letter-spacing:-.3px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
++    .tj-cal2-meta{font-size:.62rem;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
++    .tj-cal2-d.g .tj-cal2-pnl{color:var(--profit);} .tj-cal2-d.l .tj-cal2-pnl{color:var(--loss);}
++    .tj-cal2-w{border-radius:10px;background:var(--panel);border:1px solid var(--border);padding:6px 8px;display:flex;flex-direction:column;justify-content:center;min-height:84px;min-width:0;}
++    .tj-cal2-w .lbl{font-size:.62rem;font-weight:600;color:var(--muted);}
++    .tj-cal2-w .val{font-weight:700;font-size:.85rem;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
++    @media(max-width:600px){
++      .tj-cal2{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;}
++      .tj-cal2-w,.tj-cal2-h.wk{display:none;}
++      .tj-cal2-d{min-height:54px;padding:4px;border-radius:8px;}
++      .tj-cal2-pnl{font-size:.62rem;} .tj-cal2-meta{display:none;}
++      .tj-cal2-num{width:16px;height:16px;font-size:.6rem;}
++    }
++    .tj-cal-weeks{display:none;}
++    @media(max-width:600px){ .tj-cal-weeks{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-top:10px;} }
++    .tj-year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
++    @media(max-width:600px){.tj-year-grid{grid-template-columns:repeat(3,1fr);}}
++    .tj-year-cell{border:1px solid var(--cal-cell-border);border-radius:12px;padding:12px;cursor:pointer;background:var(--cal-cell-bg);}
++    .tj-year-cell:hover{outline:2px solid var(--ink);outline-offset:-1px;}
++    .tj-year-cell .m{font-weight:600;font-size:.8rem;color:var(--muted);}
++    .tj-year-cell .v{font-weight:700;font-size:1rem;font-variant-numeric:tabular-nums;margin-top:6px;}
++    .tj-year-cell .c{font-size:.68rem;color:var(--muted);}
++    .tj-year-cell.g .v{color:var(--profit);} .tj-year-cell.l .v{color:var(--loss);}
++
++    /* Heatmap v2 */
++    .tj-hm{display:grid;gap:3px;min-width:620px;}
++    .tj-hm-c{height:26px;border-radius:5px;background:var(--cal-cell-empty);font-size:.58rem;font-weight:600;display:flex;align-items:center;justify-content:center;color:transparent;cursor:default;}
++    .tj-hm-c:hover{outline:2px solid var(--ink);outline-offset:-1px;color:var(--ink);}
++    .tj-hm-lab{font-size:.66rem;font-weight:600;color:var(--muted);display:flex;align-items:center;padding-right:6px;}
++    .tj-hm-top{font-size:.58rem;font-weight:600;color:var(--muted);text-align:center;}
++    .tj-legend{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:10px;font-size:.66rem;font-weight:600;color:var(--muted);}
++    .tj-legend i{width:14px;height:10px;border-radius:3px;display:inline-block;}
++
++    /* Long / Short */
++    .tj-ls-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--panel);margin:8px 0 14px;}
++    .tj-ls-bar span{display:block;height:100%;}
++    .tj-ls-row{display:grid;grid-template-columns:1fr repeat(3,auto);gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--stat-list-border);font-size:.85rem;}
++    .tj-ls-row:last-child{border-bottom:0;}
++    .tj-ls-row .n{font-variant-numeric:tabular-nums;font-weight:700;text-align:right;}
++    .tj-ls-row .h{font-size:.66rem;color:var(--muted);font-weight:600;text-align:right;}
++    .tj-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:8px;}
++
++    body.tj-hidepnl .tj-cal2-pnl, body.tj-hidepnl .tj-cal2-w .val, body.tj-hidepnl .tj-year-cell .v,
++    body.tj-hidepnl .tj-kpi-value, body.tj-hidepnl .tj-kpi-sub, body.tj-hidepnl .tj-ls-row .n.money{filter:blur(7px);user-select:none;}
+   </style>
+ </head>
+ <body>
+ 
++  <!-- ── Sidebar (desktop) ── -->
++  <aside class="tj-sidebar print-hide" aria-label="เมนูหลัก">
++    <div class="tj-side-brand" onclick="switchTab('dashboard')">
++      <img src="app-icon.svg" alt="">
++      <div><b>Pro Trading</b><span>Journal</span></div>
++    </div>
++    <button class="tj-side-add" onclick="switchTab('add-trade')"><i class="fa-solid fa-plus"></i> บันทึกเทรด</button>
++    <div class="tj-side-label">เมนู</div>
++    <button class="tj-side-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i> ภาพรวม</button>
++    <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i> ปฏิทิน</button>
++    <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i> Performance</button>
++    <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติ</button>
++    <div class="tj-side-label">บัญชี</div>
++    <button class="tj-side-item" data-bs-toggle="modal" data-bs-target="#fundingModal"><i class="fa-solid fa-wallet"></i> ฝาก / ถอน</button>
++    <button class="tj-side-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i> ตั้งค่า</button>
++    <div class="tj-side-foot">
++      <button class="tj-side-item" onclick="toggleDarkMode()"><i class="fa-solid fa-circle-half-stroke"></i> สลับธีม</button>
++    </div>
++  </aside>
++
+   <header class="tj-topbar print-hide">
+     <div class="tj-topbar-inner">
+       <a class="tj-brand" onclick="switchTab('dashboard')">
+@@ -415,6 +558,7 @@
+             <option value="all">ทุกปี</option><option value="2026" selected>2026</option><option value="2025">2025</option>
+           </select>
+         </div>
++        <button class="tj-icon-btn d-lg-none" data-bs-toggle="modal" data-bs-target="#fundingModal" title="ฝาก / ถอน"><i class="fa-solid fa-wallet"></i></button>
+         <button class="tj-icon-btn" onclick="toggleDarkMode()" title="สลับธีม (Light / Dark)"><i class="fa-solid fa-circle-half-stroke"></i></button>
+       </div>
+     </div>
+@@ -493,7 +637,7 @@
+ 
+       <div class="row mb-4">
+         <div class="col-12">
+-          <div class="card card-stat p-4 p-md-5 text-center" style="background: linear-gradient(180deg, #ffffff 0%, #F8F7F3 100%);">
++          <div class="card card-stat tj-pnl-hero p-4 p-md-5 text-center">
+              <small class="text-muted text-uppercase fw-bold mb-2 d-block" style="letter-spacing: 2px; font-size: 0.9rem;">Net Profit / Loss (กำไรสุทธิ)</small>
+              <h1 id="stat-pnl" class="display-3 fw-bold mb-0" style="letter-spacing: -1px;">0.00</h1>
+           </div>
+@@ -669,18 +813,89 @@
+         </div>
+       </div>
+ 
+-      <div class="calendar-container h-100 mb-5" id="calendar-area">
+-        <h5 class="mb-4 text-center fw-bold text-dark" id="calendar-title">ปฏิทิน P/L</h5>
+-        <div class="calendar-header" id="calendar-header"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div>
+-        <div class="calendar-grid" id="calendar-body"></div>
++    </div>
++
++    <!-- ══════════ CALENDAR PAGE ══════════ -->
++    <div id="calendar" class="page-section print-hide">
++      <div class="tj-page-head">
++        <div><h4>ปฏิทิน P&amp;L</h4><div class="sub">กำไร/ขาดทุนรายวัน พร้อมสรุปรายสัปดาห์ · คลิกวันที่เพื่อดูออเดอร์</div></div>
++        <div class="tj-segctl" id="tj-cal-mode"><button class="active" data-mode="month">เดือน</button><button data-mode="year">ปี</button></div>
++      </div>
++      <div class="tj-kpis" id="tj-cal-kpis"></div>
++      <div class="card card-stat p-3 p-md-4 mb-5">
++        <div class="tj-cal-toolbar">
++          <button class="tj-iconbtn2" id="tj-cal-prev" aria-label="ก่อนหน้า"><i class="fa-solid fa-chevron-left"></i></button>
++          <div class="tj-cal-month" id="tj-cal-title">-</div>
++          <div class="d-flex gap-2">
++            <button class="tj-iconbtn2" id="tj-cal-today" title="วันนี้" aria-label="วันนี้"><i class="fa-solid fa-location-crosshairs"></i></button>
++            <button class="tj-iconbtn2" id="tj-cal-next" aria-label="ถัดไป"><i class="fa-solid fa-chevron-right"></i></button>
++          </div>
++        </div>
++        <div id="tj-cal-body"></div>
++        <div class="tj-cal-weeks" id="tj-cal-weeks"></div>
+       </div>
+     </div>
+ 
+     <!-- ══════════ ANALYTICS PAGE (ใหม่) ══════════ -->
+     <div id="analytics" class="page-section print-hide">
+-      <div class="text-center mb-4">
+-        <h4 class="fw-bold mb-1" style="color:var(--ink);"><i class="fa-solid fa-magnifying-glass-chart me-2" style="color:var(--brand);"></i> วิเคราะห์เชิงลึก</h4>
+-        <div class="text-muted small">เจาะพฤติกรรมและจุดแข็ง-จุดอ่อนของระบบเทรด · ใช้ตัวกรองด้านบนหน้าหลักร่วมกันได้</div>
++      <div class="tj-page-head">
++        <div><h4>Performance</h4><div class="sub" id="tj-perf-scope">ใช้ตัวกรองเดียวกับหน้าภาพรวม (เดือน/ปี, ช่วงเวลา, Symbol, Setup, Long/Short)</div></div>
++      </div>
++      <div class="tj-kpis" id="tj-perf-kpis"></div>
++
++      <div class="row g-3 mb-4">
++        <div class="col-lg-8">
++          <div class="card card-stat p-4 h-100">
++            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
++              <div class="section-header mb-0"><div class="icon-wrap"><i class="fa-solid fa-chart-area"></i></div><h6 class="title">กำไรสะสม (Cumulative P&amp;L)</h6></div>
++              <div class="tj-segctl" id="tj-perf-cum-mode"><button class="active" data-m="trade">รายไม้</button><button data-m="day">รายวัน</button></div>
++            </div>
++            <div style="position:relative;height:260px;"><canvas id="tjCumChart"></canvas></div>
++          </div>
++        </div>
++        <div class="col-lg-4">
++          <div class="card card-stat p-4 h-100">
++            <div class="section-header"><div class="icon-wrap"><i class="fa-solid fa-arrows-up-down"></i></div><h6 class="title">Long vs Short</h6></div>
++            <div id="tj-ls"></div>
++          </div>
++        </div>
++      </div>
++
++      <div class="row mb-4">
++        <div class="col-12">
++          <div class="card card-stat p-4">
++            <div class="section-header"><div class="icon-wrap"><i class="fa-solid fa-chart-column"></i></div><h6 class="title">P&amp;L รายวัน</h6></div>
++            <div style="position:relative;height:220px;"><canvas id="tjDailyChart"></canvas></div>
++          </div>
++        </div>
++      </div>
++
++      <div class="row mb-4">
++        <div class="col-12">
++          <div class="card card-stat p-4">
++            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
++              <div class="section-header mb-0"><div class="icon-wrap"><i class="fa-solid fa-table-cells"></i></div><h6 class="title">Heatmap: วัน × ชั่วโมง</h6></div>
++              <div class="tj-segctl" id="tj-hm-metric"><button class="active" data-m="pnl">P&amp;L</button><button data-m="wr">Win rate</button><button data-m="n">จำนวนไม้</button></div>
++            </div>
++            <div class="tj-heatmap-wrap"><div id="tj-heatmap"></div></div>
++            <div class="small text-muted mt-2" style="font-size:.7rem;">ใช้เวลาเข้าออเดอร์ (ถ้ามี) ไม่เช่นนั้นใช้เวลาที่บันทึก · เวลาตามเครื่องของคุณ</div>
++          </div>
++        </div>
++      </div>
++
++      <div class="row g-3 mb-4">
++        <div class="col-md-6">
++          <div class="card card-stat p-4 h-100">
++            <div class="section-header"><div class="icon-wrap"><i class="fa-solid fa-calendar-week"></i></div><h6 class="title">P&amp;L ตามวันในสัปดาห์</h6></div>
++            <div style="position:relative;height:220px;"><canvas id="tjDowChart"></canvas></div>
++          </div>
++        </div>
++        <div class="col-md-6">
++          <div class="card card-stat p-4 h-100">
++            <div class="section-header"><div class="icon-wrap"><i class="fa-regular fa-clock"></i></div><h6 class="title">P&amp;L ตามชั่วโมง</h6></div>
++            <div style="position:relative;height:220px;"><canvas id="tjHourChart"></canvas></div>
++          </div>
++        </div>
+       </div>
+ 
+       <div class="row mb-4">
+@@ -1697,7 +1912,7 @@
+     }
+ 
+     /* ---------- export api + เลียนแบบ google.script.run ---------- */
+-    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory };
++    window.api = { saveTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows };
+ 
+     // Polyfill: ทำให้โค้ดเดิมที่เรียก google.script.run.xxx ใช้งานได้ทันที
+     function makeRunner() {
+@@ -1848,7 +2063,7 @@
+ 
+       const pnlEl = document.getElementById('stat-pnl');
+       pnlEl.innerText = (data.totalPnl >= 0 ? "+$" : "-$") + Math.abs(data.totalPnl);
+-      pnlEl.style.color = data.totalPnl >= 0 ? '#2F7A4F' : '#B93033'; 
++      pnlEl.style.color = data.totalPnl >= 0 ? 'var(--profit)' : 'var(--loss)'; 
+       
+       let insightHtml = "";
+       data.aiInsights.forEach(i => {
+@@ -1868,7 +2083,11 @@
+     function renderEquityChart(labels, dataPoints) {
+       const ctx = document.getElementById('equityChart').getContext('2d');
+       if (equityChartInstance) { equityChartInstance.destroy(); }
+-      Chart.defaults.color = '#9C9CA4';
++      const _cs = getComputedStyle(document.documentElement);
++      const _ink = _cs.getPropertyValue('--ink').trim() || '#111114';
++      const _grid = _cs.getPropertyValue('--border').trim() || '#E7E7EA';
++      const _loss = _cs.getPropertyValue('--loss').trim() || '#DC2626';
++      Chart.defaults.color = _cs.getPropertyValue('--muted').trim() || '#9C9CA4';
+       Chart.defaults.font.family = "'Prompt', sans-serif";
+ 
+       // 1. คำนวณค่า Drawdown (หาจุดสูงสุดที่เคยทำได้ แล้วลบด้วยค่าปัจจุบัน)
+@@ -1886,10 +2105,10 @@
+             {
+               label: 'Equity',
+               data: dataPoints,
+-              borderColor: '#1E1E24',
+-              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+-              borderWidth: 3,
+-              pointBackgroundColor: '#131317',
++              borderColor: _ink,
++              backgroundColor: 'rgba(127,127,135,0.08)',
++              borderWidth: 2,
++              pointBackgroundColor: _ink,
+               pointRadius: 2,
+               pointHoverRadius: 6,
+               fill: true,
+@@ -1899,8 +2118,8 @@
+             {
+               label: 'Drawdown',
+               data: drawdownData,
+-              borderColor: '#B93033',
+-              backgroundColor: 'rgba(239, 68, 68, 0.08)',
++              borderColor: _loss,
++              backgroundColor: 'rgba(220, 38, 38, 0.08)',
+               borderWidth: 2,
+               pointRadius: 0, // ซ่อนจุดเพื่อให้ดูเป็น Curve ลึกแบบต่อเนื่อง
+               fill: true,
+@@ -1939,7 +2158,7 @@
+               type: 'linear',
+               display: true,
+               position: 'left',
+-              grid: { color: '#F2F0EA' } 
++              grid: { color: _grid } 
+             },
+             y1: {
+               type: 'linear',
+@@ -1947,7 +2166,7 @@
+               position: 'right',
+               grid: { display: false }, // ปิด grid แกนขวาเพื่อไม่ให้เส้นตีกัน
+               suggestedMax: 0, // บังคับให้ 0 อยู่ด้านบนสุดของสเกลฝั่งขวา Drawdown จะได้ห้อยลงมา
+-              ticks: { color: '#B93033' }
++              ticks: { color: _loss }
+             }
+           }
+         }
+@@ -1966,6 +2185,7 @@
+ 
+     function renderCalendar(dailyData) {
+       const calArea = document.getElementById('calendar-area');
++      if (!calArea) return; // ย้ายไปหน้า "ปฏิทิน" (tj-calendar) แล้ว
+       calArea.style.display = 'block'; 
+       
+       let monthFilter = document.getElementById('filter-month').value;
+@@ -2374,10 +2594,10 @@
+ 
+   <nav class="tj-bottomnav print-hide">
+     <div class="tj-bottomnav-inner">
+-      <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>หน้าหลัก</span></a>
+-      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-magnifying-glass-chart"></i><span>วิเคราะห์</span></a>
++      <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>ภาพรวม</span></a>
++      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i><span>ปฏิทิน</span></a>
++      <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>Performance</span></a>
+       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-solid fa-clock-rotate-left"></i><span>ประวัติ</span></a>
+-      <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#fundingModal"><i class="fa-solid fa-wallet"></i><span>ทุน</span></button>
+       <button class="tj-nav-item" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="fa-solid fa-gear"></i><span>ตั้งค่า</span></button>
+     </div>
+   </nav>
+@@ -2517,7 +2737,7 @@
+   <!-- ======= PWA: Service Worker Registration ======= -->
+   <!-- APP BUILD: 2026-07-16 (v6) -->
+   <script>
+-    window.APP_BUILD = '2026-07-16-v15';
++    window.APP_BUILD = '2026-09-26-v16';
+     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
+     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
+     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
+@@ -2669,9 +2889,9 @@
+       const empty=document.getElementById('rdist-empty'), cv=document.getElementById('rDistChart');
+       if(empty) empty.classList.toggle('d-none', total>0); if(cv) cv.style.display= total>0?'':'none';
+       if(!total) return;
+-      const colors=keys.map(k=> k.indexOf('-')===0||k.charAt(0)==='≤'?'#B93033': (k==='0..1R'?'#B5791A':'#2F7A4F'));
++      const _v=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim(); const colors=keys.map(k=> k.indexOf('-')===0||k.charAt(0)==='≤'?_v('--loss'): (k==='0..1R'?_v('--ap-warn'):_v('--profit')));
+       if(window._charts.rdist) window._charts.rdist.destroy();
+-      window._charts.rdist=new Chart(cv.getContext('2d'),{type:'bar',data:{labels:keys,datasets:[{data:vals,backgroundColor:colors,borderRadius:6}]},
++      window._charts.rdist=new Chart(cv.getContext('2d'),{type:'bar',data:{labels:keys,datasets:[{data:vals,backgroundColor:colors,borderRadius:4,maxBarThickness:48}]},
+         options:baseOpts({scales:{x:{grid:{display:false},ticks:{color:AXIS,font:{size:10}}},y:{grid:{color:GRID},ticks:{color:AXIS,precision:0}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+' ไม้'}}}})});
+     }
+ 
+@@ -2797,5 +3017,323 @@
+   })();
+   </script>
+ 
++  <!-- ══════════ v2: Calendar P&L + Performance (heatmap, long/short, cumulative) ══════════ -->
++  <script>
++  (function(){
++    const TH_MONTHS = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
++    const TH_MON_S  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
++    const DOW_S = ["อา","จ","อ","พ","พฤ","ศ","ส"];
++    const state = { rows: [], calY: new Date().getFullYear(), calM: new Date().getMonth(), calMode: 'month', cumMode: 'trade', hmMetric: 'pnl' };
++    const charts = {};
++
++    // ── helpers ──
++    const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
++    const pad = n => String(n).padStart(2,'0');
++    const dkey = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
++    function fmt$(n, signed){ n = Number(n)||0; const a = Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); return (n<0?'-':(signed&&n>0?'+':''))+'$'+a; }
++    function fmtShort(n){ n = Number(n)||0; const a=Math.abs(n); const s = a>=10000 ? (a/1000).toFixed(1)+'k' : a>=1000 ? (a/1000).toFixed(2)+'k' : a.toFixed(a>=10?0:2); return (n<0?'-':'+')+'$'+s; }
++    const tone = n => n>0?'pos':(n<0?'neg':'');
++    function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
++    function rgbOf(hex){ hex = hex.replace('#',''); if(hex.length===3) hex = hex.split('').map(c=>c+c).join(''); const n = parseInt(hex,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
++    function rgba(varName, a){ const v = cssVar(varName); if(v.startsWith('#')){ const [r,g,b]=rgbOf(v); return `rgba(${r},${g},${b},${a})`; } return v; }
++
++    function isTrade(r){ const t = String(r.type||'').trim(); return (t==='Buy'||t==='Sell') && String(r.symbol||'').trim()!=='' && isFinite(parseFloat(r.pnl)); }
++    function tradeHour(r, d){ const m = /^(\d{1,2}):(\d{2})/.exec(String(r.entry_time||'').trim()); if(m){ const h=+m[1]; if(h>=0&&h<24) return h; } return d.getHours(); }
++
++    // ตัวกรองร่วม: symbol / setup / side (+ ช่วงเวลา/เดือน-ปี ถ้า withDate)
++    function applyFilters(rows, withDate){
++      const gf = window._globalFilter || {};
++      const fm = (document.getElementById('filter-month')||{}).value || 'all';
++      const fy = (document.getElementById('filter-year')||{}).value || 'all';
++      let cutoff = null;
++      if(withDate && gf.preset && gf.preset!=='all'){
++        const now = new Date();
++        if(gf.preset==='ytd') cutoff = new Date(now.getFullYear(),0,1);
++        else { const days = {'7d':7,'30d':30,'90d':90,'1y':365}[gf.preset]; if(days){ cutoff = new Date(now); cutoff.setDate(cutoff.getDate()-days); } }
++      }
++      const out = [];
++      for(const r of rows){
++        if(!isTrade(r)) continue;
++        const d = new Date(r.created_at);
++        const sym = String(r.symbol||'').toUpperCase().trim(), type = String(r.type).trim();
++        if(gf.symbols && gf.symbols.length && !gf.symbols.includes(sym)) continue;
++        if(gf.setups && gf.setups.length && !gf.setups.includes(String(r.setup||'').trim())) continue;
++        if(gf.side==='long' && type!=='Buy') continue;
++        if(gf.side==='short' && type!=='Sell') continue;
++        if(withDate){
++          if(cutoff && d < cutoff) continue;
++          if(fm!=='all' && (d.getMonth()+1)!=fm) continue;
++          if(fy!=='all' && d.getFullYear()!=fy) continue;
++        }
++        out.push({ d, pnl: parseFloat(r.pnl), type, sym, hour: tradeHour(r,d), r: parseFloat(r.r_mult) });
++      }
++      out.sort((a,b)=>a.d-b.d);
++      return out;
++    }
++    function summarize(trades){
++      let n=0,w=0,l=0,gp=0,gl=0,net=0;
++      for(const t of trades){ n++; net+=t.pnl; if(t.pnl>0){w++;gp+=t.pnl;} else if(t.pnl<0){l++;gl+=Math.abs(t.pnl);} }
++      return { n, w, l, net, gp, gl, wr: n? w/n*100 : 0, pf: gl>0? gp/gl : (gp>0?Infinity:0), avgW: w? gp/w:0, avgL: l? gl/l:0 };
++    }
++    function byDay(trades){ const m={}; for(const t of trades){ const k=dkey(t.d); (m[k]=m[k]||{pnl:0,n:0,w:0}); m[k].pnl+=t.pnl; m[k].n++; if(t.pnl>0) m[k].w++; } return m; }
++    function kpi(label, value, sub, cls){ return `<div class="tj-kpi ${cls||''}"><div class="tj-kpi-label">${label}</div><div class="tj-kpi-value">${value}</div>${sub?`<div class="tj-kpi-sub">${sub}</div>`:''}</div>`; }
++
++    // ══════════ CALENDAR ══════════
++    function renderCalendar2(){
++      const body = document.getElementById('tj-cal-body'); if(!body) return;
++      const trades = applyFilters(state.rows, false);
++      const days = byDay(trades);
++      const title = document.getElementById('tj-cal-title');
++      const kpis = document.getElementById('tj-cal-kpis');
++      const weeksM = document.getElementById('tj-cal-weeks');
++      const today = new Date();
++
++      if(state.calMode==='year'){
++        const y = state.calY;
++        title.textContent = 'ปี ' + y;
++        const months = Array.from({length:12},()=>({pnl:0,n:0,w:0}));
++        const yt = trades.filter(t=>t.d.getFullYear()===y);
++        yt.forEach(t=>{ const m=months[t.d.getMonth()]; m.pnl+=t.pnl; m.n++; if(t.pnl>0) m.w++; });
++        body.innerHTML = '<div class="tj-year-grid">' + months.map((m,i)=>{
++          const cls = m.pnl>0?'g':(m.pnl<0?'l':'');
++          return `<div class="tj-year-cell ${cls}" data-m="${i}"><div class="m">${TH_MONTHS[i]}</div><div class="v">${m.n? fmt$(m.pnl,true):'—'}</div><div class="c">${m.n? m.n+' ไม้ · '+Math.round(m.w/m.n*100)+'% win':'ไม่มีเทรด'}</div></div>`;
++        }).join('') + '</div>';
++        body.querySelectorAll('.tj-year-cell').forEach(el=>el.addEventListener('click',()=>{ state.calM=+el.dataset.m; setCalMode('month'); }));
++        weeksM.innerHTML = '';
++        const s = summarize(yt); const pm = months.filter(m=>m.n&&m.pnl>0).length, lm = months.filter(m=>m.n&&m.pnl<0).length;
++        let best=-1; months.forEach((m,i)=>{ if(m.n && (best<0 || m.pnl>months[best].pnl)) best=i; });
++        kpis.innerHTML = kpi('Net P&L ทั้งปี', fmt$(s.net,true), s.n+' ไม้', tone(s.net))
++          + kpi('Win rate', s.wr.toFixed(1)+'%', s.w+'W / '+s.l+'L')
++          + kpi('เดือนกำไร / ขาดทุน', `<span class="text-gain">${pm}</span> / <span class="text-loss">${lm}</span>`, 'เดือน')
++          + kpi('เดือนที่ดีที่สุด', best>=0? TH_MON_S[best] : '—', best>=0? fmt$(months[best].pnl,true):'', best>=0 && months[best].pnl>0?'pos':'');
++        return;
++      }
++
++      const y = state.calY, m = state.calM;
++      title.textContent = TH_MONTHS[m] + ' ' + y;
++      const first = new Date(y,m,1), dim = new Date(y,m+1,0).getDate();
++      const lead = first.getDay();
++      let html = '<div class="tj-cal2">' + DOW_S.map(d=>`<div class="tj-cal2-h">${d}</div>`).join('') + '<div class="tj-cal2-h wk">สัปดาห์</div>';
++      let cells = [];
++      for(let i=0;i<lead;i++) cells.push(null);
++      for(let d=1; d<=dim; d++) cells.push(d);
++      while(cells.length%7) cells.push(null);
++      const weekTotals = [];
++      for(let w=0; w<cells.length/7; w++){
++        let wp=0, wn=0, wd=0;
++        for(let c=0;c<7;c++){
++          const d = cells[w*7+c];
++          if(d===null){ html += '<div class="tj-cal2-d out"></div>'; continue; }
++          const k = y+'-'+pad(m+1)+'-'+pad(d); const s = days[k];
++          const isToday = d===today.getDate() && m===today.getMonth() && y===today.getFullYear();
++          let cls = 'tj-cal2-d' + (isToday?' today':'');
++          let inner = `<div><span class="tj-cal2-num">${d}</span></div>`;
++          let style = '';
++          if(s){
++            wp+=s.pnl; wn+=s.n; wd++;
++            cls += ' has ' + (s.pnl>0?'g':(s.pnl<0?'l':''));
++            const a = s.pnl>0 ? 'gain' : 'loss';
++            if(s.pnl!==0) style = `background:var(--${a}-bg);border-color:transparent;`;
++            inner += `<div class="tj-cal2-pnl">${fmtShort(s.pnl)}</div><div class="tj-cal2-meta">${s.n} ไม้ · ${Math.round(s.w/s.n*100)}%</div>`;
++          }
++          html += `<div class="${cls}" ${s?`data-k="${k}" title="${k}: ${fmt$(s.pnl,true)} · ${s.n} ไม้"`:''} style="${style}">${inner}</div>`;
++        }
++        weekTotals.push({wp,wn,wd});
++        html += `<div class="tj-cal2-w"><div class="lbl">สัปดาห์ ${w+1}</div><div class="val ${wp>0?'text-gain':(wp<0?'text-loss':'')}">${wn? fmtShort(wp):'—'}</div><div class="lbl">${wd? wd+' วัน · '+wn+' ไม้':''}</div></div>`;
++      }
++      html += '</div>';
++      body.innerHTML = html;
++      weeksM.innerHTML = weekTotals.map((w,i)=>`<div class="tj-cal2-w" style="min-height:0"><div class="lbl">สัปดาห์ ${i+1}</div><div class="val ${w.wp>0?'text-gain':(w.wp<0?'text-loss':'')}">${w.wn? fmtShort(w.wp):'—'}</div></div>`).join('');
++      body.querySelectorAll('.tj-cal2-d.has').forEach(el=>el.addEventListener('click',()=>openDay(el.dataset.k)));
++
++      const mt = trades.filter(t=>t.d.getFullYear()===y && t.d.getMonth()===m);
++      const s = summarize(mt);
++      const dk = Object.keys(days).filter(k=>k.startsWith(y+'-'+pad(m+1)+'-'));
++      const gd = dk.filter(k=>days[k].pnl>0).length, ld = dk.filter(k=>days[k].pnl<0).length;
++      let bestK=null; dk.forEach(k=>{ if(!bestK || days[k].pnl>days[bestK].pnl) bestK=k; });
++      kpis.innerHTML = kpi('Net P&L เดือนนี้', fmt$(s.net,true), s.n+' ไม้', tone(s.net))
++        + kpi('Win rate', s.wr.toFixed(1)+'%', s.w+'W / '+s.l+'L')
++        + kpi('วันกำไร / ขาดทุน', `<span class="text-gain">${gd}</span> / <span class="text-loss">${ld}</span>`, dk.length+' วันที่เทรด')
++        + kpi('วันที่ดีที่สุด', bestK? (+bestK.slice(8))+' '+TH_MON_S[m] : '—', bestK? fmt$(days[bestK].pnl,true):'', bestK && days[bestK].pnl>0?'pos':'');
++    }
++    function openDay(k){
++      if(!k) return;
++      const t = document.getElementById('history-filter-type'), d = document.getElementById('history-filter-day');
++      if(t && d){ t.value='day'; d.value=k; if(typeof toggleHistoryFilterInput==='function') toggleHistoryFilterInput(); }
++      switchTab('history');
++      window.scrollTo({top:0,behavior:'smooth'});
++    }
++    function setCalMode(mode){
++      state.calMode = mode;
++      document.querySelectorAll('#tj-cal-mode button').forEach(b=>b.classList.toggle('active', b.dataset.mode===mode));
++      renderCalendar2();
++    }
++    function wireCalendar(){
++      const q = id => document.getElementById(id);
++      q('tj-cal-prev') && q('tj-cal-prev').addEventListener('click',()=>{ if(state.calMode==='year') state.calY--; else { state.calM--; if(state.calM<0){state.calM=11;state.calY--;} } renderCalendar2(); });
++      q('tj-cal-next') && q('tj-cal-next').addEventListener('click',()=>{ if(state.calMode==='year') state.calY++; else { state.calM++; if(state.calM>11){state.calM=0;state.calY++;} } renderCalendar2(); });
++      q('tj-cal-today') && q('tj-cal-today').addEventListener('click',()=>{ const n=new Date(); state.calY=n.getFullYear(); state.calM=n.getMonth(); renderCalendar2(); });
++      document.querySelectorAll('#tj-cal-mode button').forEach(b=>b.addEventListener('click',()=>setCalMode(b.dataset.mode)));
++    }
++
++    // ══════════ PERFORMANCE ══════════
++    function chartBase(){
++      const axis = cssVar('--muted') || '#71717A', grid = cssVar('--border') || '#E7E7EA';
++      return { axis, grid, font: { family: "'Prompt', sans-serif", size: 11 } };
++    }
++    function mkChart(key, canvasId, cfg){
++      const cv = document.getElementById(canvasId); if(!cv || typeof Chart==='undefined') return;
++      if(charts[key]) charts[key].destroy();
++      charts[key] = new Chart(cv.getContext('2d'), cfg);
++    }
++    function barColors(vals){ const g = cssVar('--profit'), l = cssVar('--loss'), n = cssVar('--border'); return vals.map(v=> v>0?g:(v<0?l:n)); }
++    function moneyTick(v){ const a=Math.abs(v); return (v<0?'-':'')+'$'+(a>=1000?(a/1000).toFixed(1)+'k':a.toFixed(0)); }
++    function barOpts(tipLabel){
++      const b = chartBase();
++      return { responsive:true, maintainAspectRatio:false, animation:{duration:300},
++        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: tipLabel } } },
++        scales:{ x:{ grid:{display:false}, ticks:{color:b.axis,font:b.font,maxRotation:0,autoSkip:true} },
++                 y:{ grid:{color:b.grid}, border:{display:false}, ticks:{color:b.axis,font:b.font,callback:moneyTick} } } };
++    }
++
++    function renderPerformance(){
++      const host = document.getElementById('tj-perf-kpis'); if(!host) return;
++      const trades = applyFilters(state.rows, true);
++      const s = summarize(trades);
++      const days = byDay(trades); const dks = Object.keys(days).sort();
++
++      // Max drawdown (on cumulative trade P&L)
++      let cum=0, peak=0, mdd=0; trades.forEach(t=>{ cum+=t.pnl; if(cum>peak) peak=cum; mdd=Math.max(mdd, peak-cum); });
++      const greenDays = dks.filter(k=>days[k].pnl>0).length;
++      host.innerHTML = kpi('Net P&L', fmt$(s.net,true), s.n+' ไม้ · '+dks.length+' วัน', tone(s.net))
++        + kpi('Win rate', s.wr.toFixed(1)+'%', s.w+'W / '+s.l+'L')
++        + kpi('Profit factor', isFinite(s.pf)? s.pf.toFixed(2) : '∞', 'กำไรรวม ÷ ขาดทุนรวม', s.pf>=1?'pos':(s.n?'neg':''))
++        + kpi('Avg win / loss', (s.avgL? (s.avgW/s.avgL).toFixed(2):'—')+'x', fmt$(s.avgW)+' / -'+fmt$(s.avgL))
++        + kpi('Max drawdown', mdd? '-'+fmt$(mdd):'$0.00', 'จากจุดสูงสุดของกำไรสะสม', mdd?'neg':'')
++        + kpi('Day win rate', dks.length? Math.round(greenDays/dks.length*100)+'%':'—', greenDays+' / '+dks.length+' วันกำไร')
++        + kpi('Gross profit', fmt$(s.gp), '', s.gp?'pos':'')
++        + kpi('Gross loss', s.gl? '-'+fmt$(s.gl):'$0.00', '', s.gl?'neg':'');
++
++      const b = chartBase();
++      // Cumulative
++      let labels=[], data=[];
++      if(state.cumMode==='day'){ let c=0; dks.forEach(k=>{ c+=days[k].pnl; labels.push(k.slice(8)+'/'+k.slice(5,7)); data.push(+c.toFixed(2)); }); }
++      else { let c=0; trades.forEach((t,i)=>{ c+=t.pnl; labels.push('#'+(i+1)+' · '+pad(t.d.getDate())+'/'+pad(t.d.getMonth()+1)); data.push(+c.toFixed(2)); }); }
++      const last = data.length? data[data.length-1] : 0;
++      const lineVar = last>=0 ? '--profit' : '--loss';
++      mkChart('cum','tjCumChart',{ type:'line',
++        data:{ labels, datasets:[{ data, borderColor:cssVar(lineVar), borderWidth:2, pointRadius:0, pointHoverRadius:4, tension:.25, fill:{target:'origin', above:rgba('--profit',.12), below:rgba('--loss',.12)} }] },
++        options:{ responsive:true, maintainAspectRatio:false, animation:{duration:300}, interaction:{mode:'index',intersect:false},
++          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>' '+fmt$(c.parsed.y,true) } } },
++          scales:{ x:{ grid:{display:false}, ticks:{color:b.axis,font:b.font,maxTicksLimit:7,maxRotation:0} },
++                   y:{ grid:{color:b.grid}, border:{display:false}, ticks:{color:b.axis,font:b.font,callback:moneyTick} } } } });
++
++      // Daily bars
++      const dv = dks.map(k=>+days[k].pnl.toFixed(2));
++      mkChart('daily','tjDailyChart',{ type:'bar', data:{ labels: dks.map(k=>k.slice(8)+'/'+k.slice(5,7)), datasets:[{ data:dv, backgroundColor:barColors(dv), borderRadius:3, maxBarThickness:22 }] },
++        options: barOpts(c=>' '+fmt$(c.parsed.y,true)+' · '+days[dks[c.dataIndex]].n+' ไม้') });
++
++      // Day of week (Mon..Sun)
++      const order=[1,2,3,4,5,6,0], dow = Array.from({length:7},()=>({p:0,n:0}));
++      trades.forEach(t=>{ const x=dow[t.d.getDay()]; x.p+=t.pnl; x.n++; });
++      const dowV = order.map(i=>+dow[i].p.toFixed(2));
++      mkChart('dow','tjDowChart',{ type:'bar', data:{ labels: order.map(i=>DOW_S[i]), datasets:[{ data:dowV, backgroundColor:barColors(dowV), borderRadius:4, maxBarThickness:36 }] },
++        options: barOpts(c=>' '+fmt$(c.parsed.y,true)+' · '+dow[order[c.dataIndex]].n+' ไม้') });
++
++      // Hour
++      const hr = Array.from({length:24},()=>({p:0,n:0}));
++      trades.forEach(t=>{ hr[t.hour].p+=t.pnl; hr[t.hour].n++; });
++      const hv = hr.map(x=>+x.p.toFixed(2));
++      mkChart('hour','tjHourChart',{ type:'bar', data:{ labels: hr.map((_,i)=>pad(i)), datasets:[{ data:hv, backgroundColor:barColors(hv), borderRadius:3, maxBarThickness:18 }] },
++        options: barOpts(c=>' '+pad(c.dataIndex)+':00 · '+fmt$(c.parsed.y,true)+' · '+hr[c.dataIndex].n+' ไม้') });
++
++      renderHeatmap(trades);
++      renderLongShort(trades);
++    }
++
++    function renderHeatmap(trades){
++      const host = document.getElementById('tj-heatmap'); if(!host) return;
++      if(!trades.length){ host.innerHTML = '<div class="tj-empty"><i class="fa-solid fa-table-cells"></i><div>ยังไม่มีข้อมูลในช่วงนี้</div></div>'; return; }
++      const order=[1,2,3,4,5,6,0];
++      const g = {}; trades.forEach(t=>{ const k=t.d.getDay()+'-'+t.hour; (g[k]=g[k]||{p:0,n:0,w:0}); g[k].p+=t.pnl; g[k].n++; if(t.pnl>0) g[k].w++; });
++      const metric = state.hmMetric;
++      let maxAbs = 0, maxN = 0; Object.values(g).forEach(c=>{ maxAbs=Math.max(maxAbs,Math.abs(c.p)); maxN=Math.max(maxN,c.n); });
++      const hours = [...Array(24).keys()];
++      let html = `<div class="tj-hm" style="grid-template-columns:34px repeat(24,minmax(22px,1fr));"><div></div>` + hours.map(h=>`<div class="tj-hm-top">${h%3===0?pad(h):''}</div>`).join('');
++      order.forEach(di=>{
++        html += `<div class="tj-hm-lab">${DOW_S[di]}</div>`;
++        hours.forEach(h=>{
++          const c = g[di+'-'+h];
++          if(!c){ html += '<div class="tj-hm-c"></div>'; return; }
++          let bg, label, tip;
++          const wr = c.w/c.n*100;
++          if(metric==='wr'){ const a = .2+.8*Math.min(1,Math.abs(wr-50)/50); bg = wr>=50? rgba('--profit',a): rgba('--loss',a); label = Math.round(wr); }
++          else if(metric==='n'){ bg = rgba('--brand', .15+.85*(c.n/maxN)); label = c.n; }
++          else { const a = .15+.85*(maxAbs? Math.abs(c.p)/maxAbs : 0); bg = c.p>=0? rgba('--profit',a): rgba('--loss',a); label = Math.round(c.p); }
++          tip = `${DOW_S[di]} ${pad(h)}:00–${pad(h)}:59 · ${fmt$(c.p,true)} · ${c.n} ไม้ · win ${Math.round(wr)}%`;
++          html += `<div class="tj-hm-c" style="background:${bg}" title="${esc(tip)}">${label}</div>`;
++        });
++      });
++      html += '</div>';
++      const legend = metric==='n'
++        ? `<div class="tj-legend">น้อย <i style="background:${rgba('--brand',.2)}"></i><i style="background:${rgba('--brand',.55)}"></i><i style="background:${rgba('--brand',1)}"></i> มาก</div>`
++        : `<div class="tj-legend">${metric==='wr'?'Win &lt; 50%':'ขาดทุน'} <i style="background:${rgba('--loss',1)}"></i><i style="background:${rgba('--loss',.35)}"></i><i style="background:var(--cal-cell-empty)"></i><i style="background:${rgba('--profit',.35)}"></i><i style="background:${rgba('--profit',1)}"></i> ${metric==='wr'?'Win &gt; 50%':'กำไร'}</div>`;
++      host.innerHTML = html + legend;
++    }
++
++    function renderLongShort(trades){
++      const host = document.getElementById('tj-ls'); if(!host) return;
++      const L = summarize(trades.filter(t=>t.type==='Buy')), S = summarize(trades.filter(t=>t.type==='Sell'));
++      const tot = L.n + S.n;
++      if(!tot){ host.innerHTML = '<div class="tj-empty"><i class="fa-solid fa-arrows-up-down"></i><div>ยังไม่มีข้อมูล</div></div>'; return; }
++      const lp = Math.round(L.n/tot*100);
++      const row = (name, color, x) => `<div class="tj-ls-row"><div class="fw-semibold"><span class="tj-dot" style="background:${color}"></span>${name}</div>
++        <div><div class="h">ไม้</div><div class="n">${x.n}</div></div>
++        <div><div class="h">Win</div><div class="n">${x.n? x.wr.toFixed(0)+'%':'—'}</div></div>
++        <div><div class="h">P&amp;L</div><div class="n money ${x.net>0?'text-gain':(x.net<0?'text-loss':'')}">${fmt$(x.net,true)}</div></div></div>`;
++      host.innerHTML = `<div class="d-flex justify-content-between small fw-semibold"><span>Long ${lp}%</span><span>Short ${100-lp}%</span></div>
++        <div class="tj-ls-bar"><span style="width:${lp}%;background:var(--ink)"></span><span style="width:${100-lp}%;background:var(--brand)"></span></div>
++        ${row('Long (Buy)','var(--ink)',L)}${row('Short (Sell)','var(--brand)',S)}`;
++    }
++
++    function wirePerf(){
++      document.querySelectorAll('#tj-perf-cum-mode button').forEach(b=>b.addEventListener('click',()=>{
++        state.cumMode=b.dataset.m; document.querySelectorAll('#tj-perf-cum-mode button').forEach(x=>x.classList.toggle('active',x===b)); renderPerformance(); }));
++      document.querySelectorAll('#tj-hm-metric button').forEach(b=>b.addEventListener('click',()=>{
++        state.hmMetric=b.dataset.m; document.querySelectorAll('#tj-hm-metric button').forEach(x=>x.classList.toggle('active',x===b)); renderHeatmap(applyFilters(state.rows,true)); }));
++    }
++
++    // ══════════ data + hooks ══════════
++    let _loadSeq = 0;
++    async function refreshRows(){
++      if(!window.api || !window.api.getAllRows) return;
++      const seq = ++_loadSeq;
++      try{
++        const rows = await window.api.getAllRows();
++        if(seq!==_loadSeq) return;
++        state.rows = rows || [];
++        renderAll();
++      }catch(e){ console.error('[v2] load rows', e); }
++    }
++    function renderAll(){
++      try{ renderCalendar2(); }catch(e){ console.error('[v2] calendar', e); }
++      try{ renderPerformance(); }catch(e){ console.error('[v2] performance', e); }
++    }
++    window.tjRenderV2 = renderAll;
++
++    function hook(name, after){
++      const orig = window[name];
++      if(typeof orig!=='function'){ setTimeout(()=>hook(name,after),60); return; }
++      window[name] = function(){ const r = orig.apply(this, arguments); try{ after.apply(this, arguments); }catch(e){ console.error(e); } return r; };
++    }
++    hook('loadAllData', refreshRows);
++    hook('switchTab', id => { if(id==='calendar'||id==='analytics') setTimeout(renderAll, 30); });
++    hook('toggleDarkMode', () => setTimeout(()=>{ renderAll(); if(window._lastMetrics && typeof window.updateDashboardUI==='function') window.updateDashboardUI(window._lastMetrics); }, 30));
++
++    wireCalendar();
++    wirePerf();
++  })();
++  </script>
++
+ </body>
+ </html>
+\ No newline at end of file
+diff --git a/sw.js b/sw.js
+index 42d74a2..42a0ff9 100644
+--- a/sw.js
++++ b/sw.js
+@@ -1,5 +1,5 @@
+ // อัปเดตเวอร์ชันของ Cache เป็น v17 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-18 · ตัดให้เหลือแก่น: สถิติเชิงลึก + R-distribution + Edge leaderboard + ตัวกรอง)
+-const CACHE_NAME = 'tradejournal-cache-v17';
++const CACHE_NAME = 'tradejournal-cache-v18';
+ const urlsToCache = [
+   './index.html',
+   './manifest.json'
+-- 
+2.43.0
+
