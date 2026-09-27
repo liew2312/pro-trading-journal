@@ -1,6 +1,6 @@
 {
-  "name": "Pro Trading Journal",
-  "short_name": "Pro Journal",
+  "name": "LiewTrade Journal",
+  "short_name": "LiewTrade",
   "description": "บันทึกเทรด ปฏิทิน P&L สถิติ และวินัยการเทรด",
   "id": "./",
   "start_url": "./",

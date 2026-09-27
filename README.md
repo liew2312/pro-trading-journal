@@ -1,4 +1,4 @@
-# Pro Trading Journal
+# LiewTrade Journal
 
 เว็บแอปบันทึกเทรด (PWA) — https://liew2312.github.io/pro-trading-journal/
 

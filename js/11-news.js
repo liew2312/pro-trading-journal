@@ -216,7 +216,7 @@
     banner(title, body);
     try{ if(navigator.vibrate) navigator.vibrate([200,100,200]); }catch(_){}
     if(!('Notification' in window) || Notification.permission!=='granted') return;
-    const opts = { body, tag: e.id, icon: 'app-icon.svg', badge: 'app-icon.svg', requireInteraction: true };
+    const opts = { body, tag: e.id, icon: 'icon-192.png', badge: 'icon-192.png', requireInteraction: true };
     try{
       if(navigator.serviceWorker){ const reg = await navigator.serviceWorker.getRegistration(); if(reg && reg.showNotification){ await reg.showNotification(title, opts); return; } }
     }catch(_){}

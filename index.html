@@ -4,16 +4,16 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Pro Trading Journal</title>
+  <title>LiewTrade Journal</title>
 
   <!-- ======= PWA Meta Tags ======= -->
   <meta name="theme-color" content="#F4F3EE">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Pro Journal">
+  <meta name="apple-mobile-web-app-title" content="LiewTrade">
   <meta name="description" content="บันทึกการเทรดส่วนตัว วิเคราะห์ด้วย AI ใช้ได้ทุกอุปกรณ์">
-  <meta name="application-name" content="Pro Trading Journal">
+  <meta name="application-name" content="LiewTrade Journal">
   <meta name="msapplication-TileColor" content="#131317">
 
   <!-- Manifest -->
@@ -41,14 +41,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <link rel="stylesheet" href="css/01-base.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-27-v49">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/01-base.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-27-v51">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-27-v51">
 </head>
 <body>
 
@@ -56,7 +56,7 @@
   <aside class="tj-sidebar print-hide" aria-label="เมนูหลัก">
     <div class="tj-side-brand" onclick="switchTab('dashboard')">
       <img src="app-icon.svg" alt="">
-      <div><b>Pro Trading</b><span>Journal</span></div>
+      <div><b>LiewTrade</b><span>Journal</span></div>
     </div>
     <button class="tj-side-add" onclick="switchTab('add-trade')"><i class="fa-solid fa-plus"></i> บันทึกเทรด</button>
     <div class="tj-side-label">เมนู</div>
@@ -79,8 +79,8 @@
   <header class="tj-topbar print-hide" id="tj-topbar" aria-hidden="true">
     <div class="tj-topbar-inner">
       <a class="tj-brand" onclick="switchTab('dashboard')">
-        <span class="tj-brand-mark" style="background:#F8F7F3!important;overflow:hidden;"><img src="app-icon.svg" alt="โลโก้" style="width:100%;height:100%;object-fit:contain;"></span>
-        <span class="tj-brand-text"><b>Pro Trading</b><span>Journal</span></span>
+        <span class="tj-brand-mark" style="background:transparent!important;overflow:hidden;padding:0;"><img src="app-icon.svg" alt="โลโก้" style="width:100%;height:100%;object-fit:cover;"></span>
+        <span class="tj-brand-text"><b>LiewTrade</b><span>Journal</span></span>
       </a>
       <div class="tj-topbar-actions">
         <div class="tj-month-pill" id="tj-period">
@@ -1114,7 +1114,7 @@
 
   <div id="_loginScreen" class="pj-login" style="display:none">
     <div class="pj-login-in">
-      <div class="pj-login-top"><img src="app-icon.svg" alt="">Pro Trading Journal</div>
+      <div class="pj-login-top"><img src="app-icon.svg" alt="">LiewTrade Journal</div>
       <div class="pj-login-card">
         <div class="pj-login-steps"><span class="on"></span><span></span><span></span></div>
         <h1>จดทุก<br>ออเดอร์</h1>
@@ -1160,24 +1160,24 @@
   
   
 
-  <script src="js/01-config.js?v=2026-09-27-v49"></script>
-  <script src="js/02-api.js?v=2026-09-27-v49"></script>
-  <script src="js/03-app.js?v=2026-09-27-v49"></script>
-  <script src="js/04-auth.js?v=2026-09-27-v49"></script>
-  <script src="js/05-theme.js?v=2026-09-27-v49"></script>
-  <script src="js/06-pwa.js?v=2026-09-27-v49"></script>
-  <script src="js/07-filters.js?v=2026-09-27-v49"></script>
-  <script src="js/08-calendar-performance.js?v=2026-09-27-v49"></script>
-  <script src="js/09-chart-page.js?v=2026-09-27-v49"></script>
-  <script src="js/10-session.js?v=2026-09-27-v49"></script>
-  <script src="js/11-news.js?v=2026-09-27-v49"></script>
-  <script src="js/12-discipline.js?v=2026-09-27-v49"></script>
-  <script src="js/13-trade-form.js?v=2026-09-27-v49"></script>
-  <script src="js/14-dashboard.js?v=2026-09-27-v49"></script>
-  <script src="js/15-profile.js?v=2026-09-27-v49"></script>
-  <script src="js/16-my-tradingview.js?v=2026-09-27-v49"></script>
-  <script src="js/17-pastel-ui.js?v=2026-09-27-v49"></script>
-  <script src="js/18-timeframe.js?v=2026-09-27-v49"></script>
-  <script src="js/19-open-trades.js?v=2026-09-27-v49"></script>
+  <script src="js/01-config.js?v=2026-09-27-v51"></script>
+  <script src="js/02-api.js?v=2026-09-27-v51"></script>
+  <script src="js/03-app.js?v=2026-09-27-v51"></script>
+  <script src="js/04-auth.js?v=2026-09-27-v51"></script>
+  <script src="js/05-theme.js?v=2026-09-27-v51"></script>
+  <script src="js/06-pwa.js?v=2026-09-27-v51"></script>
+  <script src="js/07-filters.js?v=2026-09-27-v51"></script>
+  <script src="js/08-calendar-performance.js?v=2026-09-27-v51"></script>
+  <script src="js/09-chart-page.js?v=2026-09-27-v51"></script>
+  <script src="js/10-session.js?v=2026-09-27-v51"></script>
+  <script src="js/11-news.js?v=2026-09-27-v51"></script>
+  <script src="js/12-discipline.js?v=2026-09-27-v51"></script>
+  <script src="js/13-trade-form.js?v=2026-09-27-v51"></script>
+  <script src="js/14-dashboard.js?v=2026-09-27-v51"></script>
+  <script src="js/15-profile.js?v=2026-09-27-v51"></script>
+  <script src="js/16-my-tradingview.js?v=2026-09-27-v51"></script>
+  <script src="js/17-pastel-ui.js?v=2026-09-27-v51"></script>
+  <script src="js/18-timeframe.js?v=2026-09-27-v51"></script>
+  <script src="js/19-open-trades.js?v=2026-09-27-v51"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-window.APP_BUILD = '2026-09-27-v49';
-console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
+window.APP_BUILD = '2026-09-27-v51';
+console.log('[APP] LiewTrade Journal build', window.APP_BUILD);
 // แสดงเลขเวอร์ชันในหน้าตั้งค่า
 (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
 // ─── อัปเดตแอป: ยกเลิก Service Worker + ลบ cache ทั้งหมด + โหลดใหม่แบบข้ามแคช ───
