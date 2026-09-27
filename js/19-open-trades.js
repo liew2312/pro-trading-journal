@@ -57,14 +57,13 @@
     const list = openRows();
     const dash = $('tj-open-card');
     if(dash){
-      dash.innerHTML = list.length ? `<div class="tj-open-card">
-        <div class="tj-open-head"><div><b><i class="fa-regular fa-hourglass-half me-1"></i> ออเดอร์ที่เปิดอยู่</b> <span class="tj-open-count">${list.length}</span></div>
-        <small>ปิดแล้วกด "ปิดออเดอร์" เพื่อใส่ผลและภาพหลังเทรด</small></div>
-        <div class="tj-open-list">${list.slice(0,5).map(card).join('')}</div>
-        ${list.length>5?`<button type="button" class="tj-linkbtn" id="tj-open-more">ดูทั้งหมด ${list.length} ออเดอร์ ›</button>`:''}
-      </div>` : '';
-      wire(dash);
-      const more = $('tj-open-more'); if(more) more.onclick = ()=>{ switchTab('history'); switchHistoryTab('open'); };
+      // หน้าภาพรวม: แถบย่อบรรทัดเดียว — แตะเพื่อดูรายละเอียดในหน้าประวัติ › เปิดอยู่
+      const syms = [...new Set(list.map(r=>String(r.symbol||'').toUpperCase()))].slice(0,3).join(', ');
+      dash.innerHTML = list.length ? `<button type="button" class="tj-open-pill" id="tj-open-pill">
+        <span class="ic"><i class="fa-regular fa-hourglass-half"></i></span>
+        <span class="tx"><b>ออเดอร์ที่เปิดอยู่ ${list.length}</b><small>${esc(syms)} · แตะเพื่อดู / ปิดออเดอร์</small></span>
+        <i class="fa-solid fa-chevron-right ar"></i></button>` : '';
+      const pill = $('tj-open-pill'); if(pill) pill.onclick = ()=>{ switchTab('history'); switchHistoryTab('open'); window.scrollTo(0,0); };
     }
     const b = $('tab-badge-open'); if(b) b.textContent = list.length;
     const tb = $('open-table-body');
