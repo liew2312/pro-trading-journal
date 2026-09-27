@@ -1,6 +1,6 @@
 // Service Worker — Pro Trading Journal
 // เวอร์ชัน cache เปลี่ยนทุก release (tools/release.py แก้ให้อัตโนมัติ) → cache เก่าถูกลบทิ้ง
-const CACHE_NAME = 'tradejournal-cache-2026-09-27-v48';
+const CACHE_NAME = 'tradejournal-cache-2026-09-27-v49';
 const PRECACHE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {

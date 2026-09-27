@@ -166,7 +166,15 @@
   }
 
   /* ---------- helper: ดึงทุกแถวเรียงจากเก่าไปใหม่ ---------- */
-  async function fetchAllRows() {
+  // ออเดอร์ที่ยังเปิดอยู่ (outcome = OPEN) ไม่นับในสถิติ/ประวัติ — แยกไว้ที่ window._tjOpenRows
+  const isOpenRow = r => String(r.outcome||'') === 'OPEN' && (r.type === 'Buy' || r.type === 'Sell');
+  async function fetchAllRows(includeOpen) {
+    const all = await fetchAllRowsRaw();
+    window._tjOpenRows = all.filter(isOpenRow);
+    try{ document.dispatchEvent(new CustomEvent('tj:open')); }catch(e){}
+    return includeOpen === true ? all : all.filter(r => !isOpenRow(r));
+  }
+  async function fetchAllRowsRaw() {
     // Supabase default limit 1000; ถ้ามีเยอะกว่านั้นวนดึงเพิ่ม
     const all = [];
     const pageSize = 1000;
@@ -189,7 +197,7 @@
   /* ---------- Backup / Import / Clear (Settings > ข้อมูล) ---------- */
   async function exportDataCSV(){
     try{
-      var rows = await fetchAllRows();
+      var rows = await fetchAllRows(true);
       if(!rows.length){ alert('ยังไม่มีข้อมูลให้สำรอง'); return; }
       var cols = Object.keys(rows[0]);
       var esc = function(v){ if(v===null||v===undefined) return ''; var s=String(v).replace(/"/g,'""'); return /[",\n\r]/.test(s)?'"'+s+'"':s; };

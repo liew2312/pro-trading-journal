@@ -41,14 +41,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <link rel="stylesheet" href="css/01-base.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-27-v48">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-27-v48">
+  <link rel="stylesheet" href="css/01-base.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-27-v49">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-27-v49">
 </head>
 <body>
 
@@ -116,6 +116,7 @@
         <div class="tj-today" id="tj-today"></div>
         <div class="tj-disc" id="tj-disc"></div>
       </div>
+      <div id="tj-open-card"></div>
       <div id="tj-review-prompt"></div>
       <div id="tj-pending"></div>
       <div id="tj-week-goal"></div>
@@ -783,11 +784,11 @@
 
           <div class="row g-3 mb-4" id="tj-outcome-row">
             <div class="col-sm-6 pj-seg-host"><label class="form-label">ผลลัพธ์</label>
-            <div class="pj-oc-chips" id="pj-oc-chips" role="radiogroup" aria-label="ผลลัพธ์"><button type="button" data-v="TP" role="radio" class="g"><i class="fa-solid fa-bullseye"></i> ชน TP</button><button type="button" data-v="SL" role="radio" class="l"><i class="fa-solid fa-xmark"></i> ชน SL</button><button type="button" data-v="BE" role="radio"><i class="fa-solid fa-shield-halved"></i> กันทุน</button><button type="button" data-v="Manual" role="radio"><i class="fa-regular fa-hand"></i> ปิดเอง</button></div>
+            <div class="pj-oc-chips" id="pj-oc-chips" role="radiogroup" aria-label="ผลลัพธ์"><button type="button" data-v="TP" role="radio" class="g"><i class="fa-solid fa-bullseye"></i> ชน TP</button><button type="button" data-v="SL" role="radio" class="l"><i class="fa-solid fa-xmark"></i> ชน SL</button><button type="button" data-v="BE" role="radio"><i class="fa-solid fa-shield-halved"></i> กันทุน</button><button type="button" data-v="Manual" role="radio"><i class="fa-regular fa-hand"></i> ปิดเอง</button><button type="button" data-v="OPEN" role="radio" class="open"><i class="fa-regular fa-hourglass-half"></i> ยังเปิดอยู่ · ใส่ผลทีหลัง</button></div>
             <select class="form-select form-select-lg fw-bold pj-sr-select" name="outcome" required tabindex="-1" aria-hidden="true">
               <option value="" disabled selected>-- เลือกผลลัพธ์ --</option>
               <option value="TP" class="text-success">✅ ชน TP (Take Profit)</option><option value="SL" class="text-danger">❌ ชน SL (Stop Loss)</option>
-              <option value="BE" class="text-warning">🛡️ ชนกันทุน (Break Even)</option><option value="Manual" class="text-primary">✋ ปิดมือเอง (Manual Close)</option>
+              <option value="BE" class="text-warning">🛡️ ชนกันทุน (Break Even)</option><option value="Manual" class="text-primary">✋ ปิดมือเอง (Manual Close)</option><option value="OPEN">⏳ ยังเปิดอยู่ (บันทึกผลทีหลัง)</option>
             </select></div>
             <div class="col-sm-6"><label class="form-label">กำไร/ขาดทุนสุทธิ ($)</label><input type="number" step="0.01" id="f_pnl" class="form-control form-control-lg fw-bold" name="pnl" placeholder="กำไร/ขาดทุน สุทธิ" oninput="autoCalcRR()" required></div>
           </div>
@@ -844,6 +845,7 @@
               <div class="tj-side-group tj-hist-tabs">
                 <button id="tab-btn-trades" class="tj-side tj-histtab active" onclick="switchHistoryTab('trades')"><i class="fa-solid fa-chart-line"></i> เทรด <span id="tab-badge-trades">0</span></button>
                 <button id="tab-btn-funding" class="tj-side tj-histtab" onclick="switchHistoryTab('funding')"><i class="fa-solid fa-wallet"></i> ฝาก/ถอน <span id="tab-badge-funding">0</span></button>
+                <button id="tab-btn-open" class="tj-side tj-histtab" onclick="switchHistoryTab('open')"><i class="fa-regular fa-hourglass-half"></i> เปิดอยู่ <span id="tab-badge-open">0</span></button>
               </div>
               <span class="tj-fdivider"></span>
               <select id="history-filter-type" class="tj-hist-sel" onchange="toggleHistoryFilterInput()" aria-label="ช่วงเวลา">
@@ -868,6 +870,9 @@
         </div>
         <div id="history-panel-trades">
           <div id="history-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block"></i> กำลังโหลด...</div></div>
+        </div>
+        <div id="history-panel-open" style="display:none;">
+          <div id="open-table-body" class="tj-hist-list"></div>
         </div>
         <div id="history-panel-funding" style="display:none;">
           <div id="funding-table-body" class="tj-hist-list"><div class="text-center py-5 text-muted fw-bold">กำลังโหลด...</div></div>
@@ -1155,23 +1160,24 @@
   
   
 
-  <script src="js/01-config.js?v=2026-09-27-v48"></script>
-  <script src="js/02-api.js?v=2026-09-27-v48"></script>
-  <script src="js/03-app.js?v=2026-09-27-v48"></script>
-  <script src="js/04-auth.js?v=2026-09-27-v48"></script>
-  <script src="js/05-theme.js?v=2026-09-27-v48"></script>
-  <script src="js/06-pwa.js?v=2026-09-27-v48"></script>
-  <script src="js/07-filters.js?v=2026-09-27-v48"></script>
-  <script src="js/08-calendar-performance.js?v=2026-09-27-v48"></script>
-  <script src="js/09-chart-page.js?v=2026-09-27-v48"></script>
-  <script src="js/10-session.js?v=2026-09-27-v48"></script>
-  <script src="js/11-news.js?v=2026-09-27-v48"></script>
-  <script src="js/12-discipline.js?v=2026-09-27-v48"></script>
-  <script src="js/13-trade-form.js?v=2026-09-27-v48"></script>
-  <script src="js/14-dashboard.js?v=2026-09-27-v48"></script>
-  <script src="js/15-profile.js?v=2026-09-27-v48"></script>
-  <script src="js/16-my-tradingview.js?v=2026-09-27-v48"></script>
-  <script src="js/17-pastel-ui.js?v=2026-09-27-v48"></script>
-  <script src="js/18-timeframe.js?v=2026-09-27-v48"></script>
+  <script src="js/01-config.js?v=2026-09-27-v49"></script>
+  <script src="js/02-api.js?v=2026-09-27-v49"></script>
+  <script src="js/03-app.js?v=2026-09-27-v49"></script>
+  <script src="js/04-auth.js?v=2026-09-27-v49"></script>
+  <script src="js/05-theme.js?v=2026-09-27-v49"></script>
+  <script src="js/06-pwa.js?v=2026-09-27-v49"></script>
+  <script src="js/07-filters.js?v=2026-09-27-v49"></script>
+  <script src="js/08-calendar-performance.js?v=2026-09-27-v49"></script>
+  <script src="js/09-chart-page.js?v=2026-09-27-v49"></script>
+  <script src="js/10-session.js?v=2026-09-27-v49"></script>
+  <script src="js/11-news.js?v=2026-09-27-v49"></script>
+  <script src="js/12-discipline.js?v=2026-09-27-v49"></script>
+  <script src="js/13-trade-form.js?v=2026-09-27-v49"></script>
+  <script src="js/14-dashboard.js?v=2026-09-27-v49"></script>
+  <script src="js/15-profile.js?v=2026-09-27-v49"></script>
+  <script src="js/16-my-tradingview.js?v=2026-09-27-v49"></script>
+  <script src="js/17-pastel-ui.js?v=2026-09-27-v49"></script>
+  <script src="js/18-timeframe.js?v=2026-09-27-v49"></script>
+  <script src="js/19-open-trades.js?v=2026-09-27-v49"></script>
 </body>
 </html>

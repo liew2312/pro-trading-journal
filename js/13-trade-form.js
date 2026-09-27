@@ -89,7 +89,7 @@
     const r = risk>0 && isFinite(pnl) ? (pnl/risk) : null;
     const g = $('f_grade').value;
     const flags = [$('revenge').checked?'Revenge':'', $('overtrade').checked?'Overtrade':'', !$('lotRespected').checked?'OverLot':'', !$('followedPlan').checked?'ไม่ทำตามแผน':''].filter(Boolean);
-    const ocTxt = { TP:'ชน TP', SL:'ชน SL', BE:'Break Even', Manual:'ปิดเอง' }[v('outcome')] || '—';
+    const ocTxt = { TP:'ชน TP', SL:'ชน SL', BE:'Break Even', Manual:'ปิดเอง', OPEN:'⏳ ยังเปิดอยู่ (ใส่ผลทีหลัง)' }[v('outcome')] || '—';
     const riskInfo = ($('tj-risk-info')||{}).textContent || '';
     const pct = /=\s*([\d.]+%)/.exec(riskInfo);
     const row = (k, val, go) => `<div class="tj-sum-row"><span>${k}</span><b>${val}</b><button type="button" class="tj-linkbtn" data-go="${go}">แก้</button></div>`;
@@ -141,7 +141,7 @@
   applyMode();
 
   // ══════════ แก้ไขออเดอร์ ══════════
-  function rowById(id){ return (window._tjRows||[]).find(r=>String(r.id)===String(id)); }
+  function rowById(id){ return (window._tjRows||[]).concat(window._tjOpenRows||[]).find(r=>String(r.id)===String(id)); }
   function setVal(name, v){ const el = F(name); if(el) el.value = (v==null ? '' : v); }
   function setChk(id, on){ const el = $(id); if(el){ el.checked = !!on; el.dispatchEvent(new Event('change')); } }
   function startEdit(id){
@@ -177,7 +177,7 @@
       ['f_entry','f_sl','f_lots','f_mae'].forEach(i=>{ const el=$(i); if(el) el.dispatchEvent(new Event('input')); });
       if(typeof autoCalcRR==='function') autoCalcRR();
       const ban = $('tj-edit-banner');
-      ban.innerHTML = `<div><b><i class="fa-solid fa-pen me-1"></i> กำลังแก้ไขออเดอร์</b> ${esc(r.symbol)} ${esc(r.type)} ${fmt$(r.pnl,true)} · ${d.getDate()}/${d.getMonth()+1}${editing.wasQuick?' · <span class="text-warning">บันทึกด่วน — เติมให้ครบแล้วกดบันทึก</span>':''}</div><button type="button" class="btn btn-sm btn-outline-secondary" id="tj-edit-cancel">ยกเลิก</button>`;
+      ban.innerHTML = `<div><b><i class="fa-solid fa-pen me-1"></i> กำลังแก้ไขออเดอร์</b> ${esc(r.symbol)} ${esc(r.type)} ${r.outcome==='OPEN' ? '(เปิดอยู่)' : fmt$(r.pnl,true)} · ${d.getDate()}/${d.getMonth()+1}${editing.wasQuick?' · <span class="text-warning">บันทึกด่วน — เติมให้ครบแล้วกดบันทึก</span>':''}</div><button type="button" class="btn btn-sm btn-outline-secondary" id="tj-edit-cancel">ยกเลิก</button>`;
       $('tj-edit-cancel').onclick = cancelEdit;
       applyMode();
       switchTab('add-trade'); window.scrollTo({top:0, behavior:'smooth'});

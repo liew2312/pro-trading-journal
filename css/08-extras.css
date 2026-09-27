@@ -23,3 +23,30 @@
   .pj-eq-card .section-header{padding:0 8px;}
   .pj-eq-box{height:240px!important;}
 }
+
+/* ══════════ v49: ออเดอร์ที่เปิดอยู่ ══════════ */
+.pj-oc-chips button[data-v="OPEN"]{grid-column:1 / -1;border-style:dashed;}
+.pj-oc-chips button[data-v="OPEN"][aria-checked="true"]{border-style:solid;background:var(--pj-lilac,var(--panel));}
+#tradeForm.tj-is-open #tj-outcome-row .col-sm-6:has(#f_pnl),
+#tradeForm.tj-is-open #rmult-preview,
+#tradeForm.tj-is-open .row:has(#f_mae){display:none!important;}
+#tradeForm.tj-is-open #tj-outcome-row .col-sm-6:has(#pj-oc-chips){flex:0 0 100%;max-width:100%;}
+.tj-open-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:16px;margin-bottom:16px;}
+[data-accent="pastel"] .tj-open-card{border:0;background:var(--pj-lilac);box-shadow:var(--pj-float);}
+.tj-open-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 2px 10px;}
+.tj-open-head b{font-size:.95rem;color:var(--ink);} .tj-open-head small{font-size:.72rem;color:var(--muted);}
+.tj-open-count{display:inline-block;min-width:22px;text-align:center;font-size:.72rem;font-weight:700;background:var(--ink);color:var(--card-bg);border-radius:99px;padding:1px 7px;margin-left:4px;}
+.tj-open-list{display:flex;flex-direction:column;gap:8px;}
+.tj-open-row{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:10px 12px;}
+[data-accent="pastel"] .tj-open-card .tj-open-row{border:0;background:var(--pj-veil);}
+.tj-hist-tag.buy{background:var(--gain-bg);color:var(--profit);} .tj-hist-tag.sell{background:var(--loss-bg);color:var(--loss);}
+.tj-open-lot{font-size:.7rem;font-weight:600;color:var(--muted);}
+.tj-open-act{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.tj-open-close{border:0;border-radius:999px;background:var(--brand);color:var(--on-brand);font:600 .78rem 'Prompt',sans-serif;padding:8px 12px;white-space:nowrap;cursor:pointer;}
+[data-accent="pastel"] .tj-open-close{background:var(--pj-hi);color:#15141A;}
+.tj-open-edit{width:34px;height:34px;border-radius:999px;border:1px solid var(--card-border);background:var(--card-bg);color:var(--muted);cursor:pointer;}
+#history-panel-open .tj-open-row{margin-bottom:0;}
+@keyframes tjFlash{0%,100%{box-shadow:0 0 0 0 transparent}30%{box-shadow:0 0 0 4px var(--pj-hi,var(--brand-tint))}}
+.tj-flash{animation:tjFlash 1.2s ease 2;border-radius:16px;}
+@media(max-width:600px){ .tj-open-close span,.tj-open-close{font-size:.72rem;padding:7px 10px;} .tj-open-row .tj-hist-sub{white-space:normal;} }
+.tj-hist-openmode #history-filter-type,.tj-hist-openmode .tj-hist-date,.tj-hist-openmode .tj-fdivider{display:none!important;}

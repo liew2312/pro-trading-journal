@@ -1,4 +1,4 @@
-window.APP_BUILD = '2026-09-27-v48';
+window.APP_BUILD = '2026-09-27-v49';
 console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
 // แสดงเลขเวอร์ชันในหน้าตั้งค่า
 (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
