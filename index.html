@@ -21,7 +21,8 @@
   <link rel="icon" type="image/svg+xml" href="app-icon.svg">
 
   <!-- Apple Touch Icon (ใช้ icon เดียวกับ manifest) -->
-  <link rel="apple-touch-icon" href="app-icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
@@ -1184,6 +1185,25 @@
     .pj-period-slot .tj-month-pill i{font-size:.8rem!important;color:var(--ink)!important;}
     [data-accent="pastel"] .pj-period-slot .tj-month-pill{background:var(--card-bg);border-color:var(--card-border);}
 
+
+    /* ══════════ v41: Timeframe วิเคราะห์ / เข้าออเดอร์ ══════════ */
+    .tj-tf-chips{display:flex;flex-wrap:wrap;gap:6px;}
+    .tj-tf{border:1.5px solid var(--border);background:var(--card-bg);color:var(--muted);border-radius:10px;padding:6px 0;min-width:48px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;user-select:none;margin:0;transition:all .12s;}
+    .tj-tf:hover{border-color:var(--brand);color:var(--brand);}
+    .btn-check:checked + .tj-tf{background:var(--brand);border-color:var(--brand);color:var(--on-brand);}
+    .btn-check:focus-visible + .tj-tf{box-shadow:0 0 0 3px var(--brand-tint);}
+    .tj-tf-tag{font-weight:700;color:var(--ink);}
+    [data-accent="pastel"] .btn-check:checked + .tj-tf{background:var(--pj-hi);border-color:var(--pj-hi);color:#15141A;}
+    [data-accent="pastel"] .tj-tf{border-radius:999px;}
+    @media(max-width:600px){ .tj-tf-chips{display:grid;grid-template-columns:repeat(4,1fr);} .tj-tf{min-width:0;} }
+
+    /* ══════════ v46: ปฏิทินมือถือ — แสดงยอดกำไร/ขาดทุนเล็กๆ ในช่องวัน ══════════ */
+    @media(max-width:600px){
+      .tj-cal2 .tj-cal2-d{flex-direction:column!important;gap:1px;min-height:52px!important;}
+      .tj-cal2 .tj-cal2-d.has .tj-cal2-pnl{display:block!important;margin:0!important;font-size:.56rem!important;font-weight:700!important;line-height:1.1;letter-spacing:-.3px;max-width:100%;text-align:center;}
+      .tj-cal2 .tj-cal2-d.g .tj-cal2-pnl{color:var(--profit)!important;} .tj-cal2 .tj-cal2-d.l .tj-cal2-pnl{color:var(--loss)!important;}
+      body.tj-hidepnl .tj-cal2 .tj-cal2-pnl{filter:blur(4px);}
+    }
 </style>
 </head>
 <body>
@@ -1797,6 +1817,10 @@
           <div class="row g-3 mb-3">
             <div class="col-sm-6"><label class="form-label">สินทรัพย์ (Symbol)</label><input type="text" class="form-control form-control-lg text-uppercase" name="symbol" placeholder="เช่น XAUUSD" required></div>
             <div class="col-sm-6 pj-seg-host"><label class="form-label">ทิศทาง</label><div class="pj-side-seg" id="pj-side-seg" role="radiogroup" aria-label="ทิศทาง"><button type="button" data-v="Buy" role="radio"><i class="fa-solid fa-arrow-trend-up"></i> ซื้อ (Buy)</button><button type="button" data-v="Sell" role="radio"><i class="fa-solid fa-arrow-trend-down"></i> ขาย (Sell)</button></div><select class="form-select form-select-lg fw-bold pj-sr-select" name="type" required tabindex="-1" aria-hidden="true"><option value="Buy" class="text-success">Buy (Long)</option><option value="Sell" class="text-danger">Sell (Short)</option></select></div>
+          </div>
+          <div class="row g-3 mb-3 tj-tf-row" id="tj-tf-row" data-step="1">
+            <div class="col-sm-6"><label class="form-label"><i class="fa-solid fa-magnifying-glass-chart me-1"></i> TF วิเคราะห์ <span class="text-muted fw-normal" style="font-size:.72rem">(ดูเทรนด์/โซน)</span></label><div class="tj-tf-chips" data-g="HTF"><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_M1" value="HTF:M1" autocomplete="off"><label class="tj-tf" for="htf_M1">M1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_M5" value="HTF:M5" autocomplete="off"><label class="tj-tf" for="htf_M5">M5</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_M15" value="HTF:M15" autocomplete="off"><label class="tj-tf" for="htf_M15">M15</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_M30" value="HTF:M30" autocomplete="off"><label class="tj-tf" for="htf_M30">M30</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_H1" value="HTF:H1" autocomplete="off"><label class="tj-tf" for="htf_H1">H1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_H4" value="HTF:H4" autocomplete="off"><label class="tj-tf" for="htf_H4">H4</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_D1" value="HTF:D1" autocomplete="off"><label class="tj-tf" for="htf_D1">D1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_htf" id="htf_W1" value="HTF:W1" autocomplete="off"><label class="tj-tf" for="htf_W1">W1</label></div></div>
+            <div class="col-sm-6"><label class="form-label"><i class="fa-solid fa-crosshairs me-1"></i> TF เข้าออเดอร์ <span class="text-muted fw-normal" style="font-size:.72rem">(หาจุดเข้า)</span></label><div class="tj-tf-chips" data-g="LTF"><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_M1" value="LTF:M1" autocomplete="off"><label class="tj-tf" for="ltf_M1">M1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_M5" value="LTF:M5" autocomplete="off"><label class="tj-tf" for="ltf_M5">M5</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_M15" value="LTF:M15" autocomplete="off"><label class="tj-tf" for="ltf_M15">M15</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_M30" value="LTF:M30" autocomplete="off"><label class="tj-tf" for="ltf_M30">M30</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_H1" value="LTF:H1" autocomplete="off"><label class="tj-tf" for="ltf_H1">H1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_H4" value="LTF:H4" autocomplete="off"><label class="tj-tf" for="ltf_H4">H4</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_D1" value="LTF:D1" autocomplete="off"><label class="tj-tf" for="ltf_D1">D1</label><input type="radio" class="btn-check conf-check tj-tf-in" name="tf_ltf" id="ltf_W1" value="LTF:W1" autocomplete="off"><label class="tj-tf" for="ltf_W1">W1</label></div></div>
           </div>
           
           <div class="row g-3 mb-4">
@@ -2679,7 +2703,7 @@
           if (r.revenge === "Yes")   addBehavior("Revenge", pnlOrAmount);
           if (r.lot_respected === "No") addBehavior("Over-lot", pnlOrAmount);
           String(r.confluences || "").split(",").map(s => s.trim()).filter(Boolean)
-            .forEach(cf => addBehavior("Confluence: " + cf, pnlOrAmount));
+            .forEach(cf => { const m = /^(HTF|LTF):(\w+)$/.exec(cf); addBehavior(m ? (m[1]==='HTF' ? 'TF วิเคราะห์ ' : 'TF เข้า ') + m[2] : "Confluence: " + cf, pnlOrAmount); });
         }
       }
 
@@ -2858,6 +2882,7 @@
           revenge:      r.revenge       || "-",
           lotRespected: r.lot_respected || "-",
           marketContext: r.market_context || "-",
+          confluences:  r.confluences || "",
           rMult:        r.r_mult != null ? r.r_mult : "-"
         });
       }
@@ -3375,7 +3400,7 @@
               ${window.tjThumb && window.tjThumb(trade.chartBefore || trade.chartAfter) ? `<img class="tj-hist-thumb" src="${window.tjThumb(trade.chartBefore || trade.chartAfter)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}&quot;><i class=&quot;fa-solid ${arrow}&quot;></i></div>'">` : `<div class="tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}"><i class="fa-solid ${arrow}"></i></div>`}
               <div class="tj-hist-main">
                 <div class="tj-hist-sym">${trade.symbol || '-'} ${ocTag}${warn}</div>
-                <div class="tj-hist-sub">${dateParts[0] || ''}${dateParts[1] ? ' · ' + dateParts[1] : ''} · ${trade.type || ''}</div>
+                <div class="tj-hist-sub">${dateParts[0] || ''}${dateParts[1] ? ' · ' + dateParts[1] : ''} · ${trade.type || ''}${(()=>{ const c=String(trade.confluences||''); const h=(/HTF:(\w+)/.exec(c)||[])[1], l=(/LTF:(\w+)/.exec(c)||[])[1]; return (h||l) ? ' · <span class="tj-tf-tag">'+(h||'?')+(l?' → '+l:'')+'</span>' : ''; })()}</div>
               </div>
               <div class="tj-hist-right">
                 <div class="tj-hist-pnl ${pnlValue >= 0 ? 'text-success' : 'text-danger'}">${pnlValue > 0 ? '+$' + trade.pnl : '$' + trade.pnl}</div>
@@ -3736,7 +3761,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-26-v39';
+    window.APP_BUILD = '2026-09-27-v46';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
@@ -5883,6 +5908,7 @@
       summary.innerHTML = `<div class="tj-sum-card">
         <div class="tj-sum-top"><div><div class="sym">${esc(v('symbol').toUpperCase()||'—')} <span class="tj-hist-tag" style="background:var(--brand-tint);color:var(--brand)">${esc(v('type'))}</span></div><div class="small text-muted">${esc(v('tradeDate'))} ${esc(v('entryTime'))}${v('session')?' · '+esc(v('session')):''}</div></div>
         <div class="text-end"><div class="pnl ${pnl>0?'text-gain':(pnl<0?'text-loss':'')}">${isFinite(pnl)?fmt$(pnl,true):'—'}</div><div class="small fw-bold ${r>0?'text-gain':(r<0?'text-loss':'')}">${r!=null?(r>0?'+':'')+r.toFixed(2)+'R':''}</div></div></div>
+        ${row('Timeframe', (()=>{ const h=form.querySelector('.tj-tf-in[name="tf_htf"]:checked'), l=form.querySelector('.tj-tf-in[name="tf_ltf"]:checked'); return (h||l) ? esc((h?h.value.split(':')[1]:'—')+' → '+(l?l.value.split(':')[1]:'—')) : '—'; })(), 1)}
         ${row('Entry / SL / TP', `${esc(v('entryPrice')||'—')} / ${esc(v('slPrice')||'—')} / ${esc(v('tpPrice')||'—')}`, 2)}
         ${row('Lot · Risk', `${esc(v('lots')||'—')} lot · ${isFinite(risk)?fmt$(risk):'—'}${pct?' ('+pct[1]+')':''} · R:R ${rr}`, 2)}
         ${row('Setup', `${esc(($('f_setup').selectedOptions[0]||{}).textContent && $('f_setup').value ? $('f_setup').selectedOptions[0].textContent : '—')}${g?` <span class="tj-grade ${g==='A+'?'gAp':('g'+g)}" style="margin-left:6px">${g}</span>`:''}`, 3)}
@@ -6475,6 +6501,27 @@
       window.switchTab = function(id){ const r = orig.apply(this, arguments); try{ place(id); }catch(e){} return r; };
       const act = document.querySelector('.page-section.active'); place(act ? act.id : 'dashboard');
     })();
+  })();
+  </script>
+
+  <!-- ══════════ v41: Timeframe (เก็บใน confluences เป็น HTF:xx / LTF:xx) ══════════ -->
+  <script>
+  (function(){
+    const form=document.getElementById('tradeForm'); if(!form) return;
+    const KEY='tj_last_tf';
+    const last=()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } };
+    function applyDefault(){ const l=last(); ['HTF','LTF'].forEach(g=>{ if(form.querySelector('.tj-tf-in[name="tf_'+g.toLowerCase()+'"]:checked')) return; const el=l[g] && document.getElementById(g.toLowerCase()+'_'+l[g]); if(el) el.checked=true; }); }
+    // กดซ้ำที่ปุ่มที่เลือกอยู่ = ยกเลิกการเลือก
+    let was=null;
+    form.querySelectorAll('.tj-tf').forEach(lb=>{
+      lb.addEventListener('pointerdown',()=>{ const i=document.getElementById(lb.htmlFor); was = i && i.checked ? i : null; });
+      lb.addEventListener('click',e=>{ const i=document.getElementById(lb.htmlFor); if(i && was===i){ e.preventDefault(); i.checked=false; was=null; i.dispatchEvent(new Event('change',{bubbles:true})); } });
+    });
+    form.addEventListener('change',e=>{ const t=e.target; if(!t.classList || !t.classList.contains('tj-tf-in')) return;
+      const l=last(); const g=t.name==='tf_htf'?'HTF':'LTF'; if(t.checked) l[g]=t.value.split(':')[1]; else delete l[g];
+      try{ localStorage.setItem(KEY, JSON.stringify(l)); }catch(_){} });
+    form.addEventListener('reset',()=>setTimeout(()=>{ if(!(window.tjIsEditing && window.tjIsEditing())) applyDefault(); },0));
+    applyDefault();
   })();
   </script>
 </body>
