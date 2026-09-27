@@ -7,7 +7,7 @@
   <title>Pro Trading Journal</title>
 
   <!-- ======= PWA Meta Tags ======= -->
-  <meta name="theme-color" content="#111114">
+  <meta name="theme-color" content="#F4F3EE">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -28,8 +28,9 @@
   <!-- ======= END PWA Meta Tags ======= -->
   
   <script>
-    (function(){ try{ var a = localStorage.getItem('tj_accent') || 'green'; document.documentElement.setAttribute('data-accent', a);
-      var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', {green:'#F4F7F2',red:'#F6F6F7',blue:'#F4F6FA',mono:'#F6F6F7'}[a]||'#F4F7F2'); }catch(e){ document.documentElement.setAttribute('data-accent','green'); } })();
+    (function(){ try{ if(!localStorage.getItem('tj_style_v40')){ localStorage.setItem('tj_accent','pastel'); localStorage.setItem('tj_style_v40','1'); }
+      var a = localStorage.getItem('tj_accent') || 'pastel'; document.documentElement.setAttribute('data-accent', a);
+      var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', {pastel:'#F4F3EE',green:'#F4F7F2',red:'#F6F6F7',blue:'#F4F6FA',mono:'#F6F6F7'}[a]||'#F4F3EE'); }catch(e){ document.documentElement.setAttribute('data-accent','pastel'); } })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -941,6 +942,92 @@
     #history .tj-hist-list{padding:4px 0 14px!important;}
     @media(max-width:600px){ #tj-hist-head .tj-hist-sum{margin:8px 0 0!important;} .tj-hist-head{top:56px;} .tj-hist-bar .tj-filter-scroll{flex-wrap:wrap;overflow:visible;gap:6px;} .tj-hist-bar .tj-fdivider{display:none;} .tj-hist-tabs{width:100%;} .tj-hist-tabs .tj-side{flex:1!important;justify-content:center;} .tj-hist-date{flex:1;min-width:140px;} #hist-outcome-chips{width:100%;} #hist-outcome-chips .tj-side{flex:1!important;} }
 
+    /* ══════════ v40: Pastel card redesign (design system: Pro Trading Journal) ══════════ */
+    :root[data-accent="pastel"]{
+      --brand:#15141A; --brand-2:#000000; --on-brand:#FFFFFF; --brand-tint:#EDF8CF;
+      --canvas:#F4F3EE; --bg-body:#F4F3EE; --panel:#EBE9E2; --border:#E3E1D9; --card-border:#E3E1D9; --card-bg:#FFFFFF;
+      --topbar-bg:rgba(244,243,238,.88); --sidebar-bg:#FBFAF7; --row-hover:#F4F3EE;
+      --ink:#15141A; --color-body:#15141A; --muted:#4F4E56; --section-title:#15141A; --form-label:#3A3940;
+      --profit:#0E6630; --loss:#B42318; --gain-bg:#D8F1BF; --loss-bg:#F8D0CC; --gain-strong:#0E6630; --loss-strong:#B42318;
+      --cal-cell-empty:#EBE9E2; --cal-cell-border:#E3E1D9; --cal-cell-today:#EDF8CF;
+      --input-border:#D6D4CC; --card-shadow:none;
+      --pj-rose:#F6CCCC; --pj-lime:#EDF8CF; --pj-peach:#FDE2CF; --pj-lilac:#E4DFFA; --pj-hi:#C9EF5F; --pj-veil:rgba(255,255,255,.55);
+      --pj-float:0 24px 48px -28px rgba(21,20,26,.35);
+    }
+    [data-theme="dark"][data-accent="pastel"]{
+      --brand:#F3F2EE; --brand-2:#FFFFFF; --on-brand:#15141A; --brand-tint:rgba(201,239,95,.14);
+      --canvas:#111113; --bg-body:#111113; --panel:#242429; --border:#2E2E34; --card-border:#2E2E34; --card-bg:#1B1B1F;
+      --topbar-bg:rgba(17,17,19,.88); --sidebar-bg:#161619; --row-hover:#242429;
+      --ink:#F3F2EE; --color-body:#F3F2EE; --muted:#A9A8B0; --section-title:#F3F2EE; --form-label:#D4D3DA;
+      --profit:#5BD98A; --loss:#FF8A80; --gain-bg:#1F3A26; --loss-bg:#45201F; --gain-strong:#5BD98A; --loss-strong:#FF8A80;
+      --input-bg:#242429; --cal-cell-bg:#1B1B1F; --cal-cell-empty:#161619; --cal-cell-border:#2E2E34; --cal-cell-today:rgba(201,239,95,.14);
+      --pj-rose:#3D2528; --pj-lime:#28331D; --pj-peach:#3C2A1E; --pj-lilac:#2A2640; --pj-veil:rgba(255,255,255,.06);
+      --pj-float:0 24px 48px -28px rgba(0,0,0,.8);
+    }
+    /* หัวข้อตัวหนาแน่นแบบการ์ดพาสเทล */
+    [data-accent="pastel"] .tj-hello h3{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;}
+    [data-accent="pastel"] .tj-hello .ico{background:var(--pj-lime);color:var(--ink);border-radius:999px;}
+    [data-accent="pastel"] .tj-brand-mark{background:var(--ink);color:var(--on-brand);border-radius:12px;box-shadow:none;}
+    /* การ์ดพาสเทล: วันนี้ = พีช (กฎ), ยอดเงิน = เขียวอ่อน, กำไรสุทธิ = ม่วงอ่อน */
+    [data-accent="pastel"] .tj-today{background:var(--pj-peach);border:0;border-radius:24px!important;padding:20px;box-shadow:var(--pj-float);}
+    [data-accent="pastel"] .tj-today-cell{background:var(--pj-veil);border-radius:16px;}
+    [data-accent="pastel"] .tj-today-cell .v{font-weight:700;letter-spacing:-.02em;}
+    [data-accent="pastel"] .balance-card{background:var(--pj-lime)!important;border:0!important;border-radius:24px!important;box-shadow:var(--pj-float)!important;}
+    [data-accent="pastel"] .balance-card::before{display:none;}
+    [data-accent="pastel"] .balance-card .trades-box{background:var(--pj-veil)!important;border:0!important;border-radius:16px!important;}
+    [data-accent="pastel"] .balance-card #stat-balance{font-size:2.75rem!important;letter-spacing:-.03em!important;}
+    [data-accent="pastel"] .balance-card [style*="border-top"]{border-top-color:rgba(21,20,26,.12)!important;}
+    [data-accent="pastel"] .tj-pnl-hero{background:var(--pj-lilac)!important;border:0!important;border-radius:24px!important;}
+    [data-accent="pastel"] .tj-pnl-hero #stat-pnl{letter-spacing:-.03em!important;}
+    [data-accent="pastel"] .tj-pnl-hero .text-muted{color:var(--muted)!important;}
+    [data-accent="pastel"] .card-stat{border-radius:24px!important;box-shadow:none!important;}
+    [data-accent="pastel"] .tj-disc,[data-accent="pastel"] .tj-kpi{border-radius:24px!important;}
+    [data-accent="pastel"] .section-header .icon-wrap,[data-accent="pastel"] .stat-icon-badge{background:var(--pj-lime)!important;border-radius:999px!important;}
+    [data-accent="pastel"] .section-header .icon-wrap i,[data-accent="pastel"] .stat-icon-badge i{color:var(--ink)!important;}
+    [data-accent="pastel"] .tj-dots i.ok{background:var(--profit);}
+    /* ปุ่มแคปซูลสีดำ + ชิปที่เลือกเป็นสีเขียวมะนาว */
+    [data-accent="pastel"] .btn-primary{background:var(--brand)!important;border-color:var(--brand)!important;color:var(--on-brand)!important;border-radius:999px!important;font-weight:600;}
+    [data-accent="pastel"] .btn-outline-secondary,[data-accent="pastel"] .btn-light{border-radius:999px!important;}
+    [data-accent="pastel"] .tj-chip.active,[data-accent="pastel"] .tj-histtab.active,[data-accent="pastel"] .tj-preset.active,[data-accent="pastel"] .tj-side.active,[data-accent="pastel"] .tj-view.active,[data-accent="pastel"] #tj-hist-head .tj-side.active{background:var(--pj-hi)!important;border-color:var(--pj-hi)!important;color:#15141A!important;}
+    [data-accent="pastel"] .tj-hist-tabs .tj-side.active span{background:rgba(21,20,26,.12);}
+    [data-accent="pastel"] .tj-hist-row{border-radius:16px!important;}
+    [data-accent="pastel"] .tj-accents button.active{border-color:var(--ink);box-shadow:0 0 0 3px var(--pj-hi);}
+    [data-accent="pastel"] .tj-sheet-grid button i{background:var(--pj-lime);color:var(--ink);border-radius:999px;}
+    [data-accent="pastel"] .tj-prompt{background:var(--pj-lilac);color:var(--ink);}
+    [data-accent="pastel"] .tj-prompt small{color:var(--muted);}
+    [data-accent="pastel"] .tj-prompt button{background:var(--ink);color:var(--on-brand);border-radius:999px;}
+    /* ปฏิทิน: วันกำไร/ขาดทุนเป็นช่องพาสเทล */
+    [data-accent="pastel"] .tj-cal2-d.g{background:var(--gain-bg)!important;}
+    [data-accent="pastel"] .tj-cal2-d.l{background:var(--loss-bg)!important;}
+    [data-accent="pastel"] .tj-cal2-d.today{box-shadow:inset 0 0 0 2px var(--ink);}
+    [data-accent="pastel"] .tj-cal2{border-radius:20px;}
+    /* แถบเมนูล่างแบบแคปซูลลอย + ปุ่ม + สีเขียวมะนาว */
+    @media(max-width:991px){
+      [data-accent="pastel"] .tj-bottomnav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));background:var(--card-bg);border:1px solid var(--card-border);border-radius:999px;box-shadow:var(--pj-float);}
+      [data-accent="pastel"] .tj-bottomnav-inner{padding:6px;align-items:center;gap:2px;}
+      [data-accent="pastel"] .tj-nav-item{padding:8px 2px;border-radius:999px;white-space:nowrap;min-width:0;}
+      [data-accent="pastel"] .tj-nav-item:hover{color:var(--ink)!important;}
+      [data-accent="pastel"] .tj-nav-item.active{background:var(--ink);color:var(--on-brand)!important;}
+      [data-accent="pastel"] .tj-fab-add{background:var(--pj-hi)!important;color:#15141A!important;border-radius:999px!important;bottom:calc(92px + env(safe-area-inset-bottom));box-shadow:var(--pj-float)!important;}
+      [data-accent="pastel"] body{padding-bottom:104px;}
+    }
+    [data-accent="pastel"] .tj-side-item.active{background:var(--ink);color:var(--on-brand);}
+    [data-accent="pastel"] .tj-side-item.active i{color:var(--on-brand);}
+
+    /* หน้าเข้าสู่ระบบ */
+    .pj-login{display:none;position:fixed;inset:0;z-index:99998;background:#F4F3EE;align-items:center;justify-content:center;padding:20px;font-family:'Prompt',sans-serif;color:#15141A;}
+    .pj-login-in{width:100%;max-width:400px;display:flex;flex-direction:column;gap:16px;}
+    .pj-login-top{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;}
+    .pj-login-top img{width:36px;height:36px;border-radius:10px;}
+    .pj-login-card{background:#EDF8CF;border-radius:24px;padding:24px;box-shadow:0 24px 48px -28px rgba(21,20,26,.35);}
+    .pj-login-steps{display:flex;gap:8px;} .pj-login-steps span{flex:1;height:2px;border-radius:2px;background:#15141A;opacity:.18;} .pj-login-steps span.on{opacity:1;}
+    .pj-login-card h1{margin:24px 0 0;font-size:44px;line-height:1.05;font-weight:700;letter-spacing:-.03em;}
+    .pj-login-art{display:flex;justify-content:center;margin:24px 0;}
+    .pj-login-card p{margin:0;font-size:15px;line-height:24px;color:#15141A;} .pj-login-card p b{font-weight:600;}
+    .pj-login-btn{width:100%;height:52px;border-radius:999px;border:0;background:#15141A;color:#fff;font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit;}
+    .pj-login-btn svg{background:#fff;border-radius:50%;padding:3px;box-sizing:content-box;}
+    .pj-login-note{font-size:13px;color:#4F4E56;text-align:center;margin:0;}
+
 </style>
 </head>
 <body>
@@ -1847,6 +1934,7 @@
           <div class="px-2 pb-3 text-start">
             <div style="font-size:0.9rem;font-weight:700;color:var(--section-title);" class="mb-2">สีหลักของแอป</div>
             <div class="tj-accents" id="tj-accents">
+              <button type="button" data-a="pastel" title="พาสเทล (ใหม่)"><span style="background:conic-gradient(#F6CCCC 0 33%,#EDF8CF 0 66%,#FDE2CF 0)"></span>พาสเทล</button>
               <button type="button" data-a="green" title="เขียว"><span style="background:#2F8F46"></span>เขียว</button>
               <button type="button" data-a="red" title="แดงเข้ม (เดิม)"><span style="background:#921C1E"></span>แดงเข้ม</button>
               <button type="button" data-a="blue" title="น้ำเงิน"><span style="background:#2563EB"></span>น้ำเงิน</button>
@@ -3354,23 +3442,27 @@
     </div>
   </nav>
   <a class="tj-fab-add print-hide" onclick="switchTab('add-trade')" title="บันทึกออเดอร์" aria-label="บันทึกออเดอร์"><i class="fa-solid fa-plus"></i></a>
-  <div id="_authLoading" style="position:fixed;inset:0;z-index:99999;background:#131317;display:flex;align-items:center;justify-content:center;color:white;font-family:'Prompt',sans-serif">
+  <div id="_authLoading" style="position:fixed;inset:0;z-index:99999;background:#F4F3EE;display:flex;align-items:center;justify-content:center;color:#15141A;font-family:'Prompt',sans-serif">
     <div style="text-align:center">
-      <i class="fa-solid fa-circle-notch fa-spin" style="font-size:36px;color:#1E1E24;margin-bottom:16px"></i>
+      <i class="fa-solid fa-circle-notch fa-spin" style="font-size:36px;color:#15141A;margin-bottom:16px"></i>
       <p style="font-weight:600; font-size: 1.1rem; letter-spacing: 0.5px;">กำลังโหลดระบบ...</p>
     </div>
   </div>
 
-  <div id="_loginScreen" style="display:none;position:fixed;inset:0;z-index:99998;background:linear-gradient(135deg,#131317,#1e1b4b,#131317);align-items:center;justify-content:center;padding:24px;font-family:'Prompt',sans-serif">
-    <div style="background:white;border-radius:24px;padding:48px 32px;max-width:400px;width:100%;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.5)">
-      <div style="font-size:64px;margin-bottom:16px; text-shadow: 0 10px 20px rgba(0,0,0,0.1);">📈</div>
-      <h1 style="font-size:28px;font-weight:700;color:#131317;margin:0 0 12px;letter-spacing:-0.5px">Pro Trading Journal</h1>
-      <p style="font-size:15px;color:#70707A;margin:0 0 40px; line-height: 1.5;">บันทึกการเทรดของคุณ<br>วิเคราะห์ด้วย AI ใช้ได้ทุกอุปกรณ์</p>
-      <button onclick="_signInWithGoogle()" style="width:100%;padding:16px 20px;border-radius:14px;border:1px solid #E4E1D8;background:#F8F7F3;color:#131317;font-weight:600;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;font-family:inherit; transition: all 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+  <div id="_loginScreen" class="pj-login" style="display:none">
+    <div class="pj-login-in">
+      <div class="pj-login-top"><img src="app-icon.svg" alt="">Pro Trading Journal</div>
+      <div class="pj-login-card">
+        <div class="pj-login-steps"><span class="on"></span><span></span><span></span></div>
+        <h1>จดทุก<br>ออเดอร์</h1>
+        <div class="pj-login-art"><svg viewBox="0 0 200 150" width="200" height="150" fill="none" stroke="#15141A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 30v90"/><rect x="28" y="52" width="24" height="44" rx="4" fill="#15141A"/><path d="M90 20v110"/><rect x="78" y="40" width="24" height="60" rx="4" fill="#fff"/><path d="M140 45v80"/><rect x="128" y="62" width="24" height="34" rx="4" fill="#15141A"/><path d="M20 128c40-6 80-30 160-70" stroke-width="3"/><path d="M168 50l14 6-8 12" stroke-width="3"/><path d="M170 20l6-8M182 30l9-3M160 14l1-9" stroke-width="3"/></svg></div>
+        <p>บันทึกการเทรด <b>วิเคราะห์ด้วย AI</b> และดูกำไรขาดทุนรายวัน ใช้ได้ทุกอุปกรณ์</p>
+      </div>
+      <button onclick="_signInWithGoogle()" class="pj-login-btn">
         <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
         เข้าสู่ระบบด้วย Google
       </button>
-      <p style="font-size:12px;color:#9C9CA4;margin:24px 0 0">เข้าสู่ระบบครั้งแรกจะสร้างบัญชีให้อัตโนมัติ</p>
+      <p class="pj-login-note">เข้าสู่ระบบครั้งแรกจะสร้างบัญชีให้อัตโนมัติ</p>
     </div>
   </div>
 
@@ -5822,17 +5914,17 @@
     };
 
     // ── สีหลัก ──
-    const TC = { green:'#F4F7F2', red:'#F6F6F7', blue:'#F4F6FA', mono:'#F6F6F7' };
+    const TC = { pastel:'#F4F3EE', green:'#F4F7F2', red:'#F6F6F7', blue:'#F4F6FA', mono:'#F6F6F7' };
     function setAccent(a){
       document.documentElement.setAttribute('data-accent', a);
       try{ localStorage.setItem('tj_accent', a); }catch(e){}
-      const m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', TC[a]||TC.green);
+      const m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', TC[a]||TC.pastel);
       document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===a));
       try{ if(window.tjRenderV2) window.tjRenderV2(); if(window._lastMetrics && window.updateDashboardUI) window.updateDashboardUI(window._lastMetrics); }catch(e){}
       renderDisc();
     }
     document.querySelectorAll('#tj-accents button').forEach(b=>b.addEventListener('click', ()=>setAccent(b.dataset.a)));
-    document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===(document.documentElement.getAttribute('data-accent')||'green')));
+    document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===(document.documentElement.getAttribute('data-accent')||'pastel')));
 
     // ── คำทักทาย ──
     function renderHello(){
