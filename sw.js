@@ -1,5 +1,5 @@
 // อัปเดตเวอร์ชันของ Cache เป็น v17 เพื่อบังคับล้าง cache เก่าทุกเครื่อง (deploy 2026-07-18 · ตัดให้เหลือแก่น: สถิติเชิงลึก + R-distribution + Edge leaderboard + ตัวกรอง)
-const CACHE_NAME = 'tradejournal-cache-v44';
+const CACHE_NAME = 'tradejournal-cache-v45';
 const urlsToCache = [
   './index.html',
   './manifest.json'

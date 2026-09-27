@@ -1169,6 +1169,21 @@
     #tradeForm:not(.tj-wizard) #submitBtn{position:sticky;bottom:calc(84px + env(safe-area-inset-bottom));z-index:20;box-shadow:0 14px 28px -14px rgba(0,0,0,.45);}
     @media(min-width:992px){ #tradeForm:not(.tj-wizard) #submitBtn{bottom:16px;} }
 
+    /* ══════════ v43: เอาแถบหัวออก · ย้ายตัวเลือกเดือน/ปีไปไว้ในหน้า ══════════ */
+    .tj-topbar{display:none!important;}
+    body{padding-top:calc(14px + env(safe-area-inset-top));}
+    .tj-filterbar{top:calc(8px + env(safe-area-inset-top));}
+    .tj-hist-head{top:env(safe-area-inset-top)!important;}
+    .tj-news-banner{top:calc(12px + env(safe-area-inset-top));}
+    .pj-period-slot{display:flex;align-items:center;gap:8px;margin:-4px 2px 16px;}
+    .pj-period-slot:empty{display:none;}
+    #analytics .tj-page-head{flex-wrap:wrap;gap:10px;}
+    #analytics .tj-page-head .pj-period-slot{margin:0 0 0 auto;}
+    .pj-period-slot .tj-month-pill{padding:6px 12px;gap:6px;}
+    .pj-period-slot .tj-month-pill select{font-size:.86rem;max-width:96px;}
+    .pj-period-slot .tj-month-pill i{font-size:.8rem!important;color:var(--ink)!important;}
+    [data-accent="pastel"] .pj-period-slot .tj-month-pill{background:var(--card-bg);border-color:var(--card-border);}
+
 </style>
 </head>
 <body>
@@ -1197,14 +1212,14 @@
     </div>
   </aside>
 
-  <header class="tj-topbar print-hide">
+  <header class="tj-topbar print-hide" id="tj-topbar" aria-hidden="true">
     <div class="tj-topbar-inner">
       <a class="tj-brand" onclick="switchTab('dashboard')">
         <span class="tj-brand-mark" style="background:#F8F7F3!important;overflow:hidden;"><img src="app-icon.svg" alt="โลโก้" style="width:100%;height:100%;object-fit:contain;"></span>
         <span class="tj-brand-text"><b>Pro Trading</b><span>Journal</span></span>
       </a>
       <div class="tj-topbar-actions">
-        <div class="tj-month-pill">
+        <div class="tj-month-pill" id="tj-period">
           <i class="fa-solid fa-calendar-days" style="color:var(--brand);font-size:.72rem;"></i>
           <select id="filter-month" onchange="loadAllData()" aria-label="เลือกเดือน">
             <option value="all" selected>ทุกเดือน</option>
@@ -1233,6 +1248,7 @@
       <!-- ── วันนี้ (กฎคุมความเสี่ยงรายวัน) ── -->
       <div class="tj-dash-head" id="tj-dash-head">
         <div class="tj-hello" id="tj-hello"></div>
+        <div class="pj-period-slot" data-for="dashboard"></div>
         <div class="tj-today" id="tj-today"></div>
         <div class="tj-disc" id="tj-disc"></div>
       </div>
@@ -1448,7 +1464,7 @@
     <!-- ══════════ ANALYTICS PAGE (ใหม่) ══════════ -->
     <div id="analytics" class="page-section print-hide">
       <div class="tj-page-head">
-        <div><h4>สถิติ</h4><div class="sub" id="tj-perf-scope">ใช้ตัวกรองด้านล่าง + เดือน/ปีที่มุมขวาบน</div></div>
+        <div><h4>สถิติ</h4><div class="sub" id="tj-perf-scope">ใช้ตัวกรองด้านล่าง + ตัวเลือกเดือน/ปี</div></div><div class="pj-period-slot" data-for="analytics"></div>
       </div>
       <!-- ── Global Cross-Filter Bar (ใหม่) ──────────────────────── -->
       <div class="tj-filterbar print-hide" id="tj-filterbar">
@@ -6442,5 +6458,24 @@
   })();
   </script>
 
+  <script>
+  // ══ v43: ตัวเลือกเดือน/ปีตัวเดิม (id เดิม) ย้ายไปอยู่ในหน้าที่ใช้มัน ══
+  (function(){
+    const pill = document.getElementById('tj-period');
+    const park = pill ? pill.parentNode : null;   // ที่เดิมในแถบหัว (ซ่อนไว้)
+    if(!pill || !park) return;
+    function place(id){
+      const slot = document.querySelector('.pj-period-slot[data-for="'+id+'"]');
+      const target = slot || park;
+      if(pill.parentNode !== target) target.appendChild(pill);
+    }
+    (function hook(){
+      const orig = window.switchTab;
+      if(typeof orig!=='function'){ setTimeout(hook,60); return; }
+      window.switchTab = function(id){ const r = orig.apply(this, arguments); try{ place(id); }catch(e){} return r; };
+      const act = document.querySelector('.page-section.active'); place(act ? act.id : 'dashboard');
+    })();
+  })();
+  </script>
 </body>
 </html>
