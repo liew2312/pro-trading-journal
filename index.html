@@ -1204,6 +1204,13 @@
       .tj-cal2 .tj-cal2-d.g .tj-cal2-pnl{color:var(--profit)!important;} .tj-cal2 .tj-cal2-d.l .tj-cal2-pnl{color:var(--loss)!important;}
       body.tj-hidepnl .tj-cal2 .tj-cal2-pnl{filter:blur(4px);}
     }
+
+    /* ══════════ v47: Equity curve กว้างเต็มจอบนมือถือ ══════════ */
+    @media(max-width:600px){
+      .pj-eq-card{padding:18px 8px 12px!important;}
+      .pj-eq-card .section-header{padding:0 8px;}
+      .pj-eq-box{height:240px!important;}
+    }
 </style>
 </head>
 <body>
@@ -1323,12 +1330,12 @@
       <!-- ── Equity Curve ──────────────────────────────────────── -->
       <div class="row mb-4">
         <div class="col-12">
-          <div class="card card-stat p-4">
+          <div class="card card-stat p-4 pj-eq-card">
             <div class="section-header">
               <div class="icon-wrap" style="background:rgba(19,19,23,0.1)"><i class="fa-solid fa-chart-line" style="color:#1E1E24"></i></div>
               <h6 class="title">Equity Curve (การเติบโตของพอร์ต)</h6>
             </div>
-            <div style="position:relative;height:260px;width:100%;"><canvas id="equityChart"></canvas></div>
+            <div class="pj-eq-box" style="position:relative;height:260px;width:100%;"><canvas id="equityChart"></canvas></div>
           </div>
         </div>
       </div>
@@ -3118,6 +3125,12 @@
           return val - maxEquity; // จะได้ค่าเป็น 0 หรือติดลบ (Absolute Drawdown)
       });
 
+      // แกน X: แสดงเฉพาะวัน/เดือน (ตัดเวลา) และไม่ซ้ำวันเดิม
+      const _mob = window.innerWidth < 600;
+      const _day = l => String(l||'').split(' ')[0];
+      const _firstIdx = []; (labels||[]).forEach((l,i)=>{ if(i===0 || _day(l)!==_day(labels[i-1])) _firstIdx.push(i); });
+      const _maxT = _mob ? 5 : 8, _step = Math.max(1, Math.ceil(_firstIdx.length/_maxT));
+      const _showIdx = new Set(_firstIdx.filter((_,k)=>k%_step===0));
       equityChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -3173,13 +3186,14 @@
           scales: {
             x: { 
               grid: { display: false }, 
-              ticks: { maxTicksLimit: 6 } 
+              ticks: { autoSkip: false, maxRotation: 0, minRotation: 0, font: { size: _mob ? 10 : 11 }, callback: (v, i) => _showIdx.has(i) ? _day(labels[i]) : '' } 
             },
             y: { 
               type: 'linear',
               display: true,
               position: 'left',
-              grid: { color: _grid } 
+              grid: { color: _grid },
+              ticks: { font: { size: _mob ? 10 : 11 }, maxTicksLimit: 6, padding: 4 }
             },
             y1: {
               type: 'linear',
@@ -3187,9 +3201,11 @@
               position: 'right',
               grid: { display: false }, // ปิด grid แกนขวาเพื่อไม่ให้เส้นตีกัน
               suggestedMax: 0, // บังคับให้ 0 อยู่ด้านบนสุดของสเกลฝั่งขวา Drawdown จะได้ห้อยลงมา
+              display: !_mob, // มือถือ: ซ่อนแกนขวาเพื่อให้กราฟกว้างขึ้น (ดูค่า DD ได้จาก tooltip)
               ticks: { color: _loss }
             }
-          }
+          },
+          layout: { padding: { left: 0, right: _mob ? 2 : 0 } }
         }
       });
     }
@@ -3761,7 +3777,7 @@
   <!-- ======= PWA: Service Worker Registration ======= -->
   <!-- APP BUILD: 2026-07-16 (v6) -->
   <script>
-    window.APP_BUILD = '2026-09-27-v46';
+    window.APP_BUILD = '2026-09-27-v47';
     console.log('[APP] Pro Trading Journal build', window.APP_BUILD);
     // แสดงเลขเวอร์ชันในหน้าตั้งค่า
     (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();
