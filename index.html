@@ -1028,6 +1028,73 @@
     .pj-login-btn svg{background:#fff;border-radius:50%;padding:3px;box-sizing:content-box;}
     .pj-login-note{font-size:13px;color:#4F4E56;text-align:center;margin:0;}
 
+    /* ══════════ v41: UX — การ์ดหลักรวม, ปุ่ม + ในเมนู, สถานะว่าง, ปฏิทินมือถือ ══════════ */
+    .pj-main{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:22px;color:var(--ink);}
+    .pj-main-lbl{font-size:.74rem;font-weight:600;color:var(--muted);}
+    .pj-main-pnl{margin:4px 0 0;font-size:2.9rem;font-weight:700;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums;}
+    .pj-main-sub{margin-top:6px;font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums;}
+    .pj-main-sub b{color:var(--ink);font-weight:600;}
+    .pj-main-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:18px;}
+    .pj-main-grid > div{background:var(--panel);border-radius:14px;padding:10px 12px;min-width:0;}
+    .pj-main-grid small{display:block;font-size:.66rem;font-weight:600;color:var(--muted);white-space:nowrap;}
+    .pj-main-grid small i{font-size:.6rem;}
+    .pj-main-grid strong{display:block;font-size:1rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    [data-accent="pastel"] .pj-main{border:0;box-shadow:var(--pj-float);background:var(--pj-lilac);}
+    [data-accent="pastel"] .pj-main.pos{background:var(--pj-lime);}
+    [data-accent="pastel"] .pj-main.neg{background:var(--pj-rose);}
+    [data-accent="pastel"] .pj-main-grid > div{background:var(--pj-veil);}
+    @media(max-width:600px){ .pj-main-grid{grid-template-columns:1fr 1fr;} .pj-main-grid > div:first-child{grid-column:1 / -1;display:flex;align-items:baseline;justify-content:space-between;gap:10px;} .pj-main-grid > div:first-child strong{font-size:1.15rem;} }
+    body.tj-hidepnl #pj-hero-dir{filter:blur(6px);}
+    /* ระหว่างโหลด: โครงร่างแทนตัวเลข 0.00 */
+    @keyframes pjShimmer{0%{background-position:-200px 0}100%{background-position:200px 0}}
+    .pj-skel{display:flex;flex-direction:column;gap:10px;padding:6px 0;}
+    .pj-skel i,.pj-loading .pj-main-pnl,.pj-loading .pj-main-grid strong{background:linear-gradient(90deg,var(--panel) 0,var(--border) 50%,var(--panel) 100%);background-size:400px 100%;animation:pjShimmer 1.2s linear infinite;border-radius:10px;color:transparent!important;}
+    .pj-skel i{display:block;height:14px;}
+    .pj-loading .pj-main-pnl{width:62%;}
+    [data-accent="pastel"] .pj-loading .pj-main-pnl,[data-accent="pastel"] .pj-loading .pj-main-grid strong{background:linear-gradient(90deg,var(--pj-veil) 0,rgba(255,255,255,.9) 50%,var(--pj-veil) 100%);background-size:400px 100%;}
+    [data-theme="dark"][data-accent="pastel"] .pj-loading .pj-main-pnl,[data-theme="dark"][data-accent="pastel"] .pj-loading .pj-main-grid strong{background:linear-gradient(90deg,var(--pj-veil) 0,rgba(255,255,255,.14) 50%,var(--pj-veil) 100%);background-size:400px 100%;}
+    @media (prefers-reduced-motion:reduce){ .pj-skel i,.pj-loading .pj-main-pnl,.pj-loading .pj-main-grid strong{animation:none;} }
+    /* สถานะว่าง */
+    .pj-empty{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:24px;margin-bottom:24px;color:var(--ink);--pj-empty-bg:var(--card-bg);}
+    .pj-empty[hidden]{display:none;}
+    [data-accent="pastel"] .pj-empty{background:var(--pj-peach);border:0;box-shadow:var(--pj-float);--pj-empty-bg:var(--pj-peach);}
+    .pj-empty-art{display:flex;justify-content:center;margin:4px 0 12px;color:var(--ink);}
+    .pj-empty h3{font-size:2rem;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin:0 0 10px;}
+    .pj-empty p{font-size:.92rem;line-height:1.6;margin:0 0 18px;} .pj-empty p b{font-weight:600;}
+    .pj-empty-btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:999px;border:0;background:var(--brand);color:var(--on-brand);font:600 .95rem 'Prompt',sans-serif;cursor:pointer;}
+    #dashboard.pj-is-empty .row:has(#ai-insights-container),#dashboard.pj-is-empty .row:has(#equityChart){display:none;}
+    .pj-insight-none{font-size:.85rem;color:var(--muted);padding:6px 2px;}
+    /* ปุ่ม + กลางแถบเมนู (แทนปุ่มลอยที่บังเนื้อหา) */
+    .tj-nav-add{flex:none;padding:0 6px!important;background:transparent!important;}
+    .tj-nav-add .pj-plus{width:48px;height:48px;border-radius:999px;background:var(--brand);color:var(--on-brand);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:transform .12s;}
+    .tj-nav-add:active .pj-plus{transform:scale(.94);}
+    .tj-nav-add.active,.tj-nav-add:hover{color:inherit!important;background:transparent!important;}
+    [data-accent="pastel"] .tj-nav-add .pj-plus{background:var(--pj-hi);color:#15141A;}
+    [data-accent="pastel"] .tj-nav-add.active .pj-plus{box-shadow:0 0 0 3px var(--ink);}
+    @media(max-width:991px){ .tj-fab-add{display:none!important;} }
+    @media(min-width:992px){ .tj-nav-add{display:none!important;} }
+    /* ปฏิทินบนมือถือ: ช่องสีอ่านง่าย แตะเพื่อดูรายละเอียด + สรุปรายสัปดาห์ด้านล่าง */
+    @media(max-width:600px){
+      .tj-cal2{grid-template-columns:repeat(7,minmax(0,1fr))!important;}
+      .tj-cal2 .tj-cal2-w,.tj-cal2 .tj-cal2-h.wk{display:none!important;}
+      .tj-cal2 .tj-cal2-pnl,.tj-cal2 .tj-cal2-meta{display:none!important;}
+      .tj-cal2 .tj-cal2-d{min-height:48px;display:flex;align-items:center;justify-content:center;padding:0!important;}
+      .tj-cal2 .tj-cal2-top{justify-content:center;}
+      .tj-cal2 .tj-cal2-num{font-size:.86rem!important;font-weight:600!important;}
+      .tj-cal2 .tj-cal2-h{font-size:.72rem!important;padding:8px 0!important;}
+      .tj-cal2 > :nth-last-child(-n+7){border-bottom:0!important;}
+      #tj-cal-weeks.tj-cal-weeks{display:flex!important;flex-direction:column;gap:8px;margin-top:12px;}
+      #tj-cal-weeks:empty{display:none!important;}
+    }
+    .tj-cal2 .tj-cal2-d.today .tj-cal2-num{background:var(--brand);color:var(--on-brand)!important;border-radius:99px;}
+    .pj-wk{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--panel);border-radius:16px;padding:12px 16px;}
+    .pj-wk.g{background:var(--gain-bg);} .pj-wk.l{background:var(--loss-bg);}
+    .pj-wk span{font-weight:600;font-size:.9rem;color:var(--ink);display:flex;flex-direction:column;line-height:1.3;}
+    .pj-wk small{font-size:.72rem;font-weight:500;color:var(--muted);}
+    .pj-wk b{font-size:1rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);}
+    .pj-wk.g b{color:var(--profit);} .pj-wk.l b{color:var(--loss);}
+    body.tj-hidepnl .pj-wk b{filter:blur(6px);}
+
 </style>
 </head>
 <body>
@@ -1083,7 +1150,7 @@
 
   <div class="container pb-5">
     
-    <div id="dashboard" class="page-section active">
+    <div id="dashboard" class="page-section active pj-loading">
       
       <div class="row d-none">
         <div class="col-12"><div class="quote-box" id="daily-quote">"ตลาดไม่ได้สนใจว่าคุณจะรู้สึกอย่างไร ทำตามแผนของคุณก็พอ"</div></div>
@@ -1107,40 +1174,25 @@
 
       <div class="row mb-4">
         <div class="col-12">
-          <div class="card balance-card p-4">
-            <div class="shimmer-line"></div>
-            <div class="d-flex justify-content-between align-items-start mb-3 position-relative" style="z-index:2;">
-              <div>
-                <small class="text-white-50 text-uppercase fw-bold" style="letter-spacing:1.5px;font-size:0.72rem;">Account Balance</small>
-                <h1 id="stat-balance" class="mb-0 fw-bold mt-1" style="font-size:2.8rem;text-shadow:0 4px 10px rgba(0,0,0,0.3);letter-spacing:-1px;">0.00</h1>
-              </div>
-              <div class="trades-box text-center text-white" style="min-width:90px;">
-                <i class="fa-solid fa-briefcase mb-1 text-info d-block" style="font-size:1.4rem;"></i>
-                <span id="stat-trades" class="fw-bold" style="font-size:1.4rem;">0</span>
-                <span class="d-block opacity-60" style="font-size:0.68rem;">Total Trades</span>
-              </div>
-            </div>
-            <div class="d-flex justify-content-between pt-3 position-relative" style="z-index:2;border-top:1px solid rgba(255,255,255,0.1);">
-              <div>
-                <small class="text-white-50 text-uppercase d-block mb-1 fw-bold" style="font-size:0.68rem;letter-spacing:1px;">Total Deposit <i class="fa-solid fa-arrow-down ms-1 text-success opacity-75"></i></small>
-                <strong class="text-white" style="font-size:1.25rem;" id="stat-deposit">0.00</strong>
-              </div>
-              <div class="text-end">
-                <small class="text-white-50 text-uppercase d-block mb-1 fw-bold" style="font-size:0.68rem;letter-spacing:1px;">Total Withdraw <i class="fa-solid fa-arrow-up ms-1 text-warning opacity-75"></i></small>
-                <strong class="text-white" style="font-size:1.25rem;" id="stat-withdraw">0.00</strong>
-              </div>
+          <div class="card pj-main zero" id="pj-hero">
+            <div class="pj-main-lbl">กำไร/ขาดทุนสุทธิ</div>
+            <h1 id="stat-pnl" class="pj-main-pnl">0.00</h1>
+            <div class="pj-main-sub"><span id="pj-hero-dir">—</span> · Win rate <span id="pj-hero-wr">—</span> · <b id="stat-trades">0</b> ออเดอร์</div>
+            <div class="pj-main-grid">
+              <div><small>ยอดเงินในบัญชี</small><strong id="stat-balance">0.00</strong></div>
+              <div><small>ฝากรวม <i class="fa-solid fa-arrow-down"></i></small><strong id="stat-deposit">0.00</strong></div>
+              <div><small>ถอนรวม <i class="fa-solid fa-arrow-up"></i></small><strong id="stat-withdraw">0.00</strong></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card card-stat tj-pnl-hero p-4 p-md-5 text-center">
-             <small class="text-muted text-uppercase fw-bold mb-2 d-block" style="letter-spacing: 2px; font-size: 0.9rem;">Net Profit / Loss (กำไรสุทธิ)</small>
-             <h1 id="stat-pnl" class="display-3 fw-bold mb-0" style="letter-spacing: -1px;">0.00</h1>
-          </div>
-        </div>
+      <!-- ── ยังไม่มีข้อมูล ── -->
+      <div class="pj-empty" id="pj-empty" hidden>
+        <div class="pj-empty-art"><svg viewBox="0 0 200 150" width="160" height="120" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M40 30v90"/><rect x="28" y="52" width="24" height="44" rx="4" fill="currentColor"/><path d="M90 20v110"/><rect x="78" y="40" width="24" height="60" rx="4" fill="var(--pj-empty-bg,#fff)"/><path d="M140 45v80"/><rect x="128" y="62" width="24" height="34" rx="4" fill="currentColor"/><path d="M20 128c40-6 80-30 160-70" stroke-width="3"/><path d="M168 50l14 6-8 12" stroke-width="3"/><path d="M170 20l6-8M182 30l9-3M160 14l1-9" stroke-width="3"/></svg></div>
+        <h3>เริ่มจด<br>ออเดอร์แรก</h3>
+        <p>ยังไม่มีออเดอร์ในช่วงเวลานี้ บันทึกออเดอร์แรกแล้ว <b>กราฟพอร์ต สถิติ และข้อสังเกต</b> จะขึ้นที่นี่</p>
+        <button type="button" class="pj-empty-btn" onclick="switchTab('add-trade')"><i class="fa-solid fa-plus"></i> บันทึกออเดอร์แรก</button>
       </div>
 
       <div class="row mb-4">
@@ -1151,7 +1203,7 @@
               <div><h6 class="title">ข้อสังเกตจากข้อมูลของคุณ</h6><div class="small text-muted" style="font-size:.7rem;">คำนวณจากกฎและสถิติของไม้ที่บันทึกไว้ (ไม่ใช่ AI) · ยิ่งข้อมูลมากยิ่งแม่นขึ้น</div></div>
             </div>
             <div id="ai-insights-container" class="d-flex flex-column gap-3">
-               <div class="text-muted small text-center py-3"><i class="fa-solid fa-spinner fa-spin fs-4 mb-2 d-block text-primary"></i> กำลังวิเคราะห์ข้อมูลพฤติกรรมการเทรด...</div>
+               <div class="pj-skel" aria-label="กำลังโหลด"><i></i><i></i><i style="width:60%"></i></div>
             </div>
           </div>
         </div>
@@ -3436,6 +3488,7 @@
     <div class="tj-bottomnav-inner">
       <a class="tj-nav-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i><span>ภาพรวม</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('history')"><i class="fa-regular fa-file-lines"></i><span>ประวัติ</span></a>
+      <a class="tj-nav-item tj-nav-add" onclick="switchTab('add-trade')" aria-label="บันทึกออเดอร์"><span class="pj-plus"><i class="fa-solid fa-plus"></i></span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i><span>ปฏิทิน</span></a>
       <a class="tj-nav-item nav-icon-btn nav-link" onclick="switchTab('analytics')"><i class="fa-solid fa-chart-line"></i><span>สถิติ</span></a>
       <button class="tj-nav-item" onclick="tjOpenMenu()" style="position:relative"><i class="fa-solid fa-grip"></i><span>เมนู</span><span class="tj-news-dot" id="tj-news-dot-bottom"></span></button>
@@ -3987,7 +4040,7 @@
       }
       html += '</div>';
       body.innerHTML = html;
-      weeksM.innerHTML = ''; void weekTotals.map((w,i)=>`<div class="tj-cal2-w" style="min-height:0"><div class="lbl">สัปดาห์ ${i+1}</div><div class="val ${w.wp>0?'text-gain':(w.wp<0?'text-loss':'')}">${w.wn? fmtShort(w.wp):'—'}</div></div>`).join('');
+      weeksM.innerHTML = weekTotals.map((w,i)=> w.wn ? `<div class="pj-wk ${w.wp>0?'g':(w.wp<0?'l':'')}"><span>สัปดาห์ ${i+1}<small>${w.wn} ไม้ · ${w.wd} วัน</small></span><b>${fmtShort(w.wp)}</b></div>` : '').join('');
       body.querySelectorAll('.tj-cal2-d.has').forEach(el=>el.addEventListener('click',()=>openDay(el.dataset.k)));
 
       const mt = trades.filter(t=>t.d.getFullYear()===y && t.d.getMonth()===m);
@@ -6184,6 +6237,38 @@
       if(h) h.classList.toggle('stuck',y); const hh=document.getElementById('tj-hist-head'); if(hh) hh.classList.toggle('stuck',y); };
     window.addEventListener('scroll',tick,{passive:true}); tick();
   })();
+  </script>  <script>
+  // ══ v41: การ์ดหลักเปลี่ยนสีตามกำไร/ขาดทุน + สถานะว่าง + เลิกโหลด ══
+  (function(){
+    const dash = () => document.getElementById('dashboard');
+    function apply(data){
+      try{
+        const d = dash(); if(d) d.classList.remove('pj-loading');
+        const pnl = Number(data && data.totalPnl) || 0;
+        const n = Number(data && data.trades) || 0;
+        const hero = document.getElementById('pj-hero');
+        if(hero){ hero.classList.remove('pos','neg','zero'); hero.classList.add(pnl>0?'pos':(pnl<0?'neg':'zero')); }
+        const dir = document.getElementById('pj-hero-dir');
+        if(dir) dir.textContent = pnl>0 ? '▲ กำไร' : (pnl<0 ? '▼ ขาดทุน' : '— เท่าทุน');
+        const wr = document.getElementById('pj-hero-wr');
+        if(wr) wr.textContent = (data && data.winRate!=null && n) ? data.winRate+'%' : '—';
+        const empty = document.getElementById('pj-empty');
+        if(empty) empty.hidden = n>0;
+        if(d) d.classList.toggle('pj-is-empty', n===0);
+        const ins = document.getElementById('ai-insights-container');
+        if(ins && n>0 && !ins.children.length) ins.innerHTML = '<div class="pj-insight-none">ยังไม่มีข้อสังเกตในช่วงนี้ บันทึกเพิ่มอีกสักหน่อยแล้วระบบจะเริ่มเห็นรูปแบบการเทรดของคุณ</div>';
+      }catch(e){ console.error('pj hero', e); }
+    }
+    function install(){
+      const orig = window.updateDashboardUI;
+      if(typeof orig!=='function'){ setTimeout(install,60); return; }
+      window.updateDashboardUI = function(data){ orig.apply(this, arguments); apply(data); };
+    }
+    install();
+    // กันค้าง: ถ้าผ่านไป 15 วินาทียังไม่มีข้อมูล ให้เลิกแสดงโครงร่าง
+    setTimeout(()=>{ const d=dash(); if(d) d.classList.remove('pj-loading'); }, 15000);
+  })();
   </script>
+
 </body>
 </html>
