@@ -1,0 +1,25 @@
+/* ══════════ v41: Timeframe วิเคราะห์ / เข้าออเดอร์ ══════════ */
+.tj-tf-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.tj-tf{border:1.5px solid var(--border);background:var(--card-bg);color:var(--muted);border-radius:10px;padding:6px 0;min-width:48px;text-align:center;font-size:.8rem;font-weight:700;cursor:pointer;user-select:none;margin:0;transition:all .12s;}
+.tj-tf:hover{border-color:var(--brand);color:var(--brand);}
+.btn-check:checked + .tj-tf{background:var(--brand);border-color:var(--brand);color:var(--on-brand);}
+.btn-check:focus-visible + .tj-tf{box-shadow:0 0 0 3px var(--brand-tint);}
+.tj-tf-tag{font-weight:700;color:var(--ink);}
+[data-accent="pastel"] .btn-check:checked + .tj-tf{background:var(--pj-hi);border-color:var(--pj-hi);color:#15141A;}
+[data-accent="pastel"] .tj-tf{border-radius:999px;}
+@media(max-width:600px){ .tj-tf-chips{display:grid;grid-template-columns:repeat(4,1fr);} .tj-tf{min-width:0;} }
+
+/* ══════════ v46: ปฏิทินมือถือ — แสดงยอดกำไร/ขาดทุนเล็กๆ ในช่องวัน ══════════ */
+@media(max-width:600px){
+  .tj-cal2 .tj-cal2-d{flex-direction:column!important;gap:1px;min-height:52px!important;}
+  .tj-cal2 .tj-cal2-d.has .tj-cal2-pnl{display:block!important;margin:0!important;font-size:.56rem!important;font-weight:700!important;line-height:1.1;letter-spacing:-.3px;max-width:100%;text-align:center;}
+  .tj-cal2 .tj-cal2-d.g .tj-cal2-pnl{color:var(--profit)!important;} .tj-cal2 .tj-cal2-d.l .tj-cal2-pnl{color:var(--loss)!important;}
+  body.tj-hidepnl .tj-cal2 .tj-cal2-pnl{filter:blur(4px);}
+}
+
+/* ══════════ v47: Equity curve กว้างเต็มจอบนมือถือ ══════════ */
+@media(max-width:600px){
+  .pj-eq-card{padding:18px 8px 12px!important;}
+  .pj-eq-card .section-header{padding:0 8px;}
+  .pj-eq-box{height:240px!important;}
+}
