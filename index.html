@@ -41,14 +41,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <link rel="stylesheet" href="css/01-base.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-28-v57">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-28-v57">
+  <link rel="stylesheet" href="css/01-base.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-09-29-v58">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-09-29-v58">
 </head>
 <body>
 
@@ -799,11 +799,17 @@
             <div style="font-size:0.75rem;color:#70707A;">R = Net P/L ÷ Risk$</div>
           </div>
 
+          <div class="row g-3 mb-3 tj-q-row" id="tj-q-row" data-step="4">
+            <div class="col-sm-6" id="tj-q-tp"><label class="form-label"><i class="fa-solid fa-bullseye me-1"></i> ราคาวิ่งไปถึง TP ไหม?</label><div class="tj-q-chips"><input type="radio" class="btn-check conf-check tj-q-in" name="q_tp" id="q_tp_Y" value="HITTP:Y" autocomplete="off"><label class="tj-tf tj-q y" for="q_tp_Y">ใช่</label><input type="radio" class="btn-check conf-check tj-q-in" name="q_tp" id="q_tp_N" value="HITTP:N" autocomplete="off"><label class="tj-tf tj-q n" for="q_tp_N">ไม่ใช่</label></div><div class="tj-q-hint">ถึงแม้คุณจะปิดก่อนหรือโดน SL ไปแล้ว</div></div>
+            <div class="col-sm-6" id="tj-q-sl"><label class="form-label"><i class="fa-solid fa-rotate-left me-1"></i> ราคาย้อนกลับมาชน SL ไหม?</label><div class="tj-q-chips"><input type="radio" class="btn-check conf-check tj-q-in" name="q_sl" id="q_sl_Y" value="HITSL:Y" autocomplete="off"><label class="tj-tf tj-q y" for="q_sl_Y">ใช่</label><input type="radio" class="btn-check conf-check tj-q-in" name="q_sl" id="q_sl_N" value="HITSL:N" autocomplete="off"><label class="tj-tf tj-q n" for="q_sl_N">ไม่ใช่</label></div><div class="tj-q-hint">หลังคุณปิดออเดอร์ไปแล้ว</div></div>
+          </div>
+          <details class="tj-maemfe-more tj-full-only" data-step="4"><summary>กรอก MAE / MFE เป็นราคา (ละเอียด · ไม่บังคับ)</summary>
           <div class="row g-3 mb-4">
             <div class="col-6"><label class="form-label">MAE · ราคาที่สวนไกลสุด</label><input type="number" step="any" class="form-control" name="mae" id="f_mae" placeholder="ราคา เช่น 4281.5"></div>
             <div class="col-6"><label class="form-label">MFE · ราคาที่วิ่งไกลสุด</label><input type="number" step="any" class="form-control" name="mfe" id="f_mfe" placeholder="ราคา เช่น 4296.0"></div>
             <div class="col-12"><div class="tj-maemfe-info" id="tj-maemfe-info">กรอกเป็น<b>ราคา</b> ระบบคำนวณเป็น R ให้ — ใช้วิเคราะห์ว่า SL แคบ/กว้างไปไหม และปิดกำไรเร็วไปไหม (ดูที่หน้า Performance)</div></div>
           </div>
+          </details>
           
           <hr class="text-muted opacity-25 mb-4">
 
@@ -1160,24 +1166,25 @@
   
   
 
-  <script src="js/01-config.js?v=2026-09-28-v57"></script>
-  <script src="js/02-api.js?v=2026-09-28-v57"></script>
-  <script src="js/03-app.js?v=2026-09-28-v57"></script>
-  <script src="js/04-auth.js?v=2026-09-28-v57"></script>
-  <script src="js/05-theme.js?v=2026-09-28-v57"></script>
-  <script src="js/06-pwa.js?v=2026-09-28-v57"></script>
-  <script src="js/07-filters.js?v=2026-09-28-v57"></script>
-  <script src="js/08-calendar-performance.js?v=2026-09-28-v57"></script>
-  <script src="js/09-chart-page.js?v=2026-09-28-v57"></script>
-  <script src="js/10-session.js?v=2026-09-28-v57"></script>
-  <script src="js/11-news.js?v=2026-09-28-v57"></script>
-  <script src="js/12-discipline.js?v=2026-09-28-v57"></script>
-  <script src="js/13-trade-form.js?v=2026-09-28-v57"></script>
-  <script src="js/14-dashboard.js?v=2026-09-28-v57"></script>
-  <script src="js/15-profile.js?v=2026-09-28-v57"></script>
-  <script src="js/16-my-tradingview.js?v=2026-09-28-v57"></script>
-  <script src="js/17-pastel-ui.js?v=2026-09-28-v57"></script>
-  <script src="js/18-timeframe.js?v=2026-09-28-v57"></script>
-  <script src="js/19-open-trades.js?v=2026-09-28-v57"></script>
+  <script src="js/01-config.js?v=2026-09-29-v58"></script>
+  <script src="js/02-api.js?v=2026-09-29-v58"></script>
+  <script src="js/03-app.js?v=2026-09-29-v58"></script>
+  <script src="js/04-auth.js?v=2026-09-29-v58"></script>
+  <script src="js/05-theme.js?v=2026-09-29-v58"></script>
+  <script src="js/06-pwa.js?v=2026-09-29-v58"></script>
+  <script src="js/07-filters.js?v=2026-09-29-v58"></script>
+  <script src="js/08-calendar-performance.js?v=2026-09-29-v58"></script>
+  <script src="js/09-chart-page.js?v=2026-09-29-v58"></script>
+  <script src="js/10-session.js?v=2026-09-29-v58"></script>
+  <script src="js/11-news.js?v=2026-09-29-v58"></script>
+  <script src="js/12-discipline.js?v=2026-09-29-v58"></script>
+  <script src="js/13-trade-form.js?v=2026-09-29-v58"></script>
+  <script src="js/14-dashboard.js?v=2026-09-29-v58"></script>
+  <script src="js/15-profile.js?v=2026-09-29-v58"></script>
+  <script src="js/16-my-tradingview.js?v=2026-09-29-v58"></script>
+  <script src="js/17-pastel-ui.js?v=2026-09-29-v58"></script>
+  <script src="js/18-timeframe.js?v=2026-09-29-v58"></script>
+  <script src="js/19-open-trades.js?v=2026-09-29-v58"></script>
+  <script src="js/20-price-questions.js?v=2026-09-29-v58"></script>
 </body>
 </html>

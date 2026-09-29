@@ -59,3 +59,14 @@
 .tj-open-pill .ar{color:var(--muted);font-size:.8rem;}
 .tj-open-lot{white-space:nowrap;}
 @media(max-width:600px){ .tj-open-row{flex-wrap:wrap;} .tj-open-row .tj-hist-main{flex:1 1 calc(100% - 60px);} .tj-open-act{width:100%;justify-content:flex-end;} }
+
+/* ══════════ v58: คำถาม ราคาถึง TP / ย้อนมาชน SL ══════════ */
+.tj-q-chips{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.tj-q-chips .tj-q{min-width:0;padding:9px 0;font-size:.86rem;}
+.btn-check:checked + .tj-q.y{background:var(--gain-bg)!important;border-color:var(--profit)!important;color:var(--profit)!important;}
+.btn-check:checked + .tj-q.n{background:var(--panel)!important;border-color:var(--ink)!important;color:var(--ink)!important;}
+.tj-q-hint{font-size:.7rem;color:var(--muted);margin-top:4px;}
+.tj-maemfe-more{margin:0 0 18px;}
+.tj-maemfe-more summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);padding:4px 0;}
+.tj-maemfe-more[open] summary{margin-bottom:10px;}
+#tradeForm.tj-is-open .tj-maemfe-more{display:none!important;}
