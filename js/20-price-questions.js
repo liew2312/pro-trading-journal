@@ -9,6 +9,10 @@
   function sync(){
     const v = oc ? oc.value : '';
     const showTp = v !== 'TP' && v !== 'OPEN', showSl = v !== 'SL' && v !== 'OPEN';
+    const missed = v === 'MISSED', T = (id, t) => { const e = document.getElementById(id); if(e) e.textContent = t; };
+    T('tj-q-sl-t', missed ? 'ราคาไปชน SL ก่อนไหม?' : 'ราคาย้อนกลับมาชน SL ไหม?');
+    T('tj-q-sl-h', missed ? 'ถ้าได้เข้าตามแผน ราคาชน SL ก่อนถึง TP' : 'หลังคุณปิดออเดอร์ไปแล้ว');
+    T('tj-q-tp-h', missed ? 'ถ้าได้เข้าตามแผน ราคาวิ่งไปถึง TP' : 'ถึงแม้คุณจะปิดก่อนหรือโดน SL ไปแล้ว');
     if(boxTp){ boxTp.style.display = showTp ? '' : 'none'; if(!showTp) clear(boxTp); }
     if(boxSl){ boxSl.style.display = showSl ? '' : 'none'; if(!showSl) clear(boxSl); }
     if(row) row.style.display = (showTp || showSl) ? '' : 'none';

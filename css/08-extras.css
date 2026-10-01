@@ -70,3 +70,14 @@
 .tj-maemfe-more summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--muted);padding:4px 0;}
 .tj-maemfe-more[open] summary{margin-bottom:10px;}
 #tradeForm.tj-is-open .tj-maemfe-more{display:none!important;}
+
+/* ══════════ v59: ตกรถ (ไม่ได้เข้าไม้) ══════════ */
+.pj-oc-chips button[data-v="OPEN"]{grid-column:auto;}
+.pj-oc-chips button[data-v="MISSED"]{border-style:dashed;}
+.pj-oc-chips button[data-v="MISSED"][aria-checked="true"]{border-style:solid;background:var(--panel);}
+.tj-miss-row{cursor:pointer;}
+.tj-miss-r{display:inline-block;font-weight:800;font-size:.95rem;color:var(--muted);}
+.tj-miss-r.g{color:var(--profit);} .tj-miss-r.l{color:var(--loss);}
+#history-panel-missed .tj-hist-sum{margin:0 0 8px!important;}
+@media(max-width:600px){ .tj-hist-tabs .tj-side{padding:5px 6px!important;font-size:.72rem!important;} .tj-hist-tabs .tj-side i{display:none;} }
+.tj-miss-row{flex-wrap:nowrap!important;}

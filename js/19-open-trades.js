@@ -12,7 +12,7 @@
   // ── ฟอร์ม: เลือก "ยังเปิดอยู่" → ไม่ต้องใส่ P/L ──
   const oc = F('outcome'), pnl = $('f_pnl');
   function syncForm(){
-    const open = oc && oc.value === 'OPEN';
+    const open = oc && (oc.value === 'OPEN' || oc.value === 'MISSED');   // ยังไม่มี/ไม่มี P/L
     form.classList.toggle('tj-is-open', open);
     if(pnl){ pnl.required = !open; if(open) pnl.value = ''; }
     const x = F('exitTime'); if(open && x) x.value = '';
@@ -73,16 +73,60 @@
   setInterval(render, 60000);   // อัปเดต "เปิดมา x นาที"
 
   // ── แท็บ "เปิดอยู่" ในหน้าประวัติ ──
+  // ── ไม้ตกรถ (outcome = MISSED): ถ้าได้เข้าตามแผนจะได้กี่ R ──
+  function missedR(r){
+    const c = String(r.confluences||''), e = parseFloat(r.entry_price), sl = parseFloat(r.sl_price), tp = parseFloat(r.tp_price);
+    if(/HITSL:Y/.test(c)) return -1;                               // ชน SL ก่อน
+    if(/HITTP:Y/.test(c)){ const rr = Math.abs(tp-e)/Math.abs(e-sl); return isFinite(rr) && rr>0 ? rr : null; }
+    return null;                                                    // ไม่รู้ผล
+  }
+  function missedCard(r){
+    const d = new Date(r.created_at), buy = r.type === 'Buy', R = missedR(r);
+    const px = v => (v==null || v==='') ? '—' : esc(v);
+    const tf = (()=>{ const c=String(r.confluences||''); const h=(/HTF:(\w+)/.exec(c)||[])[1], l=(/LTF:(\w+)/.exec(c)||[])[1]; return (h||l) ? ' · '+(h||'?')+(l?' → '+l:'') : ''; })();
+    const res = R==null ? '<span class="tj-miss-r">ไม่รู้ผล</span>' : `<span class="tj-miss-r ${R>0?'g':'l'}">${R>0?'+':''}${R.toFixed(1)}R</span>`;
+    return `<div class="tj-open-row tj-miss-row" data-edit="${esc(r.id)}">
+      <div class="tj-hist-ico" style="background:var(--panel);color:var(--muted)"><i class="fa-solid fa-person-running"></i></div>
+      <div class="tj-hist-main">
+        <div class="tj-hist-sym">${esc(r.symbol||'-')} <span class="tj-hist-tag ${buy?'buy':'sell'}">${buy?'BUY':'SELL'}</span>${r.setup?` <span class="tj-open-lot">${esc(r.setup)}</span>`:''}</div>
+        <div class="tj-hist-sub">แผน ${px(r.entry_price)} · SL ${px(r.sl_price)} · TP ${px(r.tp_price)}</div>
+        <div class="tj-hist-sub">${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}${esc(tf)}${r.notes?' · '+esc(String(r.notes).slice(0,60)):''}</div>
+      </div>
+      <div class="text-end" style="flex-shrink:0"><div class="small text-muted" style="font-size:.66rem">ถ้าได้เข้า</div>${res}</div>
+    </div>`;
+  }
+  function renderMissed(){
+    const list = (window._tjMissedRows||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    const b = $('tab-badge-missed'); if(b) b.textContent = list.length;
+    const tb = $('missed-table-body'), sum = $('missed-summary');
+    if(tb){
+      tb.innerHTML = list.length ? list.map(missedCard).join('') : '<div class="text-center py-5 text-muted fw-bold"><i class="fa-solid fa-person-running mb-3 fs-1 d-block opacity-25"></i> ยังไม่มีไม้ตกรถ<div class="small fw-normal mt-2">เห็น Setup แต่ไม่ได้เข้า → บันทึกเทรดแล้วเลือกผลลัพธ์ "ตกรถ"</div></div>';
+      tb.querySelectorAll('[data-edit]').forEach(el=>el.onclick = ()=>window.tjEditTrade && window.tjEditTrade(el.dataset.edit));
+    }
+    if(sum){
+      const known = list.map(missedR).filter(x=>x!=null), tot = known.reduce((a,x)=>a+x,0), w = known.filter(x=>x>0).length;
+      sum.style.display = list.length ? 'flex' : 'none';
+      sum.innerHTML = `<div class="it"><small>ไม้ตกรถ</small><b>${list.length} ไม้</b></div>
+        <div class="it"><small>ถ้าเข้าจะชนะ</small><b>${known.length ? Math.round(w/known.length*100)+'%' : '—'}</b></div>
+        <div class="it end"><small>R ที่พลาดไป (รู้ผล ${known.length} ไม้)</small><b class="${tot>0?'text-success':(tot<0?'text-danger':'')}">${known.length ? (tot>0?'+':'')+tot.toFixed(1)+'R' : '—'}</b></div>`;
+    }
+  }
+  document.addEventListener('tj:open', renderMissed);
+
+  // ── แท็บ "เปิดอยู่" / "ตกรถ" ในหน้าประวัติ ──
   (function hookTabs(){
     const orig = window.switchHistoryTab;
     if(typeof orig!=='function'){ setTimeout(hookTabs,60); return; }
     window.switchHistoryTab = function(tab){
       const r = orig.apply(this, arguments);
-      const isOpen = tab === 'open';
+      const isOpen = tab === 'open', isMissed = tab === 'missed';
       const p = $('history-panel-open'); if(p) p.style.display = isOpen ? '' : 'none';
+      const pm = $('history-panel-missed'); if(pm) pm.style.display = isMissed ? '' : 'none';
       const b = $('tab-btn-open'); if(b) b.classList.toggle('active', isOpen);
-      const hh = $('tj-hist-head'); if(hh) hh.classList.toggle('tj-hist-openmode', isOpen);
+      const bm = $('tab-btn-missed'); if(bm) bm.classList.toggle('active', isMissed);
+      const hh = $('tj-hist-head'); if(hh) hh.classList.toggle('tj-hist-openmode', isOpen || isMissed);
       if(isOpen) render();
+      if(isMissed) renderMissed();
       return r;
     };
   })();
@@ -128,5 +172,5 @@
     };
   })();
 
-  render();
+  render(); renderMissed();
 })();

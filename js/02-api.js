@@ -168,11 +168,14 @@
   /* ---------- helper: ดึงทุกแถวเรียงจากเก่าไปใหม่ ---------- */
   // ออเดอร์ที่ยังเปิดอยู่ (outcome = OPEN) ไม่นับในสถิติ/ประวัติ — แยกไว้ที่ window._tjOpenRows
   const isOpenRow = r => String(r.outcome||'') === 'OPEN' && (r.type === 'Buy' || r.type === 'Sell');
+  const isMissedRow = r => String(r.outcome||'') === 'MISSED';
+  const isSideRow = r => isOpenRow(r) || isMissedRow(r);   // ไม่นับในสถิติ
   async function fetchAllRows(includeOpen) {
     const all = await fetchAllRowsRaw();
     window._tjOpenRows = all.filter(isOpenRow);
+    window._tjMissedRows = all.filter(isMissedRow);
     try{ document.dispatchEvent(new CustomEvent('tj:open')); }catch(e){}
-    return includeOpen === true ? all : all.filter(r => !isOpenRow(r));
+    return includeOpen === true ? all : all.filter(r => !isSideRow(r));
   }
   async function fetchAllRowsRaw() {
     // Supabase default limit 1000; ถ้ามีเยอะกว่านั้นวนดึงเพิ่ม
