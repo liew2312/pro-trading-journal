@@ -270,7 +270,7 @@
       equityLabels: [], equityData: [], aiInsights: []
     };
     if (rows.length === 0) {
-      result.aiInsights.push({ icon: "📊", type: "info", text: "ระบบต้องการข้อมูลการเทรดอย่างน้อย 5 ออเดอร์เพื่อใช้ AI วิเคราะห์จุดแข็งจุดอ่อน" });
+      result.aiInsights.push({ icon: "fa-chart-column", type: "info", text: "ระบบต้องการข้อมูลการเทรดอย่างน้อย 5 ออเดอร์เพื่อใช้ AI วิเคราะห์จุดแข็งจุดอ่อน" });
       return result;
     }
 
@@ -501,20 +501,20 @@
           maxSetupProfit = setupStatsMap[s].pnl; bestSetup = s;
         }
       }
-      if (bestSetup && maxSetupProfit > 0) insights.push({ icon: "🎯", type: "success", text: `Setup แบบ <b>${bestSetup}</b> ทำกำไรได้ดีที่สุด ($${maxSetupProfit.toFixed(2)}) ควรโฟกัสระบบนี้` });
+      if (bestSetup && maxSetupProfit > 0) insights.push({ icon: "fa-bullseye", type: "success", text: `Setup แบบ <b>${bestSetup}</b> ทำกำไรได้ดีที่สุด ($${maxSetupProfit.toFixed(2)}) ควรโฟกัสระบบนี้` });
 
       let worstSession = ""; let minSessionPnl = 0;
       for (const s in sessionStatsMap) {
         if (sessionStatsMap[s].pnl < minSessionPnl) { minSessionPnl = sessionStatsMap[s].pnl; worstSession = s; }
       }
-      if (worstSession && minSessionPnl < 0) insights.push({ icon: "📉", type: "warning", text: `คุณมักเสียเงินใน <b>${worstSession} Session</b> ($${minSessionPnl.toFixed(2)}) ควรลดความเสี่ยง` });
+      if (worstSession && minSessionPnl < 0) insights.push({ icon: "fa-arrow-trend-down", type: "warning", text: `คุณมักเสียเงินใน <b>${worstSession} Session</b> ($${minSessionPnl.toFixed(2)}) ควรลดความเสี่ยง` });
 
-      if (revengeCount > 0)     insights.push({ icon: "🔥", type: "danger",  text: `คุณเทรดแบบ <b>Revenge (เอาคืน)</b> ถึง ${revengeCount} ครั้ง ระวังพอร์ตพังเพราะอารมณ์!` });
-      if (overtradeCount >= 3)  insights.push({ icon: "⚠️", type: "danger",  text: `พบพฤติกรรม <b>Overtrading</b> บ่อยครั้ง หากเสียติดกันควรพักทันที` });
-      if (expectancy < 0)       insights.push({ icon: "🧮", type: "warning", text: `<b>Expectancy ติดลบ ($${expectancy.toFixed(2)})</b> ในระยะยาวระบบนี้อาจขาดทุน ต้องปรับ RR หรือ Win Rate` });
-      if (insights.length === 0) insights.push({ icon: "💎", type: "success", text: "จิตวิทยาและการเทรดของคุณนิ่งมาก รักษาความมีวินัยแบบนี้ต่อไป!" });
+      if (revengeCount > 0)     insights.push({ icon: "fa-fire", type: "danger",  text: `คุณเทรดแบบ <b>Revenge (เอาคืน)</b> ถึง ${revengeCount} ครั้ง ระวังพอร์ตพังเพราะอารมณ์!` });
+      if (overtradeCount >= 3)  insights.push({ icon: "fa-triangle-exclamation", type: "danger",  text: `พบพฤติกรรม <b>Overtrading</b> บ่อยครั้ง หากเสียติดกันควรพักทันที` });
+      if (expectancy < 0)       insights.push({ icon: "fa-calculator", type: "warning", text: `<b>Expectancy ติดลบ ($${expectancy.toFixed(2)})</b> ในระยะยาวระบบนี้อาจขาดทุน ต้องปรับ RR หรือ Win Rate` });
+      if (insights.length === 0) insights.push({ icon: "fa-gem", type: "success", text: "จิตวิทยาและการเทรดของคุณนิ่งมาก รักษาความมีวินัยแบบนี้ต่อไป!" });
     } else {
-      insights.push({ icon: "📊", type: "info", text: "ระบบต้องการข้อมูลการเทรดอย่างน้อย 5 ออเดอร์เพื่อใช้ AI วิเคราะห์จุดแข็งจุดอ่อน" });
+      insights.push({ icon: "fa-chart-column", type: "info", text: "ระบบต้องการข้อมูลการเทรดอย่างน้อย 5 ออเดอร์เพื่อใช้ AI วิเคราะห์จุดแข็งจุดอ่อน" });
     }
 
     return {

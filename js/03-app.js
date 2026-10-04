@@ -119,7 +119,7 @@ function updateDashboardUI(data) {
   data.aiInsights.forEach(i => {
      let bgClass = i.type === 'danger' ? 'rgba(239, 68, 68, 0.08)' : (i.type==='warning'?'rgba(245, 158, 11, 0.08)':'rgba(16, 185, 129, 0.08)');
      let borderClass = i.type === 'danger' ? '#B93033' : (i.type==='warning'?'#B5791A':'#2F7A4F');
-     insightHtml += `<div class="p-3 rounded-3 d-flex align-items-start shadow-sm" style="background: ${bgClass}; border-left: 5px solid ${borderClass};"><div class="me-3 fs-5">${i.icon}</div><div class="text-dark lh-base fw-medium" style="font-size:0.95rem;">${i.text}</div></div>`;
+     insightHtml += `<div class="p-3 rounded-3 d-flex align-items-start shadow-sm" style="background: ${bgClass}; border-left: 5px solid ${borderClass};">${/^fa-/.test(i.icon) ? `<span class="tj-ico tj-ico-${i.type} me-3"><i class="fa-solid ${i.icon}"></i></span>` : `<div class="me-3 fs-5">${i.icon}</div>`}<div class="text-dark lh-base fw-medium" style="font-size:0.95rem;">${i.text}</div></div>`;
   });
   document.getElementById('ai-insights-container').innerHTML = insightHtml;
 
@@ -348,7 +348,7 @@ function updateHistoryUI(historyData) {
       else if (oc === 'BE') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ap-warn);">BE</span>';
       else if (oc === 'Manual') ocTag = '<span class="tj-hist-tag" style="background:var(--metric-r-bg);color:var(--ink);">' + (pnlValue >= 0 ? 'M.Win' : 'Cut') + '</span>';
       if (trade.emotion === 'QUICK') ocTag += '<span class="tj-hist-tag" style="background:rgba(217,119,6,.14);color:var(--ap-warn);">ยังไม่ครบ</span>';
-      let warn = (trade.overtrade === 'Yes' || trade.revenge === 'Yes') ? ' <span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);">⚠</span>' : '';
+      let warn = (trade.overtrade === 'Yes' || trade.revenge === 'Yes') ? ' <span class="tj-hist-tag" style="background:var(--metric-mae-bg);color:var(--loss);"><i class="fa-solid fa-triangle-exclamation"></i></span>' : '';
       const rNum = parseFloat(trade.rMult);
       const rDisp = (!isNaN(rNum)) ? `<div class="tj-hist-r">${rNum >= 0 ? '+' : ''}${rNum.toFixed(1)}R</div>` : '';
       tbody.innerHTML += `

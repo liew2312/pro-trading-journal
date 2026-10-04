@@ -84,7 +84,7 @@
       html += ` = <b>${pct.toFixed(2)}%</b> ของพอร์ต (${fmt$(b)}) · ลิมิตที่ตั้งไว้ ${maxP}%`;
       if(pct > maxP*2) cls += ' bad'; else if(pct > maxP) cls += ' warn';
       const per = auto!=null && lots>0 ? auto/lots : null;
-      if(per && pct > maxP) html += `<br>⚠️ เกินลิมิต — ล็อตที่เหมาะสมไม่เกิน <b>${Math.max(0.01, Math.floor(b*maxP/100/per*100)/100).toFixed(2)}</b> lot`;
+      if(per && pct > maxP) html += `<br><i class="fa-solid fa-triangle-exclamation"></i> เกินลิมิต — ล็อตที่เหมาะสมไม่เกิน <b>${Math.max(0.01, Math.floor(b*maxP/100/per*100)/100).toFixed(2)}</b> lot`;
       const lr = $('lotRespected'); if(lr && !lr.dataset.touched) lr.checked = pct <= maxP*1.05;
     }
     info.className = cls; info.innerHTML = html;
@@ -124,7 +124,7 @@
     const host = $('tj-today'); if(!host) return;
     const R = prefs.rules, st = dayStatus(dkey(new Date()));
     const lossUsed = Math.max(0, -st.sumR), pct = Math.min(100, lossUsed / R.maxDailyLossR * 100);
-    const pill = st.level==='stop' ? '<span class="tj-pill stop">⛔ หยุดเทรดวันนี้</span>' : (st.level==='warn' ? '<span class="tj-pill warn">⚠ ระวัง</span>' : '<span class="tj-pill ok">✓ อยู่ในกฎ</span>');
+    const pill = st.level==='stop' ? '<span class="tj-pill stop"><i class="fa-solid fa-hand"></i> หยุดเทรดวันนี้</span>' : (st.level==='warn' ? '<span class="tj-pill warn"><i class="fa-solid fa-triangle-exclamation"></i> ระวัง</span>' : '<span class="tj-pill ok"><i class="fa-solid fa-check"></i> อยู่ในกฎ</span>');
     const barCol = pct>=100 ? 'var(--loss)' : (pct>=50 ? 'var(--ap-warn)' : 'var(--profit)');
     host.innerHTML = `<div class="tj-today-head"><h6>วันนี้</h6>${pill}<button class="tj-linkbtn" onclick="tjOpenRules()"><i class="fa-solid fa-sliders"></i> ตั้งค่ากฎ</button></div>
       <div class="tj-today-grid">
@@ -133,9 +133,9 @@
         <div class="tj-today-cell"><div class="l">แพ้ติดกัน</div><div class="v ${st.streak>=R.maxLossStreak?'text-loss':''}">${st.streak}<span class="s"> / ${R.maxLossStreak}</span></div><div class="s">หยุดเมื่อครบ</div></div>
         <div class="tj-today-cell"><div class="l">ใช้ลิมิตขาดทุน</div><div class="v">${lossUsed.toFixed(1)}R<span class="s"> / ${R.maxDailyLossR}R</span></div><div class="tj-bar"><span style="width:${pct}%;background:${barCol}"></span></div></div>
       </div>
-      ${st.reasons.length ? `<div class="tj-today-msg stop">⛔ ${st.reasons.map(esc).join(' · ')} — ปิดกราฟ พักก่อน พรุ่งนี้ค่อยเริ่มใหม่</div>` : (st.warns.length ? `<div class="tj-today-msg warn">⚠ ${st.warns.map(esc).join(' · ')}</div>` : '')}`;
+      ${st.reasons.length ? `<div class="tj-today-msg stop"><i class="fa-solid fa-hand"></i> ${st.reasons.map(esc).join(' · ')} — ปิดกราฟ พักก่อน พรุ่งนี้ค่อยเริ่มใหม่</div>` : (st.warns.length ? `<div class="tj-today-msg warn"><i class="fa-solid fa-triangle-exclamation"></i> ${st.warns.map(esc).join(' · ')}</div>` : '')}`;
     const fb = $('tj-stop-form');
-    if(fb){ const s2 = dayStatus(($('f_date')||{}).value || dkey(new Date())); fb.innerHTML = s2.reasons.length ? '⛔ วันนั้นถึงลิมิตแล้ว: '+s2.reasons.map(esc).join(' · ')+' — ถ้าเป็นไม้ที่เทรดไปแล้วบันทึกได้ แต่อย่าเปิดไม้ใหม่' : ''; }
+    if(fb){ const s2 = dayStatus(($('f_date')||{}).value || dkey(new Date())); fb.innerHTML = s2.reasons.length ? '<i class="fa-solid fa-hand"></i> วันนั้นถึงลิมิตแล้ว: '+s2.reasons.map(esc).join(' · ')+' — ถ้าเป็นไม้ที่เทรดไปแล้วบันทึกได้ แต่อย่าเปิดไม้ใหม่' : ''; }
   }
   function stopOverlay(){
     if(window.tjIsEditing && window.tjIsEditing()!=null) return;
@@ -144,7 +144,7 @@
     const ackKey = 'tj_stop_ack_'+dkey(new Date());
     if(ls.get(ackKey,false)) return;
     const ov = document.createElement('div'); ov.className='tj-overlay';
-    ov.innerHTML = `<div class="box"><div style="font-size:2.2rem">⛔</div><h4>ถึงลิมิตของวันนี้แล้ว</h4>
+    ov.innerHTML = `<div class="box"><div class="tj-ico tj-ico-danger tj-ico-lg"><i class="fa-solid fa-hand"></i></div><h4>ถึงลิมิตของวันนี้แล้ว</h4>
       <ul>${st.reasons.map(r=>'<li>'+esc(r)+'</li>').join('')}</ul>
       <div class="small text-muted mb-3">การเทรดต่อหลังถึงลิมิต คือจุดที่พอร์ตส่วนใหญ่พัง — ปิดกราฟแล้วพักก่อน</div>
       <div class="d-grid gap-2"><button class="btn btn-primary" data-a="home">กลับหน้าหลัก (หยุดเทรด)</button>
@@ -214,7 +214,7 @@
     if(rv && !rv.dataset.touched) rv.checked = revenge;
     if(ov && !ov.dataset.touched) ov.checked = over;
     const w = $('tj-behave-warn');
-    if(w) w.innerHTML = msgs.length ? '🤖 ระบบตรวจพบ: '+msgs.join(' · ')+' — ติ๊ก '+[revenge?'Revenge':'',over?'Overtrade':''].filter(Boolean).join(' / ')+' ให้แล้ว' : '';
+    if(w) w.innerHTML = msgs.length ? '<i class="fa-solid fa-wand-magic-sparkles"></i> ระบบตรวจพบ: '+msgs.join(' · ')+' — ติ๊ก '+[revenge?'Revenge':'',over?'Overtrade':''].filter(Boolean).join(' / ')+' ให้แล้ว' : '';
     renderToday();
   }
   (function wireForm(){
@@ -417,12 +417,12 @@
       const wk = target ? weekKey(target) : null;
       const has = wk && revs.some(r=>r.week===wk);
       const traded = target && weekStats(target).list.length > 0;
-      pr.innerHTML = (target && !has && traded) ? `<div class="tj-prompt"><div style="font-size:1.6rem">📝</div><div><b>ถึงเวลาทบทวนสัปดาห์ (${weekLabel(target)})</b><small>5 นาที: ดูผล · กฎที่ทำผิด · บทเรียน 1 ข้อ · เป้าหมาย 1 ข้อ</small></div><button onclick="tjOpenReview('${wk}')">เริ่มทบทวน</button></div>` : '';
+      pr.innerHTML = (target && !has && traded) ? `<div class="tj-prompt"><span class="tj-ico"><i class="fa-solid fa-clipboard-list"></i></span><div><b>ถึงเวลาทบทวนสัปดาห์ (${weekLabel(target)})</b><small>5 นาที: ดูผล · กฎที่ทำผิด · บทเรียน 1 ข้อ · เป้าหมาย 1 ข้อ</small></div><button onclick="tjOpenReview('${wk}')">เริ่มทบทวน</button></div>` : '';
     }
     if(gl){
       const curWk = weekKey(now); const prev = weekStart(now); prev.setDate(prev.getDate()-7);
       const src = revs.find(r=>r.week===weekKey(prev) && r.goal) || revs.find(r=>r.week===curWk && r.goal);
-      gl.innerHTML = src ? `<div class="tj-goal"><span style="font-size:1.1rem">🎯</span><div><div class="small text-muted" style="font-size:.7rem">เป้าหมายสัปดาห์นี้ (จากการทบทวน ${esc(src.week)})</div><b>${esc(src.goal)}</b></div><button class="tj-linkbtn" onclick="tjOpenReview()">ทบทวน</button></div>` : '';
+      gl.innerHTML = src ? `<div class="tj-goal"><span class="tj-ico"><i class="fa-solid fa-bullseye"></i></span><div><div class="small text-muted" style="font-size:.7rem">เป้าหมายสัปดาห์นี้ (จากการทบทวน ${esc(src.week)})</div><b>${esc(src.goal)}</b></div><button class="tj-linkbtn" onclick="tjOpenReview()">ทบทวน</button></div>` : '';
     }
   }
   window.tjOpenReview = function(wkWanted){

@@ -121,7 +121,7 @@
     inp.click();
   }
   async function capture(slot, btn){
-    if(!canCapture){ toast('อุปกรณ์นี้จับภาพหน้าจอจากแอปไม่ได้ — เลือกภาพจากเครื่องแทน หรือใช้ปุ่มกล้อง 📷 ของ TradingView', 4200); pickFile(slot); return; }
+    if(!canCapture){ toast('อุปกรณ์นี้จับภาพหน้าจอจากแอปไม่ได้ — เลือกภาพจากเครื่องแทน หรือใช้ปุ่มกล้องของ TradingView', 4200); pickFile(slot); return; }
     const box = $('tj-chart-box');
     const fsBar = $('tj-fs-bar');
     let stream;

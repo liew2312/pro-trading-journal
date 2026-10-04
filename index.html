@@ -41,14 +41,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <link rel="stylesheet" href="css/01-base.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-04-v60">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-04-v60">
+  <link rel="stylesheet" href="css/01-base.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-04-v61">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-04-v61">
 </head>
 <body>
 
@@ -241,7 +241,7 @@
         </div>
         <div class="tj-mytv-steps">
           <button type="button" class="tj-mytv-step main" id="tj-mytv-open"><span class="n">1</span><span><b>เปิดใน TradingView ของฉัน</b><small id="tj-mytv-open-sub">XAUUSD · 15m</small></span><i class="fa-solid fa-arrow-up-right-from-square ms-auto"></i></button>
-          <div class="tj-mytv-step info"><span class="n">2</span><span><b>วาด แล้วกดไอคอนกล้อง 📷</b><small>เลือก “Copy link” / “คัดลอกลิงก์”</small></span></div>
+          <div class="tj-mytv-step info"><span class="n">2</span><span><b>วาด แล้วกดไอคอนกล้อง <i class="fa-solid fa-camera"></i></b><small>เลือก “Copy link” / “คัดลอกลิงก์”</small></span></div>
           <div class="tj-mytv-step paste"><span class="n">3</span><span class="flex-grow-1"><b>วางลิงก์ภาพกลับมา</b>
             <span class="d-flex gap-2 mt-1"><button type="button" class="tj-mytv-pbtn" data-slot="fileBefore"><i class="fa-solid fa-paste"></i> Before</button><button type="button" class="tj-mytv-pbtn" data-slot="fileAfter"><i class="fa-solid fa-paste"></i> After</button></span></span></div>
         </div>
@@ -257,7 +257,7 @@
         <div class="tj-chart-hint" id="tj-chart-hint">
           <i class="fa-solid fa-circle-info"></i>
           <span>กด “จับภาพ” แล้วเลือก <b>แท็บนี้</b> ในหน้าต่างที่เบราว์เซอร์ถาม ระบบจะตัดเฉพาะส่วนกราฟให้ ·
-          บนมือถือ (ที่จับภาพหน้าจอไม่ได้) ให้กดไอคอนกล้อง 📷 บนกราฟ TradingView → <b>คัดลอกลิงก์</b> แล้ววางในช่องลิงก์ของฟอร์มบันทึกเทรด</span>
+          บนมือถือ (ที่จับภาพหน้าจอไม่ได้) ให้กดไอคอนกล้อง <i class="fa-solid fa-camera"></i> บนกราฟ TradingView → <b>คัดลอกลิงก์</b> แล้ววางในช่องลิงก์ของฟอร์มบันทึกเทรด</span>
         </div>
       </div>
     </div>
@@ -646,7 +646,7 @@
         <hr class="text-muted mb-4 opacity-25">
         <div class="tj-edit-banner" id="tj-edit-banner"></div>
         <div class="d-flex justify-content-center mb-3"><div class="tj-segctl" id="tj-form-mode"><button type="button" data-m="wizard"><i class="fa-solid fa-shoe-prints"></i> ทีละขั้น</button><button type="button" data-m="quick"><i class="fa-solid fa-bolt"></i> ด่วน</button><button type="button" data-m="full"><i class="fa-solid fa-list"></i> แบบเต็ม</button></div></div>
-        <div class="tj-quick-note" id="tj-quick-note">⚡ กรอกเฉพาะที่จำเป็น — เซสชัน, Risk, Revenge/Overtrade ระบบเติมให้เอง · ค่อยกลับมาเติม Setup/เกรด/ภาพ/บันทึก ทีหลัง</div>
+        <div class="tj-quick-note" id="tj-quick-note"><i class="fa-solid fa-bolt"></i> กรอกเฉพาะที่จำเป็น — เซสชัน, Risk, Revenge/Overtrade ระบบเติมให้เอง · ค่อยกลับมาเติม Setup/เกรด/ภาพ/บันทึก ทีหลัง</div>
         <form id="tradeForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" name="emotion" id="f_emotion" value="">
           
@@ -734,11 +734,11 @@
               <label class="form-label">ความมั่นใจก่อนเข้า (1-5)</label>
               <select class="form-select" name="confidence">
                 <option value="" disabled selected>ให้คะแนน...</option>
-                <option value="5">⭐⭐⭐⭐⭐ (มั่นใจสุดๆ)</option>
-                <option value="4">⭐⭐⭐⭐ (มั่นใจมาก)</option>
-                <option value="3">⭐⭐⭐ (กลางๆ)</option>
-                <option value="2">⭐⭐ (ลังเล)</option>
-                <option value="1">⭐ (เดา/พนัน)</option>
+                <option value="5">★★★★★ (มั่นใจสุดๆ)</option>
+                <option value="4">★★★★☆ (มั่นใจมาก)</option>
+                <option value="3">★★★☆☆ (กลางๆ)</option>
+                <option value="2">★★☆☆☆ (ลังเล)</option>
+                <option value="1">★☆☆☆☆ (เดา/พนัน)</option>
               </select>
             </div>
           </div>
@@ -1146,7 +1146,7 @@
   
   <!-- ─── PWA Install Banner UI ─────────────────────────────── -->
   <div id="pwa-install-banner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:99990; background:linear-gradient(135deg,#131317,#131317); color:white; border-radius:18px; padding:14px 20px; box-shadow:0 10px 40px rgba(0,0,0,0.4); align-items:center; gap:14px; max-width:360px; width:calc(100% - 40px); font-family:'Prompt',sans-serif; border:1px solid rgba(255,255,255,0.1);">
-    <div style="font-size:32px; flex-shrink:0;">📈</div>
+    <img src="icon-192.png" alt="" width="40" height="40" style="border-radius:10px; flex-shrink:0;">
     <div style="flex:1; min-width:0;">
       <div style="font-weight:700; font-size:14px; margin-bottom:2px;">ติดตั้งแอปบนมือถือ</div>
       <div style="font-size:12px; color:rgba(255,255,255,0.6); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">ใช้แบบ Standalone ไม่ต้องเปิด Browser</div>
@@ -1171,26 +1171,26 @@
   
   
 
-  <script src="js/01-config.js?v=2026-10-04-v60"></script>
-  <script src="js/02-api.js?v=2026-10-04-v60"></script>
-  <script src="js/03-app.js?v=2026-10-04-v60"></script>
-  <script src="js/04-auth.js?v=2026-10-04-v60"></script>
-  <script src="js/05-theme.js?v=2026-10-04-v60"></script>
-  <script src="js/06-pwa.js?v=2026-10-04-v60"></script>
-  <script src="js/07-filters.js?v=2026-10-04-v60"></script>
-  <script src="js/08-calendar-performance.js?v=2026-10-04-v60"></script>
-  <script src="js/09-chart-page.js?v=2026-10-04-v60"></script>
-  <script src="js/10-session.js?v=2026-10-04-v60"></script>
-  <script src="js/11-news.js?v=2026-10-04-v60"></script>
-  <script src="js/12-discipline.js?v=2026-10-04-v60"></script>
-  <script src="js/13-trade-form.js?v=2026-10-04-v60"></script>
-  <script src="js/14-dashboard.js?v=2026-10-04-v60"></script>
-  <script src="js/15-profile.js?v=2026-10-04-v60"></script>
-  <script src="js/16-my-tradingview.js?v=2026-10-04-v60"></script>
-  <script src="js/17-pastel-ui.js?v=2026-10-04-v60"></script>
-  <script src="js/18-timeframe.js?v=2026-10-04-v60"></script>
-  <script src="js/19-open-trades.js?v=2026-10-04-v60"></script>
-  <script src="js/20-price-questions.js?v=2026-10-04-v60"></script>
-  <script src="js/21-insights.js?v=2026-10-04-v60"></script>
+  <script src="js/01-config.js?v=2026-10-04-v61"></script>
+  <script src="js/02-api.js?v=2026-10-04-v61"></script>
+  <script src="js/03-app.js?v=2026-10-04-v61"></script>
+  <script src="js/04-auth.js?v=2026-10-04-v61"></script>
+  <script src="js/05-theme.js?v=2026-10-04-v61"></script>
+  <script src="js/06-pwa.js?v=2026-10-04-v61"></script>
+  <script src="js/07-filters.js?v=2026-10-04-v61"></script>
+  <script src="js/08-calendar-performance.js?v=2026-10-04-v61"></script>
+  <script src="js/09-chart-page.js?v=2026-10-04-v61"></script>
+  <script src="js/10-session.js?v=2026-10-04-v61"></script>
+  <script src="js/11-news.js?v=2026-10-04-v61"></script>
+  <script src="js/12-discipline.js?v=2026-10-04-v61"></script>
+  <script src="js/13-trade-form.js?v=2026-10-04-v61"></script>
+  <script src="js/14-dashboard.js?v=2026-10-04-v61"></script>
+  <script src="js/15-profile.js?v=2026-10-04-v61"></script>
+  <script src="js/16-my-tradingview.js?v=2026-10-04-v61"></script>
+  <script src="js/17-pastel-ui.js?v=2026-10-04-v61"></script>
+  <script src="js/18-timeframe.js?v=2026-10-04-v61"></script>
+  <script src="js/19-open-trades.js?v=2026-10-04-v61"></script>
+  <script src="js/20-price-questions.js?v=2026-10-04-v61"></script>
+  <script src="js/21-insights.js?v=2026-10-04-v61"></script>
 </body>
 </html>

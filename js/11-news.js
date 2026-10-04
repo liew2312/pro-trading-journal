@@ -141,7 +141,7 @@
     const gb = $('tj-news-gold'); if(gb){ gb.classList.toggle('on', !!st.gold); gb.setAttribute('aria-pressed', st.gold?'true':'false'); }
     document.body.classList.toggle('tj-gold', !!st.gold);
     const gn = $('tj-gold-note');
-    if(gn) gn.innerHTML = st.gold ? '<b>โหมดทองคำ:</b> แสดงเฉพาะข่าว <b>USD</b> ที่มีผลกับทอง + ข่าวแรงอื่นของสหรัฐฯ (เช่น ประชุมผู้นำ) · <span class="tj-gtag t1">🔥 ทองวิ่งแรง</span> FOMC, NFP, CPI, Core PCE, ประธาน Fed · <span class="tj-gtag t2">★ สำคัญต่อทอง</span> PPI, Retail Sales, ISM, JOLTS, Jobless Claims, GDP ฯลฯ · การแจ้งเตือนใช้ชุดข่าวนี้ด้วย' : '';
+    if(gn) gn.innerHTML = st.gold ? '<b>โหมดทองคำ:</b> แสดงเฉพาะข่าว <b>USD</b> ที่มีผลกับทอง + ข่าวแรงอื่นของสหรัฐฯ (เช่น ประชุมผู้นำ) · <span class="tj-gtag t1"><i class="fa-solid fa-fire"></i> ทองวิ่งแรง</span> FOMC, NFP, CPI, Core PCE, ประธาน Fed · <span class="tj-gtag t2">★ สำคัญต่อทอง</span> PPI, Retail Sales, ISM, JOLTS, Jobless Claims, GDP ฯลฯ · การแจ้งเตือนใช้ชุดข่าวนี้ด้วย' : '';
     document.querySelectorAll('#tj-news-range button').forEach(b=>b.classList.toggle('active', b.dataset.r===st.range));
     const on=$('tj-news-alert-on'); if(on) on.checked = !!st.alertOn;
     const mi=$('tj-news-alert-min'); if(mi) mi.value = String(st.alertMin);
@@ -175,7 +175,7 @@
       const fp = [e.actual?'A: '+esc(e.actual):'', e.forecast?'F: '+esc(e.forecast):'', e.previous?'P: '+esc(e.previous):''].filter(Boolean).join(' · ');
       const allDay = e.t.getHours()===0 && e.t.getMinutes()===0 && e.impact==='Holiday';
       const gt = goldTier(e);
-      const gtag = gt===1 ? '<span class="tj-gtag t1">🔥 ทองวิ่งแรง</span>' : (gt===2 ? '<span class="tj-gtag t2">★ สำคัญต่อทอง</span>' : '');
+      const gtag = gt===1 ? '<span class="tj-gtag t1"><i class="fa-solid fa-fire"></i> ทองวิ่งแรง</span>' : (gt===2 ? '<span class="tj-gtag t2">★ สำคัญต่อทอง</span>' : '');
       html += `<div class="${cls}${st.gold && gt===1 ? ' g1':''}"><div class="t">${allDay?'ทั้งวัน':fmtTime(e.t)}</div><div class="c"><span class="tj-imp ${imp}" title="${esc(e.impact)}"></span>${esc(e.ccy)}</div>
         <div class="ti">${esc(e.title)}${gtag}${diff>0 && diff<=24*3600000 ? `<small>อีก ${cdText(diff)}</small>`:''}</div><div class="fp">${fp}</div></div>`;
     });
@@ -189,7 +189,7 @@
     if(!e){ if(host) host.innerHTML=''; if(strip) strip.innerHTML=''; dots.forEach(d=>d&&d.classList.remove('on')); return; }
     const diff = e.t.getTime() - Date.now();
     const gt = goldTier(e);
-    if(host) host.innerHTML = `<div><div class="lbl">${st.gold?'ข่าวสำคัญต่อทองถัดไป':'ข่าวแรงถัดไป'}${gt===1?' · 🔥 ทองวิ่งแรง':''}</div><div class="ttl">${FLAG[e.ccy]||''} ${esc(e.ccy)} — ${esc(e.title)}</div>
+    if(host) host.innerHTML = `<div><div class="lbl">${st.gold?'ข่าวสำคัญต่อทองถัดไป':'ข่าวแรงถัดไป'}${gt===1?' · <i class="fa-solid fa-fire"></i> ทองวิ่งแรง':''}</div><div class="ttl">${FLAG[e.ccy]||''} ${esc(e.ccy)} — ${esc(e.title)}</div>
       <div class="meta">${fmtDay(e.t)} · ${fmtTime(e.t)} น.${e.forecast?' · คาด '+esc(e.forecast):''}${e.previous?' · ก่อนหน้า '+esc(e.previous):''}</div></div>
       <div class="cd"><div class="lbl">อีก</div><b data-cd="${e.t.getTime()}">${cdText(diff)}</b></div>`;
     if(strip) strip.innerHTML = diff <= 24*3600000 ? `<i class="fa-regular fa-newspaper" style="color:var(--loss)"></i><span>ข่าวแรง <b>${esc(e.ccy)} ${esc(e.title)}</b> · ${fmtTime(e.t)} น.</span><span class="cd" data-cd="${e.t.getTime()}">${cdText(diff)}</span>` : '';
@@ -255,7 +255,7 @@
     if(/^\d{4}-\d{2}-\d{2}$/.test(dv||'')){ const p = dv.split('-').map(Number); d = new Date(p[0], p[1]-1, p[2], d.getHours(), d.getMinutes()); }
     const m = /^(\d{1,2}):(\d{2})/.exec(et); if(m) d.setHours(+m[1],+m[2],0,0);
     const near = st.events.filter(e=> e.impact==='High' && ccy.includes(e.ccy) && Math.abs(e.t.getTime()-d.getTime()) <= NEAR_MIN*60000);
-    box.innerHTML = near.length ? '📰 ข่าวแรงใกล้เวลาเข้า: ' + near.map(e=>{ const dm = Math.round((e.t.getTime()-d.getTime())/60000); return `<b>${esc(e.ccy)} ${esc(e.title)}</b> ${fmtTime(e.t)} (${dm>=0?'อีก '+dm:'ผ่านมา '+(-dm)} นาที)`; }).join(', ') : '';
+    box.innerHTML = near.length ? '<i class="fa-solid fa-newspaper"></i> ข่าวแรงใกล้เวลาเข้า: ' + near.map(e=>{ const dm = Math.round((e.t.getTime()-d.getTime())/60000); return `<b>${esc(e.ccy)} ${esc(e.title)}</b> ${fmtTime(e.t)} (${dm>=0?'อีก '+dm:'ผ่านมา '+(-dm)} นาที)`; }).join(', ') : '';
     const cb = $('conf5');
     if(cb && !newsTouched) cb.checked = near.length > 0;
   }

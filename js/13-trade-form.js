@@ -89,7 +89,7 @@
     const r = risk>0 && isFinite(pnl) ? (pnl/risk) : null;
     const g = $('f_grade').value;
     const flags = [$('revenge').checked?'Revenge':'', $('overtrade').checked?'Overtrade':'', !$('lotRespected').checked?'OverLot':'', !$('followedPlan').checked?'ไม่ทำตามแผน':''].filter(Boolean);
-    const ocTxt = { TP:'ชน TP', SL:'ชน SL', BE:'Break Even', Manual:'ปิดเอง', OPEN:'⏳ ยังเปิดอยู่ (ใส่ผลทีหลัง)', MISSED:'🏃 ตกรถ (ไม่ได้เข้า)' }[v('outcome')] || '—';
+    const ocTxt = { TP:'ชน TP', SL:'ชน SL', BE:'Break Even', Manual:'ปิดเอง', OPEN:'<i class="fa-regular fa-clock"></i> ยังเปิดอยู่ (ใส่ผลทีหลัง)', MISSED:'<i class="fa-solid fa-person-running"></i> ตกรถ (ไม่ได้เข้า)' }[v('outcome')] || '—';
     const riskInfo = ($('tj-risk-info')||{}).textContent || '';
     const pct = /=\s*([\d.]+%)/.exec(riskInfo);
     const row = (k, val, go) => `<div class="tj-sum-row"><span>${k}</span><b>${val}</b><button type="button" class="tj-linkbtn" data-go="${go}">แก้</button></div>`;
@@ -246,16 +246,16 @@
   function renderPending(){
     const host = $('tj-pending'); if(!host) return;
     const list = pending();
-    host.innerHTML = list.length ? `<div class="tj-goal" style="border-style:solid;border-color:rgba(217,119,6,.45);cursor:pointer" onclick="tjOpenPending()"><span style="font-size:1.1rem">✍️</span><div><b>มี ${list.length} ไม้ที่ยังกรอกไม่ครบ</b><div class="small text-muted" style="font-size:.72rem">เติม Setup / เกรด / บันทึก เพื่อให้สถิติ Playbook และวินัยแม่นขึ้น</div></div><button class="tj-linkbtn">เติมเลย ›</button></div>` : '';
+    host.innerHTML = list.length ? `<div class="tj-goal" style="border-style:solid;border-color:rgba(217,119,6,.45);cursor:pointer" onclick="tjOpenPending()"><span class="tj-ico tj-ico-warning"><i class="fa-solid fa-pen-to-square"></i></span><div><b>มี ${list.length} ไม้ที่ยังกรอกไม่ครบ</b><div class="small text-muted" style="font-size:.72rem">เติม Setup / เกรด / บันทึก เพื่อให้สถิติ Playbook และวินัยแม่นขึ้น</div></div><button class="tj-linkbtn">เติมเลย ›</button></div>` : '';
   }
   window.tjOpenPending = function(){
     const list = pending();
     let el = $('tjPendingModal');
     if(!el){ el = document.createElement('div'); el.className='modal fade print-hide'; el.id='tjPendingModal'; el.tabIndex=-1;
-      el.innerHTML = '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold">✍️ ไม้ที่ยังกรอกไม่ครบ</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"></div></div></div>';
+      el.innerHTML = '<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>ไม้ที่ยังกรอกไม่ครบ</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"></div></div></div>';
       document.body.appendChild(el); }
     const fmtD = d => d.getDate()+'/'+(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes());
-    el.querySelector('.modal-body').innerHTML = !list.length ? '<div class="tj-empty"><i class="fa-solid fa-check"></i><div>ครบทุกไม้แล้ว 👍</div></div>' :
+    el.querySelector('.modal-body').innerHTML = !list.length ? '<div class="tj-empty"><i class="fa-solid fa-check"></i><div>ครบทุกไม้แล้ว</div></div>' :
       `<div class="small text-muted mb-2">เรียงจากล่าสุด · กด “เติม” เพื่อเปิดฟอร์มแก้ไข</div>` + list.map(r=>`<div class="d-flex align-items-center gap-2 py-2" style="border-bottom:1px solid var(--border)">
         <div style="min-width:90px" class="small text-muted">${fmtD(new Date(r.created_at))}</div>
         <div class="fw-semibold" style="flex:1">${esc(r.symbol)} ${esc(r.type)} <span class="${r.pnl>0?'text-gain':(r.pnl<0?'text-loss':'')}">${fmt$(r.pnl,true)}</span>
