@@ -102,7 +102,7 @@
       ${row('Setup', `${esc(($('f_setup').selectedOptions[0]||{}).textContent && $('f_setup').value ? $('f_setup').selectedOptions[0].textContent : '—')}${g?` <span class="tj-grade ${g==='A+'?'gAp':('g'+g)}" style="margin-left:6px">${g}</span>`:''}`, 3)}
       ${row('ผลลัพธ์', ocTxt, 4)}
       ${row('วินัย', flags.length ? `<span class="text-loss">${flags.join(' · ')}</span>` : '<span class="text-gain">ตามกฎ ✓</span>', 5)}
-      ${row('ภาพ / บันทึก', [(v('chartBeforeUrl')||($('fileBefore').files||[]).length||(window._tjShots&&window._tjShots.fileBefore))?'ภาพก่อน ✓':'', (v('chartAfterUrl')||($('fileAfter').files||[]).length||(window._tjShots&&window._tjShots.fileAfter))?'ภาพหลัง ✓':'', v('notes')?'มีบันทึก ✓':''].filter(Boolean).join(' · ') || '—', 6)}
+      ${row('ภาพ / บันทึก', [(v('chartHtfUrl')||(($('fileHtf')||{}).files||[]).length||(window._tjShots&&window._tjShots.fileHtf))?'ภาพ HTF ✓':'', (v('chartBeforeUrl')||($('fileBefore').files||[]).length||(window._tjShots&&window._tjShots.fileBefore))?'ภาพจุดเข้า ✓':'', (v('chartAfterUrl')||($('fileAfter').files||[]).length||(window._tjShots&&window._tjShots.fileAfter))?'ภาพหลัง ✓':'', v('notes')?'มีบันทึก ✓':''].filter(Boolean).join(' · ') || '—', 6)}
     </div>`;
     summary.querySelectorAll('[data-go]').forEach(b=>b.onclick = ()=>showStep(+b.dataset.go));
   }
@@ -165,7 +165,7 @@
       setVal('marketContext', r.market_context); setVal('confidence', r.confidence);
       setVal('outcome', r.outcome);
       setVal('mae', r.mae); setVal('mfe', r.mfe);
-      setVal('chartBeforeUrl', r.chart_before); setVal('chartAfterUrl', r.chart_after);
+      setVal('chartBeforeUrl', r.chart_before); setVal('chartAfterUrl', r.chart_after); setVal('chartHtfUrl', r.chart_htf);
       setVal('notes', r.notes);
       const conf = String(r.confluences||'').split(',').map(x=>x.trim());
       form.querySelectorAll('.conf-check').forEach(c=>{ c.checked = conf.includes(c.value); c.dispatchEvent(new Event('change')); });
@@ -228,6 +228,7 @@
       try{
         data.fileBeforeObj = await getFileBase64('fileBefore');
         data.fileAfterObj = await getFileBase64('fileAfter');
+        data.fileHtfObj = await getFileBase64('fileHtf');
         await window.api.updateTradeData(editing.id, data);
         editing = null; $('tj-edit-banner').innerHTML = '';
         btn.disabled = false; mode = ls.get('tj_form_mode', 'full');

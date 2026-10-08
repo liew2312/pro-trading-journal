@@ -5,6 +5,26 @@
   if (!window.api) window.api = {};
   window.api._setSupabaseClient = function(newClient) { sb = newClient; };
 
+  /* ---------- helper: ย่อ/บีบอัดภาพกราฟก่อนอัปโหลด (v63) ----------
+     ภาพแคปหน้าจอ PNG มักใหญ่ 1–3 MB → แปลงเป็น WebP (หรือ JPEG ถ้าเครื่องไม่รองรับ) ด้านยาวสุด 1920px
+     เหลือราว 150–300 KB · ถ้าบีบแล้วไม่เล็กลง ใช้ไฟล์เดิม */
+  async function compressImage(blob) {
+    try {
+      if (!blob || !/^image\/(png|jpe?g|webp|bmp)$/i.test(blob.type || "") || blob.size < 250 * 1024) return blob;
+      const url = URL.createObjectURL(blob);
+      const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      URL.revokeObjectURL(url);
+      const MAX = 1920, k = Math.min(1, MAX / Math.max(img.naturalWidth, img.naturalHeight));
+      const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+      const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+      const ctx = cv.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, w, h);
+      ctx.imageSmoothingQuality = "high"; ctx.drawImage(img, 0, 0, w, h);
+      let out = await new Promise(r => cv.toBlob(r, "image/webp", 0.86));
+      if (!out || out.type !== "image/webp") out = await new Promise(r => cv.toBlob(r, "image/jpeg", 0.88));
+      return (out && out.size < blob.size) ? out : blob;
+    } catch (e) { console.warn("compressImage", e); return blob; }
+  }
+
   /* ---------- helper: อัปโหลดไฟล์ขึ้น Supabase Storage ---------- */
   async function uploadImageToStorage(fileObj) {
     if (!fileObj || !fileObj.data) return "";
@@ -14,15 +34,18 @@
       const byteNumbers = new Array(byteChars.length);
       for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
       const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: fileObj.mimeType || "image/png" });
+      const raw  = new Blob([byteArray], { type: fileObj.mimeType || "image/png" });
+      const blob = await compressImage(raw);
 
       // ตั้งชื่อไฟล์ไม่ให้ซ้ำ
-      const ext = (fileObj.name && fileObj.name.includes(".")) ? fileObj.name.split(".").pop() : "png";
+      const EXT = { "image/webp": "webp", "image/jpeg": "jpg", "image/png": "png", "image/gif": "gif" };
+      const ext = blob !== raw ? (EXT[blob.type] || "jpg")
+                : ((fileObj.name && fileObj.name.includes(".")) ? fileObj.name.split(".").pop() : "png");
       const fileName = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const filePath = `charts/${fileName}`;
 
       const { error } = await sb.storage.from(STORAGE_BUCKET).upload(filePath, blob, {
-        contentType: fileObj.mimeType || "image/png",
+        contentType: blob.type || fileObj.mimeType || "image/png",
         upsert: false
       });
       if (error) { console.error("Upload error:", error); return ""; }
@@ -47,6 +70,18 @@
     if (data.fileAfterObj) {
       const url = await uploadImageToStorage(data.fileAfterObj);
       if (url) afterUrl = url;
+    }
+    // ภาพ HTF (v63) — มีเฉพาะเมื่อมาจากฟอร์มที่มีช่องนี้ จะได้ไม่ลบค่าเดิมโดยไม่ตั้งใจ
+    const hasHtf = Object.prototype.hasOwnProperty.call(data, "chartHtfUrl") || !!data.fileHtfObj;
+    let htfUrl = data.chartHtfUrl || "";
+    if (window._tjHtfCol === false && (htfUrl || data.fileHtfObj)) {
+      // ฐานข้อมูลยังไม่มีคอลัมน์ chart_htf → ไม่อัปโหลดให้เปลืองพื้นที่ แจ้งผู้ใช้แทน
+      try { document.dispatchEvent(new CustomEvent("tj:htfcol", { detail: { lost: true } })); } catch (e) {}
+      data.fileHtfObj = null;
+    }
+    if (data.fileHtfObj) {
+      const url = await uploadImageToStorage(data.fileHtfObj);
+      if (url) htfUrl = url;
     }
 
     // โหมดบันทึกด่วน: ช่องวินัยที่ไม่ได้กรอก = "-" (ไม่นับในคะแนนวินัย) ยกเว้นที่ระบบตรวจพบเอง
@@ -79,6 +114,7 @@
       notes:         data.notes || "",
       chart_before:  beforeUrl,
       chart_after:   afterUrl,
+      ...((hasHtf && window._tjHtfCol !== false) ? { chart_htf: htfUrl } : {}),
       setup:         data.setup    || "",
       grade:         data.grade    || "",
       emotion:       data.emotion  || "",
@@ -117,13 +153,22 @@
     return row;
   }
 
+  // ถ้าฐานข้อมูลยังไม่มีคอลัมน์ chart_htf → บันทึกต่อได้โดยตัดภาพ HTF ออก แล้วแจ้งวิธีเพิ่มคอลัมน์
+  function dropMissingCol(row, error) {
+    const msg = String((error && error.message) || "");
+    if (row.created_at && /created_at/i.test(msg)) { delete row.created_at; return true; }
+    if ("chart_htf" in row && /chart_htf/i.test(msg)) {
+      const lost = !!row.chart_htf; delete row.chart_htf; window._tjHtfCol = false;
+      try { document.dispatchEvent(new CustomEvent("tj:htfcol", { detail: { lost } })); } catch (e) {}
+      return true;
+    }
+    return false;
+  }
+
   async function saveTradeData(data) {
     const row = await buildTradeRow(data);
     let { error } = await sb.from(TABLE_NAME).insert(row);
-    if (error && row.created_at && /created_at/i.test(error.message || "")) {
-      delete row.created_at;
-      ({ error } = await sb.from(TABLE_NAME).insert(row));
-    }
+    for (let k = 0; error && k < 2 && dropMissingCol(row, error); k++) ({ error } = await sb.from(TABLE_NAME).insert(row));
     if (error) throw new Error(error.message);
     return true;
   }
@@ -135,8 +180,7 @@
     let q = sb.from(TABLE_NAME).update(row).eq("id", id);
     if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
     let { error } = await q;
-    if (error && row.created_at && /created_at/i.test(error.message || "")) {
-      delete row.created_at;
+    for (let k = 0; error && k < 2 && dropMissingCol(row, error); k++) {
       q = sb.from(TABLE_NAME).update(row).eq("id", id);
       if (window._currentUserId) q = q.eq("user_id", window._currentUserId);
       ({ error } = await q);
@@ -174,6 +218,8 @@
     const all = await fetchAllRowsRaw();
     window._tjOpenRows = all.filter(isOpenRow);
     window._tjMissedRows = all.filter(isMissedRow);
+    if (all.length) { const had = window._tjHtfCol; window._tjHtfCol = Object.prototype.hasOwnProperty.call(all[0], 'chart_htf');
+      if (had !== window._tjHtfCol) try{ document.dispatchEvent(new CustomEvent('tj:htfcol', { detail: { lost:false } })); }catch(e){} }
     try{ document.dispatchEvent(new CustomEvent('tj:open')); }catch(e){}
     return includeOpen === true ? all : all.filter(r => !isSideRow(r));
   }
@@ -617,6 +663,7 @@
         notes:       r.notes || "",
         chartBefore: r.chart_before || "",
         chartAfter:  r.chart_after  || "",
+        chartHtf:    r.chart_htf    || "",
         setup:       r.setup    || "-",
         grade:       r.grade    || "-",
         emotion:     r.emotion  || "-",

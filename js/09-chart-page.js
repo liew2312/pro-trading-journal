@@ -1,7 +1,8 @@
 (function(){
-  const SLOTS = ['fileBefore','fileAfter'];
-  const SLOT_LABEL = { fileBefore:'Before', fileAfter:'After' };
-  window._tjShots = { fileBefore:null, fileAfter:null };
+  const SLOTS = ['fileHtf','fileBefore','fileAfter'];
+  const SLOT_LABEL = { fileHtf:'HTF', fileBefore:'จุดเข้า', fileAfter:'หลังปิด' };
+  const SLOT_KEY = { fileHtf:'htf', fileBefore:'before', fileAfter:'after' };
+  window._tjShots = { fileHtf:null, fileBefore:null, fileAfter:null };
   const urls = {};
   const $ = id => document.getElementById(id);
   const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
@@ -22,7 +23,7 @@
     const u = urlFor(slot, file);
     return `<div class="tj-shot"><img src="${u}" alt="ภาพ ${SLOT_LABEL[slot]}"><div class="cap"><span>${SLOT_LABEL[slot]}${big?'':' · '+Math.round(file.size/1024)+' KB'}</span><button type="button" title="ลบภาพ" onclick="tjClearShot('${slot}')"><i class="fa-solid fa-xmark"></i></button></div></div>`;
   }
-  const LINK_NAME = { fileBefore:'chartBeforeUrl', fileAfter:'chartAfterUrl' };
+  const LINK_NAME = { fileHtf:'chartHtfUrl', fileBefore:'chartBeforeUrl', fileAfter:'chartAfterUrl' };
   function linkInput(slot){ return document.querySelector('#tradeForm [name="'+LINK_NAME[slot]+'"]'); }
   function linkCard(slot, url){
     const src = imgSrc(url); if(!src) return '';
@@ -33,7 +34,15 @@
     const list = $('tj-chart-shots');
     if(list) list.innerHTML = SLOTS.map(s=>slotCard(s,false)).join('');
     SLOTS.forEach(s=>{ const p=$('prev-'+s); if(p) p.innerHTML = slotCard(s,true); });
+    paintTf();
   }
+  // ป้าย TF บนหัวช่องภาพ (เช่น HTF · H4 / จุดเข้า · M15) ตามที่เลือกในฟอร์ม
+  function paintTf(){
+    const pick = n => { const c=document.querySelector('#tradeForm .tj-tf-in[name="'+n+'"]:checked'); return c ? String(c.value).split(':').pop() : ''; };
+    const h=$('tj-htf-tf'), l=$('tj-ltf-tf'), hv=pick('tf_htf'), lv=pick('tf_ltf');
+    if(h) h.textContent = hv ? '· '+hv : ''; if(l) l.textContent = lv ? '· '+lv : '';
+  }
+  document.addEventListener('change', e=>{ if(e.target && e.target.classList && e.target.classList.contains('tj-tf-in')) paintTf(); });
   window.tjClearShot = function(slot){ window._tjShots[slot]=null; const inp=$(slot); if(inp) inp.value=''; if(!slotFile(slot)){ const li=linkInput(slot); if(li) li.value=''; } renderShots(); };
   SLOTS.forEach(s=>{ const li=linkInput(s); if(li) li.addEventListener('input', renderShots); });
   function setShot(slot, file){ window._tjShots[slot]=file; const inp=$(slot); if(inp) inp.value=''; renderShots(); }
@@ -54,7 +63,14 @@
 
   SLOTS.forEach(s=>{ const inp=$(s); if(inp) inp.addEventListener('change',()=>{ if(inp.files && inp.files.length) window._tjShots[s]=null; renderShots(); }); });
   const form = $('tradeForm');
-  if(form) form.addEventListener('reset',()=>{ window._tjShots={fileBefore:null,fileAfter:null}; setTimeout(renderShots,0); });
+  if(form) form.addEventListener('reset',()=>{ window._tjShots={fileHtf:null,fileBefore:null,fileAfter:null}; lastSlot=null; setTimeout(renderShots,0); });
+
+  // วางรูปลงช่องที่แตะ/โฟกัสล่าสุด (ถ้าไม่ได้เลือก: จุดเข้า → หลังปิด)
+  let lastSlot = null;
+  ['pointerdown','focusin'].forEach(ev=>document.addEventListener(ev, e=>{
+    const box = e.target && e.target.closest && e.target.closest('#tradeForm .upload-box[data-slot]');
+    if(box) lastSlot = box.dataset.slot;
+  }, true));
 
   // วางรูปจากคลิปบอร์ด (Ctrl+V) ในหน้าบันทึกเทรด
   document.addEventListener('paste', e=>{
@@ -64,8 +80,8 @@
     for(const it of items){
       if(it.kind==='file' && /^image\//.test(it.type)){
         const f = it.getAsFile(); if(!f) continue;
-        const slot = !slotFile('fileBefore') ? 'fileBefore' : 'fileAfter';
-        const file = new File([f], 'paste-'+slot+'-'+Date.now()+'.png', {type:f.type||'image/png'});
+        const slot = lastSlot || (!slotFile('fileBefore') ? 'fileBefore' : 'fileAfter');
+        const file = new File([f], 'paste-'+SLOT_KEY[slot]+'-'+Date.now()+'.png', {type:f.type||'image/png'});
         setShot(slot, file); e.preventDefault();
         toast('วางภาพลงช่อง '+SLOT_LABEL[slot]+' แล้ว');
         return;
@@ -152,7 +168,7 @@
       const blob = await new Promise(r=>cv.toBlob(r,'image/png'));
       if(!blob) throw new Error('สร้างภาพไม่ได้');
       const d=new Date(), p=n=>String(n).padStart(2,'0');
-      const name = 'chart-'+SLOT_LABEL[slot].toLowerCase()+'-'+curSym().replace(/[^A-Z0-9]/g,'')+'-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+'.png';
+      const name = 'chart-'+SLOT_KEY[slot]+'-'+curSym().replace(/[^A-Z0-9]/g,'')+'-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+'.png';
       setShot(slot, new File([blob], name, {type:'image/png'}));
       toast('จับภาพกราฟลงช่อง '+SLOT_LABEL[slot]+' แล้ว ✓');
     }catch(e){
@@ -185,7 +201,8 @@
       const host = $('tj-modal-shots'); if(!host) return;
       host.innerHTML = '';
       if(!trade || trade.type==='Deposit' || trade.type==='Withdraw') return;
-      [['ก่อนเข้า (Before)', trade.chartBefore], ['หลังปิด (After)', trade.chartAfter]].forEach(([lbl,u])=>{
+      const tfs = (()=>{ const c=String(trade.confluences||''); return { h:(/HTF:(\w+)/.exec(c)||[])[1], l:(/LTF:(\w+)/.exec(c)||[])[1] }; })();
+      [['HTF'+(tfs.h?' · '+tfs.h:' (ภาพรวม)'), trade.chartHtf], ['จุดเข้า'+(tfs.l?' · '+tfs.l:' (LTF)'), trade.chartBefore], ['หลังปิด', trade.chartAfter]].forEach(([lbl,u])=>{
         const src = imgSrc(u); if(!src) return;
         const fig = document.createElement('figure');
         fig.innerHTML = `<a href="${esc(u)}" target="_blank" rel="noopener"><img src="${esc(src)}" alt="${esc(lbl)}" loading="lazy"></a><figcaption>${esc(lbl)}</figcaption>`;
@@ -228,6 +245,19 @@
     }catch(e){ alert('ลบไม่สำเร็จ: '+(e.message||e)); }
     finally{ btn.disabled=false; btn.innerHTML = html; }
   });
+
+  // ── ภาพ HTF: ฐานข้อมูลยังไม่มีคอลัมน์ chart_htf ─────────────
+  const HTF_SQL = 'alter table public.journal_entries add column if not exists chart_htf text;';
+  function paintHtfWarn(){
+    const w = $('tj-htf-warn'); if(!w) return;
+    if(window._tjHtfCol !== false){ w.hidden = true; return; }
+    w.hidden = false;
+    w.innerHTML = '<b>ยังเก็บภาพ HTF ไม่ได้</b> ต้องเพิ่มช่องเก็บในฐานข้อมูลก่อน (ทำครั้งเดียว): Supabase → SQL Editor → วางคำสั่งนี้แล้วกด Run'
+      + '<code>'+esc(HTF_SQL)+'</code><button type="button" class="tj-linkbtn" id="tj-htf-copy"><i class="fa-regular fa-copy"></i> คัดลอกคำสั่ง</button>';
+    const b=$('tj-htf-copy'); if(b) b.onclick = async ()=>{ try{ await navigator.clipboard.writeText(HTF_SQL); toast('คัดลอกแล้ว'); }catch(e){ window.prompt('คัดลอกคำสั่งนี้', HTF_SQL); } };
+  }
+  document.addEventListener('tj:htfcol', e=>{ paintHtfWarn(); if(e.detail && e.detail.lost) setTimeout(()=>toast('บันทึกแล้ว แต่ภาพ HTF ยังไม่ถูกเก็บ — ดูวิธีเพิ่มช่องเก็บที่ช่องภาพ HTF', 6000), 2700); });
+  paintHtfWarn();
 
   // ── wire ───────────────────────────────────────────────
   const symInp = $('tj-chart-symbol');

@@ -459,13 +459,14 @@ window.showTradeModal = function(trade) {
     const setBtn = (id, url) => { 
         const el = document.getElementById(id); 
         if(url && url.toString().trim() !== "" && url !== "-") { 
-            el.href = url; el.classList.remove('disabled'); el.classList.replace('btn-outline-secondary', id === 'modalBtnBefore' ? 'btn-outline-primary' : 'btn-outline-success');
+            el.href = url; el.classList.remove('disabled'); el.classList.replace('btn-outline-secondary', id !== 'modalBtnAfter' ? 'btn-outline-primary' : 'btn-outline-success');
         } 
         else { 
-            el.href = "javascript:void(0)"; el.classList.add('disabled'); el.classList.replace(id === 'modalBtnBefore' ? 'btn-outline-primary' : 'btn-outline-success', 'btn-outline-secondary');
+            el.href = "javascript:void(0)"; el.classList.add('disabled'); el.classList.replace(id !== 'modalBtnAfter' ? 'btn-outline-primary' : 'btn-outline-success', 'btn-outline-secondary');
         }
     };
     setBtn('modalBtnBefore', trade.chartBefore); setBtn('modalBtnAfter', trade.chartAfter);
+    const hb = document.getElementById('modalBtnHtf'); if (hb) { setBtn('modalBtnHtf', trade.chartHtf); hb.style.display = trade.chartHtf ? '' : 'none'; }
   }
   new bootstrap.Modal(document.getElementById('tradeModal')).show();
 }
@@ -539,6 +540,7 @@ async function handleFormSubmit(event) {
   try {
     data.fileBeforeObj = await getFileBase64('fileBefore');
     data.fileAfterObj = await getFileBase64('fileAfter');
+    data.fileHtfObj = await getFileBase64('fileHtf');
 
     await window.api.saveTradeData(data);
     form.reset();

@@ -121,9 +121,11 @@
 .tj-mytv-step i.fa-camera{font-size:.9em;}
 
 /* v62 — ไอคอนลายเส้นวาดมือ (js/00-hand-icons.js) */
-i.tj-hd{display:inline-block;width:1.2em;height:1.2em;vertical-align:-.22em;line-height:1;font-style:normal;text-align:center;}
+:where(i.tj-hd){vertical-align:-.22em;}
+i.tj-hd{font-style:normal;line-height:1;}
 i.tj-hd::before,i.tj-hd::after{content:none!important;display:none!important;}
-i.tj-hd>svg.tj-hi{display:block;width:100%;height:100%;overflow:visible;}
+i.tj-hd>svg.tj-hi{display:block;width:1.2em;height:1.2em;overflow:visible;}
+:where(.tj-cap-btn,.stat-icon-badge,.icon-wrap,.tj-ico) i.tj-hd{display:flex;align-items:center;justify-content:center;}
 .tj-hi{fill:none;stroke:currentColor;stroke-width:var(--tj-hi-w,2.3);stroke-linecap:round;stroke-linejoin:round;}
 html.tj-icon-custom .tj-hi{stroke:var(--tj-icon-user);}
 html.tj-icon-custom[data-theme="dark"] .tj-hi{stroke:color-mix(in srgb,var(--tj-icon-user) 55%,#fff);}
@@ -139,3 +141,10 @@ html.tj-icon-custom :is(.btn-primary,.btn-dark,.btn-success,.btn-danger,.btn-war
 .tj-icon-preview{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--canvas,#F4F3EE);font-size:1.25rem;color:var(--ink);}
 #tj-icon-settings.tj-icons-off #tj-icon-colors{opacity:.45;pointer-events:none;}
 .tj-icon-custom-btn.active{border-color:var(--ink)!important;box-shadow:0 0 0 3px var(--pj-hi,rgba(0,0,0,.12));}
+
+/* v63 — ภาพ HTF */
+.tj-cap-btn.htf i{background:var(--pj-lilac,#E4DFFA);color:var(--ink);}
+.tj-htf-tf{font-weight:600;color:var(--muted);font-size:.85em;}
+.tj-htf-warn{background:var(--pj-peach,#FDE2CF);color:var(--ink);border-radius:12px;padding:10px 12px;font-size:.78rem;line-height:1.5;margin-bottom:12px;}
+.tj-htf-warn code{display:block;margin:6px 0;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.65);color:var(--ink);font-size:.74rem;word-break:break-all;}
+[data-theme="dark"] .tj-htf-warn code{background:rgba(0,0,0,.25);}

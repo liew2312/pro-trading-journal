@@ -16,8 +16,8 @@
     const { sym, tf }=state(); const id=layoutId(get());
     const o=$('tj-mytv-open-sub'); if(o) o.textContent=sym+' · '+(TFN[tf]||tf)+(id?' · Layout ของฉัน':'');
     const u=$('tj-mytv-url'); if(u && document.activeElement!==u) u.value=get();
-    const f=document.querySelector('#tradeForm [name="chartBeforeUrl"]'), a=document.querySelector('#tradeForm [name="chartAfterUrl"]');
-    document.querySelectorAll('.tj-mytv-pbtn').forEach(b=>{ const inp=b.dataset.slot==='fileBefore'?f:a; b.classList.toggle('done', !!(inp && /tradingview\.com\/x\//.test(inp.value))); });
+    const LN={ fileHtf:'chartHtfUrl', fileBefore:'chartBeforeUrl', fileAfter:'chartAfterUrl' };
+    document.querySelectorAll('.tj-mytv-pbtn').forEach(b=>{ const inp=document.querySelector('#tradeForm [name="'+LN[b.dataset.slot]+'"]'); b.classList.toggle('done', !!(inp && /tradingview\.com\/x\//.test(inp.value))); });
   }
   let opened=false;
   $('tj-mytv-open') && $('tj-mytv-open').addEventListener('click',()=>{ opened=true; window.open(tvUrl(),'_blank','noopener'); });
@@ -37,7 +37,7 @@
   // อัปเดตข้อความเมื่อเปลี่ยน symbol / TF
   document.addEventListener('click',e=>{ if(e.target.closest('#tj-chart-tf,#tj-chart-chips,#tj-chart-go')) setTimeout(paint,50); });
   const si=$('tj-chart-symbol'); if(si) si.addEventListener('change',()=>setTimeout(paint,50));
-  ['chartBeforeUrl','chartAfterUrl'].forEach(n=>{ const i=document.querySelector('#tradeForm [name="'+n+'"]'); if(i) i.addEventListener('input',paint); });
+  ['chartHtfUrl','chartBeforeUrl','chartAfterUrl'].forEach(n=>{ const i=document.querySelector('#tradeForm [name="'+n+'"]'); if(i) i.addEventListener('input',paint); });
   const fm=$('tradeForm'); if(fm) fm.addEventListener('reset',()=>setTimeout(paint,0));
   (function hookTab(){ const o=window.switchTab; if(typeof o!=='function'){ setTimeout(hookTab,60); return; } window.switchTab=function(id){ const r=o.apply(this,arguments); if(id==='chart') setTimeout(paint,50); return r; }; })();
   paint();

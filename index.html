@@ -41,15 +41,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <script src="js/00-hand-icons.js?v=2026-10-04-v62"></script>
-  <link rel="stylesheet" href="css/01-base.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-04-v62">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-04-v62">
+  <script src="js/00-hand-icons.js?v=2026-10-08-v63"></script>
+  <link rel="stylesheet" href="css/01-base.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-08-v63">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-08-v63">
 </head>
 <body>
 
@@ -203,8 +203,9 @@
       <div class="card card-stat p-0 mb-3 overflow-hidden">
         <div id="tj-chart-box" class="tj-chart-box"><div id="tj-tv" style="height:100%;width:100%;"></div>
           <div class="tj-fs-bar" id="tj-fs-bar">
-            <button type="button" class="tj-fs-btn cap" data-slot="fileBefore" title="จับภาพลง Before"><i class="fa-solid fa-camera"></i><span>Before</span></button>
-            <button type="button" class="tj-fs-btn cap" data-slot="fileAfter" title="จับภาพลง After"><i class="fa-solid fa-camera"></i><span>After</span></button>
+            <button type="button" class="tj-fs-btn cap" data-slot="fileHtf" title="จับภาพลงช่อง HTF"><i class="fa-solid fa-camera"></i><span>HTF</span></button>
+            <button type="button" class="tj-fs-btn cap" data-slot="fileBefore" title="จับภาพลงช่องจุดเข้า"><i class="fa-solid fa-camera"></i><span>จุดเข้า</span></button>
+            <button type="button" class="tj-fs-btn cap" data-slot="fileAfter" title="จับภาพลงช่องหลังปิด"><i class="fa-solid fa-camera"></i><span>หลังปิด</span></button>
             <button type="button" class="tj-fs-btn snap" id="tj-fs-snap" title="จับภาพกราฟ"><i class="fa-solid fa-camera"></i><span>จับภาพ</span></button>
             <button type="button" class="tj-fs-btn" id="tj-fs-rotate" title="หมุนจอ"><i class="fa-solid fa-rotate"></i></button>
             <button type="button" class="tj-fs-btn" id="tj-fs-hide" title="ซ่อนปุ่ม 6 วินาที (เพื่อแคปหน้าจอ)"><i class="fa-regular fa-eye-slash"></i><span>ซ่อนปุ่ม</span></button>
@@ -215,12 +216,12 @@
               <b>จับภาพกราฟ</b>
               <button type="button" class="tj-fs-x" id="tj-fs-sheet-x" aria-label="ปิด"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="tj-segctl w-100 mb-3" id="tj-fs-slot"><button type="button" class="active flex-fill" data-slot="fileBefore">Before (ก่อนเข้า)</button><button type="button" class="flex-fill" data-slot="fileAfter">After (หลังปิด)</button></div>
+            <div class="tj-segctl w-100 mb-3" id="tj-fs-slot"><button type="button" class="flex-fill" data-slot="fileHtf">HTF</button><button type="button" class="active flex-fill" data-slot="fileBefore">จุดเข้า</button><button type="button" class="flex-fill" data-slot="fileAfter">หลังปิด</button></div>
             <button type="button" class="tj-fs-opt" data-act="shot"><i class="fa-solid fa-mobile-screen"></i><span><b>แคปหน้าจอมือถือ</b><small>ปุ่มทั้งหมดจะซ่อน 5 วินาที ให้กดแคปหน้าจอ แล้วเลือกภาพที่แคป</small></span></button>
             <button type="button" class="tj-fs-opt" data-act="link"><i class="fa-solid fa-link"></i><span><b>ใช้ลิงก์ภาพจาก TradingView</b><small>กดไอคอนกล้องบนกราฟ → คัดลอกลิงก์ แล้วกดปุ่มนี้</small></span></button>
             <button type="button" class="tj-fs-opt" data-act="pick"><i class="fa-regular fa-image"></i><span><b>เลือกรูปจากเครื่อง</b><small>ภาพที่แคปไว้แล้ว</small></span></button>
           </div>
-          <button type="button" class="tj-fs-pill" id="tj-fs-pill"><i class="fa-regular fa-image"></i> <span>แนบภาพที่แคป → Before</span></button>
+          <button type="button" class="tj-fs-pill" id="tj-fs-pill"><i class="fa-regular fa-image"></i> <span>แนบภาพที่แคป → จุดเข้า</span></button>
         </div>
       </div>
       <div class="card card-stat p-3 mb-3 tj-mytv" id="tj-mytv">
@@ -244,14 +245,15 @@
           <button type="button" class="tj-mytv-step main" id="tj-mytv-open"><span class="n">1</span><span><b>เปิดใน TradingView ของฉัน</b><small id="tj-mytv-open-sub">XAUUSD · 15m</small></span><i class="fa-solid fa-arrow-up-right-from-square ms-auto"></i></button>
           <div class="tj-mytv-step info"><span class="n">2</span><span><b>วาด แล้วกดไอคอนกล้อง <i class="fa-solid fa-camera"></i></b><small>เลือก “Copy link” / “คัดลอกลิงก์”</small></span></div>
           <div class="tj-mytv-step paste"><span class="n">3</span><span class="flex-grow-1"><b>วางลิงก์ภาพกลับมา</b>
-            <span class="d-flex gap-2 mt-1"><button type="button" class="tj-mytv-pbtn" data-slot="fileBefore"><i class="fa-solid fa-paste"></i> Before</button><button type="button" class="tj-mytv-pbtn" data-slot="fileAfter"><i class="fa-solid fa-paste"></i> After</button></span></span></div>
+            <span class="d-flex gap-2 mt-1"><button type="button" class="tj-mytv-pbtn" data-slot="fileHtf"><i class="fa-solid fa-paste"></i> HTF</button><button type="button" class="tj-mytv-pbtn" data-slot="fileBefore"><i class="fa-solid fa-paste"></i> จุดเข้า</button><button type="button" class="tj-mytv-pbtn" data-slot="fileAfter"><i class="fa-solid fa-paste"></i> หลังปิด</button></span></span></div>
         </div>
       </div>
       <div class="card card-stat p-3 mb-5">
         <div class="tj-chart-actions">
           <button class="tj-cap-btn full" id="tj-chart-fs2"><i class="fa-solid fa-expand"></i><span><b>ขยายกราฟเต็มจอ</b><small>ดูชัด ๆ / แคปหน้าจอได้เต็มภาพ</small></span></button>
-          <button class="tj-cap-btn before" data-slot="fileBefore"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → Before</b><small>ภาพก่อนเข้าเทรด</small></span></button>
-          <button class="tj-cap-btn after" data-slot="fileAfter"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → After</b><small>ภาพหลังปิดออเดอร์</small></span></button>
+          <button class="tj-cap-btn htf" data-slot="fileHtf"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → HTF</b><small>ภาพรวม / โซนจาก TF ใหญ่</small></span></button>
+          <button class="tj-cap-btn before" data-slot="fileBefore"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → จุดเข้า</b><small>ภาพ LTF ตอนเข้าเทรด</small></span></button>
+          <button class="tj-cap-btn after" data-slot="fileAfter"><i class="fa-solid fa-camera"></i><span><b>จับภาพ → หลังปิด</b><small>ภาพหลังปิดออเดอร์</small></span></button>
           <button class="tj-cap-btn go" id="tj-chart-journal"><i class="fa-solid fa-pen-to-square"></i><span><b>บันทึกเทรดจากกราฟนี้</b><small>ใส่ Symbol + ภาพให้อัตโนมัติ</small></span></button>
         </div>
         <div class="tj-shots" id="tj-chart-shots"></div>
@@ -814,8 +816,20 @@
           
           <hr class="text-muted opacity-25 mb-4">
 
-          <div class="upload-box mb-4">
-            <label class="form-label text-primary fw-bold mb-3"><i class="fa-solid fa-image me-2"></i> ภาพก่อนเข้าเทรด</label>
+          <div class="upload-box mb-4 tj-up-htf" data-slot="fileHtf">
+            <label class="form-label fw-bold mb-1"><i class="fa-solid fa-layer-group me-2"></i> ภาพ HTF (ภาพรวม) <span class="tj-htf-tf" id="tj-htf-tf"></span></label>
+            <div class="small text-muted mb-3">ไม่บังคับ · ใส่เมื่อเทรนด์หรือโซนบน TF ใหญ่เป็นเหตุผลหลักในการเข้า</div>
+            <div class="tj-htf-warn" id="tj-htf-warn" hidden></div>
+            <input type="url" class="form-control mb-3" name="chartHtfUrl" placeholder="วางลิงก์ TradingView ที่นี่...">
+            <div class="d-flex align-items-center mb-3">
+              <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลด / วางรูป (Ctrl+V)</span><hr class="flex-grow-1 m-0 opacity-25">
+            </div>
+            <input type="file" class="form-control" id="fileHtf" accept="image/*">
+            <div class="tj-slot-prev" id="prev-fileHtf"></div>
+          </div>
+
+          <div class="upload-box mb-4" data-slot="fileBefore">
+            <label class="form-label text-primary fw-bold mb-3"><i class="fa-solid fa-image me-2"></i> ภาพจุดเข้า (LTF) <span class="tj-htf-tf" id="tj-ltf-tf"></span></label>
             <input type="url" class="form-control mb-3" name="chartBeforeUrl" placeholder="วางลิงก์ TradingView ที่นี่...">
             <div class="d-flex align-items-center mb-3">
               <hr class="flex-grow-1 m-0 opacity-25"><span class="px-3 text-muted small fw-bold">หรือ อัปโหลด / วางรูป (Ctrl+V)</span><hr class="flex-grow-1 m-0 opacity-25">
@@ -824,7 +838,7 @@
             <div class="tj-slot-prev" id="prev-fileBefore"></div>
           </div>
           
-          <div class="upload-box mb-4">
+          <div class="upload-box mb-4" data-slot="fileAfter">
             <label class="form-label text-success fw-bold mb-3"><i class="fa-solid fa-image me-2"></i> ภาพหลังปิดออเดอร์</label>
             <input type="url" class="form-control mb-3" name="chartAfterUrl" placeholder="วางลิงก์ TradingView ที่นี่...">
             <div class="d-flex align-items-center mb-3">
@@ -1104,8 +1118,9 @@
           
           <div class="tj-modal-shots" id="tj-modal-shots"></div>
           <div class="d-flex gap-3 flex-column flex-sm-row" id="chartLinksDiv">
-            <a href="#" id="modalBtnBefore" target="_blank" class="btn btn-outline-primary w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพก่อนเข้า (Before)</a>
-            <a href="#" id="modalBtnAfter" target="_blank" class="btn btn-outline-success w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพหลังปิด (After)</a>
+            <a href="#" id="modalBtnHtf" target="_blank" class="btn btn-outline-primary w-100 fw-bold py-3" style="display:none"><i class="fa-solid fa-layer-group me-2"></i> ดูภาพ HTF</a>
+            <a href="#" id="modalBtnBefore" target="_blank" class="btn btn-outline-primary w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพจุดเข้า</a>
+            <a href="#" id="modalBtnAfter" target="_blank" class="btn btn-outline-success w-100 fw-bold py-3"><i class="fa-solid fa-image me-2"></i> ดูภาพหลังปิด</a>
           </div>
           <div class="tj-del-zone">
             <button type="button" class="btn btn-primary w-100 fw-bold py-2 mb-2" id="tj-edit-btn"><i class="fa-solid fa-pen me-2"></i> <span>แก้ไข / เติมรายละเอียด</span></button>
@@ -1190,26 +1205,26 @@
   
   
 
-  <script src="js/01-config.js?v=2026-10-04-v62"></script>
-  <script src="js/02-api.js?v=2026-10-04-v62"></script>
-  <script src="js/03-app.js?v=2026-10-04-v62"></script>
-  <script src="js/04-auth.js?v=2026-10-04-v62"></script>
-  <script src="js/05-theme.js?v=2026-10-04-v62"></script>
-  <script src="js/06-pwa.js?v=2026-10-04-v62"></script>
-  <script src="js/07-filters.js?v=2026-10-04-v62"></script>
-  <script src="js/08-calendar-performance.js?v=2026-10-04-v62"></script>
-  <script src="js/09-chart-page.js?v=2026-10-04-v62"></script>
-  <script src="js/10-session.js?v=2026-10-04-v62"></script>
-  <script src="js/11-news.js?v=2026-10-04-v62"></script>
-  <script src="js/12-discipline.js?v=2026-10-04-v62"></script>
-  <script src="js/13-trade-form.js?v=2026-10-04-v62"></script>
-  <script src="js/14-dashboard.js?v=2026-10-04-v62"></script>
-  <script src="js/15-profile.js?v=2026-10-04-v62"></script>
-  <script src="js/16-my-tradingview.js?v=2026-10-04-v62"></script>
-  <script src="js/17-pastel-ui.js?v=2026-10-04-v62"></script>
-  <script src="js/18-timeframe.js?v=2026-10-04-v62"></script>
-  <script src="js/19-open-trades.js?v=2026-10-04-v62"></script>
-  <script src="js/20-price-questions.js?v=2026-10-04-v62"></script>
-  <script src="js/21-insights.js?v=2026-10-04-v62"></script>
+  <script src="js/01-config.js?v=2026-10-08-v63"></script>
+  <script src="js/02-api.js?v=2026-10-08-v63"></script>
+  <script src="js/03-app.js?v=2026-10-08-v63"></script>
+  <script src="js/04-auth.js?v=2026-10-08-v63"></script>
+  <script src="js/05-theme.js?v=2026-10-08-v63"></script>
+  <script src="js/06-pwa.js?v=2026-10-08-v63"></script>
+  <script src="js/07-filters.js?v=2026-10-08-v63"></script>
+  <script src="js/08-calendar-performance.js?v=2026-10-08-v63"></script>
+  <script src="js/09-chart-page.js?v=2026-10-08-v63"></script>
+  <script src="js/10-session.js?v=2026-10-08-v63"></script>
+  <script src="js/11-news.js?v=2026-10-08-v63"></script>
+  <script src="js/12-discipline.js?v=2026-10-08-v63"></script>
+  <script src="js/13-trade-form.js?v=2026-10-08-v63"></script>
+  <script src="js/14-dashboard.js?v=2026-10-08-v63"></script>
+  <script src="js/15-profile.js?v=2026-10-08-v63"></script>
+  <script src="js/16-my-tradingview.js?v=2026-10-08-v63"></script>
+  <script src="js/17-pastel-ui.js?v=2026-10-08-v63"></script>
+  <script src="js/18-timeframe.js?v=2026-10-08-v63"></script>
+  <script src="js/19-open-trades.js?v=2026-10-08-v63"></script>
+  <script src="js/20-price-questions.js?v=2026-10-08-v63"></script>
+  <script src="js/21-insights.js?v=2026-10-08-v63"></script>
 </body>
 </html>
