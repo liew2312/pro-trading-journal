@@ -40,5 +40,20 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "เช็กก่อนเข้า",
+      "short_name": "เช็กก่อนเข้า",
+      "description": "เช็กลิสต์ก่อนเข้าออเดอร์ตาม Playbook",
+      "url": "./#pretrade",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
   ]
 }

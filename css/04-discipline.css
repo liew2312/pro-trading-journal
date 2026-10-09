@@ -82,3 +82,38 @@ form.tj-wizard #submitBtn{margin-top:4px;}
 .tj-sym-chips button{border:1px solid var(--border);background:var(--card-bg);color:var(--ink);font-weight:700;font-size:.74rem;padding:4px 10px;border-radius:99px;font-family:inherit;}
 .tj-sym-chips button:hover{border-color:var(--brand);color:var(--brand);}
 .tj-edit-banner{display:flex;align-items:center;gap:10px;justify-content:space-between;background:rgba(217,119,6,.12);border:1px solid rgba(217,119,6,.4);border-radius:12px;padding:10px 12px;margin-bottom:14px;font-size:.82rem;color:var(--ink);}
+
+/* ══ v65: เช็กก่อนเข้า (Pre-trade) ══ */
+.tj-side-pt{margin:-10px 0 14px;justify-content:center;border:1px dashed var(--border);}
+.tj-sheet-grid button[data-i="0"]{grid-column:1/-1;flex-direction:row;justify-content:center;gap:10px;background:var(--panel);font-size:.85rem;}
+.tj-sheet-grid button[data-i="0"] i{width:34px;height:34px;}
+.tj-pt-side{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--panel);border-radius:10px;padding:3px;}
+.tj-pt-side button{border:0;background:transparent;border-radius:8px;padding:6px 4px;font-weight:700;font-size:.85rem;color:var(--muted);font-family:inherit;}
+.tj-pt-side button[data-side="Buy"][aria-checked="true"]{background:var(--profit);color:#fff;}
+.tj-pt-side button[data-side="Sell"][aria-checked="true"]{background:var(--loss);color:#fff;}
+.tj-pt-auto{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.tj-pt-row{font-size:.8rem;font-weight:600;border-radius:10px;padding:7px 12px;line-height:1.45;}
+.tj-pt-row i{margin-right:6px;}
+.tj-pt-row.ok{background:var(--gain-bg);color:var(--profit);}
+.tj-pt-row.warn{background:rgba(217,119,6,.12);color:var(--ap-warn);}
+.tj-pt-row.stop{background:var(--loss-bg);color:var(--loss);}
+.tj-pt-check{margin:0 0 16px;}
+.tj-pt-flags{margin:0;}
+.tj-pt-flags small{font-size:.72rem;}
+.tj-pt-sec{font-size:.78rem;font-weight:700;color:var(--muted);margin:0 0 6px;letter-spacing:.02em;}
+.tj-pt-calc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:16px;}
+.tj-pt-calc > div{background:var(--panel);border-radius:10px;padding:7px 10px;min-width:0;}
+.tj-pt-calc > div.good{background:var(--gain-bg);} .tj-pt-calc > div.bad{background:var(--loss-bg);}
+.tj-pt-calc small{display:block;font-size:.7rem;color:var(--muted);}
+.tj-pt-calc b{font-size:1.02rem;font-variant-numeric:tabular-nums;color:var(--ink);}
+.tj-pt-calc > div.bad b{color:var(--loss);}
+.tj-pt-calc p{grid-column:1/-1;font-size:.72rem;color:var(--muted);margin:2px 0 0;}
+.tj-pt-foot{flex-direction:column;align-items:stretch;gap:8px;}
+.tj-pt-verdict{display:flex;align-items:center;gap:10px;border-radius:12px;padding:9px 12px;margin:0;}
+.tj-pt-verdict i{font-size:1.25rem;}
+.tj-pt-verdict b{display:block;font-size:.95rem;}
+.tj-pt-verdict small{display:block;font-size:.75rem;opacity:.9;line-height:1.35;}
+.tj-pt-verdict.go{background:var(--gain-bg);color:var(--profit);}
+.tj-pt-verdict.wait{background:rgba(217,119,6,.12);color:var(--ap-warn);}
+.tj-pt-verdict.stop{background:var(--loss-bg);color:var(--loss);}
+.tj-pt-btns{display:grid;grid-template-columns:auto 1fr;gap:8px;margin:0;}
