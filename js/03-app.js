@@ -282,17 +282,23 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
-// เลขลำดับเทรด (นับจากไม้แรกสุดของบัญชี) — ไม่เปลี่ยนเมื่อกรองข้อมูล
-let _tnoSrc = null, _tnoMap = {};
+// เลขลำดับเทรด — นับตามช่วงที่กรองอยู่ (เดือน/ปี + ตัวกรองช่วงเวลา/Symbol/Setup/ทิศทาง)
+// ใช้ตัวกรองชุดเดียวกับหน้าภาพรวม เลขไม้ล่าสุดจึงตรงกับ "จำนวนออเดอร์" · ไม้ที่อยู่นอกช่วงกรองแสดง "–"
+let _tnoKey = null, _tnoSrc = null, _tnoMap = {};
 window.tjTradeNo = function(id){
   const rows = window._tjRows || [];
-  if(rows !== _tnoSrc){
-    _tnoSrc = rows; _tnoMap = {};
-    rows.filter(r=>r.type==='Buy'||r.type==='Sell').slice().sort((a,b)=>new Date(a.created_at)-new Date(b.created_at) || (a.id>b.id?1:-1)).forEach((r,i)=>{ _tnoMap[r.id]=i+1; });
+  const val = elId => (document.getElementById(elId)||{}).value || 'all';
+  const key = val('filter-month')+'|'+val('filter-year')+'|'+JSON.stringify(window._globalFilter||{});
+  if(rows !== _tnoSrc || key !== _tnoKey){
+    _tnoSrc = rows; _tnoKey = key; _tnoMap = {};
+    const list = window.tjApplyFilters ? window.tjApplyFilters(rows, true).map(t=>t.row)
+      : rows.filter(r=>r.type==='Buy'||r.type==='Sell');
+    list.slice().sort((a,b)=>new Date(a.created_at)-new Date(b.created_at) || (a.id>b.id?1:-1)).forEach((r,i)=>{ _tnoMap[r.id]=i+1; });
   }
   return _tnoMap[id] || '–';
 };
-document.addEventListener('tj:rows', ()=>{ document.querySelectorAll('.tj-hist-no[data-id]').forEach(el=>{ el.textContent = '#'+window.tjTradeNo(el.dataset.id); }); });
+window.tjTradeNoLabel = function(id){ const n = window.tjTradeNo(id); return n === '–' ? '–' : '#'+n; };
+document.addEventListener('tj:rows', ()=>{ document.querySelectorAll('.tj-hist-no[data-id]').forEach(el=>{ el.textContent = window.tjTradeNoLabel(el.dataset.id); }); });
 function updateHistoryUI(historyData) {
   globalTradeHistory = historyData; 
   const tbody       = document.getElementById('history-table-body'); 
@@ -353,7 +359,7 @@ function updateHistoryUI(historyData) {
       const rDisp = (!isNaN(rNum)) ? `<div class="tj-hist-r">${rNum >= 0 ? '+' : ''}${rNum.toFixed(1)}R</div>` : '';
       tbody.innerHTML += `
         <div class="tj-hist-row hist-${winCls}" onclick="openTradeModal(${index})">
-          <div class="tj-hist-no" data-id="${trade.id}" title="เทรดลำดับที่ (นับจากไม้แรก)">#${window.tjTradeNo ? window.tjTradeNo(trade.id) : totalTrades}</div>
+          <div class="tj-hist-no" data-id="${trade.id}" title="ลำดับไม้ในช่วงที่กรองอยู่ (– = อยู่นอกช่วงกรอง)">${window.tjTradeNoLabel ? window.tjTradeNoLabel(trade.id) : '#'+totalTrades}</div>
           ${window.tjThumb && window.tjThumb(trade.chartBefore || trade.chartAfter) ? `<img class="tj-hist-thumb" src="${window.tjThumb(trade.chartBefore || trade.chartAfter)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}&quot;><i class=&quot;fa-solid ${arrow}&quot;></i></div>'">` : `<div class="tj-hist-ico ${pnlValue < 0 ? 'loss' : 'win'}"><i class="fa-solid ${arrow}"></i></div>`}
           <div class="tj-hist-main">
             <div class="tj-hist-sym">${trade.symbol || '-'} ${ocTag}${warn}</div>
