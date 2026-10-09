@@ -1,0 +1,137 @@
+/* ══════════ v64: ธีม "ป๊อป" ══════════
+   ต่อยอดจากธีมพาสเทล (html[data-accent="pastel"]) แล้วทับด้วย html[data-skin="pop"]
+   ลักษณะ: ขอบดำหนา · เงาแข็งไม่เบลอ · สีสดเป็นบล็อกบนพื้นครีม · ตัวเลขใหญ่ Archivo Expanded
+   การ์ดสี (วันนี้ / กำไรสุทธิ / ฯลฯ) ใช้ตัวอักษรเข้มเสมอทั้งโหมดสว่างและมืด */
+:root[data-skin="pop"]{
+  --pop-ink:#121212; --pop-cream:#FAF6EC; --pop-lime:#D6F35B; --pop-pink:#FF9BCB; --pop-mint:#86EBC6;
+  --pop-violet:#B39BFF; --pop-sun:#FFD84A; --pop-sky:#8EE6F2; --pop-orange:#FF9F43;
+  --pop-line:#121212; --pop-shadow:#121212; --pop-num:'Archivo','Prompt',sans-serif;
+  --brand:#121212; --brand-2:#000; --on-brand:#FFFFFF; --brand-tint:#D6F35B;
+  --canvas:#FAF6EC; --bg-body:#FAF6EC; --panel:#F1ECDD; --border:#121212; --card-border:#121212; --card-bg:#FFFFFF;
+  --topbar-bg:rgba(250,246,236,.92); --sidebar-bg:#FAF6EC; --row-hover:#F1ECDD;
+  --ink:#121212; --color-body:#121212; --muted:#4A4740; --section-title:#121212; --form-label:#2A2824;
+  --profit:#0E7A3D; --loss:#C8261F; --gain-bg:#D6F35B; --loss-bg:#FF9BCB; --gain-strong:#0E7A3D; --loss-strong:#C8261F;
+  --cal-cell-empty:#F1ECDD; --cal-cell-border:#121212; --cal-cell-today:#D6F35B; --input-border:#121212;
+  --pj-rose:#FF9BCB; --pj-lime:#D6F35B; --pj-peach:#FFD84A; --pj-lilac:#B39BFF; --pj-hi:#D6F35B; --pj-veil:#FFFFFF;
+  --pj-float:5px 5px 0 #121212;
+}
+[data-theme="dark"][data-skin="pop"]{
+  --pop-line:#F5F1E6; --pop-shadow:rgba(245,241,230,.9);
+  --brand:#F5F1E6; --brand-2:#FFFFFF; --on-brand:#121212;
+  --canvas:#141414; --bg-body:#141414; --panel:#262522; --border:#F5F1E6; --card-border:#F5F1E6; --card-bg:#1E1D1B;
+  --topbar-bg:rgba(20,20,20,.92); --sidebar-bg:#181817; --row-hover:#262522;
+  --ink:#F5F1E6; --color-body:#F5F1E6; --muted:#BDB8AC; --section-title:#F5F1E6; --form-label:#E2DED3;
+  --profit:#7BE3A4; --loss:#FF8A80; --gain-bg:#D6F35B; --loss-bg:#FF9BCB; --gain-strong:#7BE3A4; --loss-strong:#FF8A80;
+  --input-bg:#262522; --cal-cell-bg:#1E1D1B; --cal-cell-empty:#181817; --cal-cell-border:#F5F1E6;
+  --pj-veil:#FFFFFF; --pj-float:5px 5px 0 rgba(245,241,230,.9);
+}
+/* บล็อกสี: ตัวอักษรเข้มเสมอ (ตั้งตัวแปรใหม่เฉพาะภายในการ์ด) */
+[data-skin="pop"] :is(.tj-today,.pj-main,.pj-perf-hero,.pj-empty,.tj-prompt,.metric-card,.god-rule-box,.discipline-box,.tj-today-cell,.pj-main-grid > div,.pj-wk.g,.pj-wk.l,.tj-cal2-d.g,.tj-cal2-d.l,.tj-pill,.tj-ico,.tj-chip.active,.tj-histtab.active,.tj-preset.active,.tj-side.active,.tj-view.active,.pj-tabs button.active,.tj-nav-add .pj-plus,.tj-fab-add,.tj-hist-tag){
+  --ink:#121212; --muted:#3A3832; --section-title:#121212; --profit:#0E7A3D; --loss:#C8261F; --pj-veil:#FFFFFF; --card-bg:#FFFFFF;
+  color:#121212;
+}
+
+/* ── ตัวเลข/หัวข้อแบบโปสเตอร์ ── */
+[data-skin="pop"] :is(.pj-main-pnl,.pj-perf-hero .big,.pj-empty h3,.tj-hello h3,.tj-kpi-value,.metric-value,.tj-today-cell .v,.tj-hist-sum b,.pj-wk b,.tj-wiz-num,.pj-login-card h1){
+  font-family:var(--pop-num); font-stretch:125%; font-weight:900!important; letter-spacing:-.01em;
+}
+[data-skin="pop"] .pj-main-pnl{font-size:3.1rem;line-height:.98;}
+[data-skin="pop"] .tj-hello h3{text-transform:uppercase;}
+[data-skin="pop"] :is(.section-header .title,.tj-today-head h6,.tj-page-head h2,.tj-page-head h3,.tj-wiz-title){font-weight:800!important;}
+
+/* ── การ์ด: ขอบดำ 2px + เงาแข็ง ── */
+[data-skin="pop"] :is(.card-stat,.tj-today,.pj-main,.pj-empty,.pj-perf-hero,.tj-disc,.tj-kpi,.metric-card,.god-rule-box,.discipline-box,.confluence-box,.tj-goal,.tj-prompt,.tj-open-pill,.tj-sum-card,.modal-content,.tj-cal2){
+  border:2px solid var(--pop-line)!important; box-shadow:5px 5px 0 var(--pop-shadow)!important; border-radius:22px!important;
+}
+[data-skin="pop"] :is(.tj-kpi,.tj-open-pill,.tj-goal){box-shadow:3px 3px 0 var(--pop-shadow)!important;border-radius:18px!important;}
+[data-skin="pop"] .tj-today{background:var(--pop-sun)!important;}
+[data-skin="pop"] .pj-main{background:var(--pop-violet)!important;}
+[data-skin="pop"] .pj-main.pos,[data-skin="pop"] .pj-perf-hero.pos{background:var(--pop-lime)!important;}
+[data-skin="pop"] .pj-main.neg,[data-skin="pop"] .pj-perf-hero.neg{background:var(--pop-pink)!important;}
+[data-skin="pop"] .pj-perf-hero{background:var(--pop-violet)!important;}
+[data-skin="pop"] .pj-empty{background:var(--pop-sun)!important;}
+[data-skin="pop"] .tj-prompt{background:var(--pop-violet)!important;}
+[data-skin="pop"] .tj-prompt button{background:#121212!important;color:var(--pop-lime)!important;}
+[data-skin="pop"] .metric-card.metric-mae{background:var(--pop-pink)!important;}
+[data-skin="pop"] .metric-card.metric-mfe{background:var(--pop-lime)!important;}
+[data-skin="pop"] .metric-card.metric-r{background:var(--pop-sky)!important;}
+[data-skin="pop"] .god-rule-box{background:var(--pop-sun)!important;}
+[data-skin="pop"] .discipline-box{background:var(--pop-mint)!important;}
+[data-skin="pop"] :is(.tj-today-cell,.pj-main-grid > div){background:#FFFFFF!important;border:2px solid #121212;border-radius:14px!important;}
+[data-skin="pop"] .tj-today-msg{border:2px solid #121212;}
+[data-skin="pop"] .tj-today-msg.stop{background:#121212;color:#FFFFFF;}
+[data-skin="pop"] .tj-today-msg.warn{background:#FFFFFF;color:#121212;}
+[data-skin="pop"] .tj-bar{border:2px solid #121212;background:#FFFFFF;height:10px;}
+
+/* ── ไอคอนในวงกลม/ป้าย ── */
+[data-skin="pop"] :is(.section-header .icon-wrap,.stat-icon-badge){background:var(--pop-lime)!important;border:2px solid var(--pop-line);border-radius:12px!important;}
+[data-skin="pop"] :is(.section-header .icon-wrap i,.stat-icon-badge i){color:#121212!important;}
+[data-skin="pop"] .tj-ico{border:2px solid #121212;border-radius:12px;background:var(--pop-lime);}
+[data-skin="pop"] .tj-ico-warning{background:var(--pop-sun);}
+[data-skin="pop"] .tj-ico-danger{background:var(--pop-pink);}
+[data-skin="pop"] .tj-prompt .tj-ico{background:#FFFFFF;}
+
+/* ข้อสังเกต (สไตล์ inline เดิม) */
+[data-skin="pop"] #ai-insights-container > div{background:var(--card-bg)!important;border:2px solid var(--pop-line)!important;border-radius:16px!important;box-shadow:none!important;}
+[data-skin="pop"] #ai-insights-container > div .text-dark{color:var(--ink)!important;}
+
+/* ── ปุ่ม ── */
+[data-skin="pop"] .btn-primary{background:#121212!important;border:2px solid #121212!important;color:var(--pop-lime)!important;border-radius:999px!important;font-weight:800!important;box-shadow:4px 4px 0 var(--pop-orange)!important;}
+[data-skin="pop"] .btn-primary:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--pop-orange)!important;}
+[data-skin="pop"] :is(.btn-outline-secondary,.btn-light,.btn-outline-primary,.btn-outline-success,.btn-outline-danger){border:2px solid var(--pop-line)!important;border-radius:999px!important;font-weight:700;}
+[data-skin="pop"] .pj-empty-btn{background:#121212;color:var(--pop-lime);box-shadow:4px 4px 0 var(--pop-orange);}
+
+/* ── ชิป / แท็บ ── */
+[data-skin="pop"] :is(.tj-chip,.tj-histtab,.tj-preset,.tj-side,.tj-view,.tj-tf,.tj-accents button,.tj-seg){border:2px solid var(--pop-line)!important;}
+[data-skin="pop"] :is(.tj-chip.active,.tj-histtab.active,.tj-preset.active,.tj-side.active,.tj-view.active,#tj-hist-head .tj-side.active){background:var(--pop-lime)!important;border-color:var(--pop-line)!important;color:#121212!important;box-shadow:3px 3px 0 var(--pop-shadow);}
+[data-skin="pop"] .pj-tabs{background:var(--card-bg);border:2px solid var(--pop-line);}
+[data-skin="pop"] .pj-tabs button.active{background:#121212!important;color:var(--pop-lime)!important;}
+[data-theme="dark"][data-skin="pop"] .pj-tabs button.active{background:var(--pop-lime)!important;color:#121212!important;}
+[data-skin="pop"] .tj-tf{color:var(--ink);border-radius:12px;}
+[data-skin="pop"] .btn-check:checked + .tj-tf{background:var(--pop-sky)!important;color:#121212!important;box-shadow:3px 3px 0 var(--pop-shadow);}
+[data-skin="pop"] :is(.pj-side-seg button,.pj-oc-chips button){border:2px solid var(--pop-line);}
+[data-skin="pop"] :is(.pj-side-seg button,.pj-oc-chips button)[aria-checked="true"]{box-shadow:3px 3px 0 var(--pop-shadow);color:#121212;background:var(--pop-sky);}
+[data-skin="pop"] .pj-side-seg button[data-v="Buy"][aria-checked="true"],[data-skin="pop"] .pj-oc-chips button.g[aria-checked="true"]{background:var(--pop-mint);}
+[data-skin="pop"] .pj-side-seg button[data-v="Sell"][aria-checked="true"],[data-skin="pop"] .pj-oc-chips button.l[aria-checked="true"]{background:var(--pop-pink);}
+[data-skin="pop"] .tj-pill{border:2px solid #121212;}
+[data-skin="pop"] .tj-pill.ok{background:var(--pop-lime);color:#121212;}
+[data-skin="pop"] .tj-pill.warn{background:var(--pop-sun);color:#121212;}
+[data-skin="pop"] .tj-pill.stop{background:var(--pop-pink);color:#121212;}
+[data-skin="pop"] .tj-wiz-num{background:#121212;color:var(--pop-lime);border-radius:999px;}
+[data-theme="dark"][data-skin="pop"] .tj-wiz-num{background:var(--pop-lime);color:#121212;}
+[data-skin="pop"] .tj-wiz-bar{height:12px;border:2px solid var(--pop-line);background:var(--card-bg);}
+[data-skin="pop"] .tj-wiz-bar span{background:var(--pop-lime);border-right:2px solid #121212;border-radius:0;}
+
+/* ── ฟอร์ม ── */
+[data-skin="pop"] :is(.form-control,.form-select){border:2px solid var(--pop-line)!important;border-radius:14px!important;}
+[data-skin="pop"] :is(.form-control,.form-select):focus{box-shadow:3px 3px 0 var(--pop-lime)!important;}
+[data-skin="pop"] .upload-box{border:2px dashed var(--pop-line);border-radius:18px;}
+
+/* ── ประวัติ ── */
+[data-skin="pop"] .tj-hist-row{border:2px solid var(--pop-line)!important;border-radius:16px!important;background:var(--card-bg);}
+[data-skin="pop"] .tj-hist-sum{background:var(--pop-sky);border:2px solid var(--pop-line);box-shadow:3px 3px 0 var(--pop-shadow);--ink:#121212;--muted:#3A3832;--border:#121212;color:#121212;}
+[data-skin="pop"] .tj-hist-sum b{color:#121212;}
+[data-skin="pop"] .tj-hist-no{background:#121212;color:var(--pop-lime);border-radius:10px;padding:6px 0;}
+[data-theme="dark"][data-skin="pop"] .tj-hist-no{background:var(--pop-lime);color:#121212;}
+[data-skin="pop"] .tj-hist-tag{border:2px solid #121212;border-radius:99px;}
+[data-skin="pop"] .tj-hist-tag.buy{background:var(--pop-mint);color:#121212;}
+[data-skin="pop"] .tj-hist-tag.sell{background:var(--pop-pink);color:#121212;}
+
+/* ── ปฏิทิน ── */
+[data-skin="pop"] .tj-cal2-d.g{background:var(--pop-lime)!important;}
+[data-skin="pop"] .tj-cal2-d.l{background:var(--pop-pink)!important;}
+[data-skin="pop"] .pj-wk{border:2px solid var(--pop-line);}
+[data-skin="pop"] .pj-wk.g{background:var(--pop-lime);} [data-skin="pop"] .pj-wk.l{background:var(--pop-pink);}
+
+/* ── เมนูล่าง (มือถือ) ── */
+@media(max-width:991px){
+  [data-skin="pop"] .tj-bottomnav{background:#121212!important;border:2px solid #121212!important;box-shadow:4px 4px 0 var(--pop-violet)!important;}
+  [data-skin="pop"] .tj-nav-item{color:#FFFFFF!important;}
+  [data-skin="pop"] .tj-nav-item.active{background:var(--pop-lime)!important;color:#121212!important;}
+  [data-skin="pop"] .tj-nav-add .pj-plus{background:var(--pop-orange)!important;color:#121212!important;border:2px solid #FFFFFF;}
+  [data-skin="pop"] .tj-nav-add.active .pj-plus{box-shadow:0 0 0 3px var(--pop-lime)!important;}
+}
+[data-skin="pop"] .tj-fab-add{background:var(--pop-orange)!important;color:#121212!important;border:2px solid #121212!important;box-shadow:4px 4px 0 #121212!important;}
+[data-skin="pop"] .tj-side-item.active{background:var(--pop-lime);color:#121212;border:2px solid #121212;}
+[data-skin="pop"] .tj-side-item.active i{color:#121212;}
+[data-skin="pop"] .tj-accents button.active{border-color:var(--pop-line)!important;box-shadow:3px 3px 0 var(--pop-shadow);}

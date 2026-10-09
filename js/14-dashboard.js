@@ -15,9 +15,12 @@
   };
 
   // ── สีหลัก ──
-  const TC = { pastel:'#F4F3EE', green:'#F4F7F2', red:'#F6F6F7', blue:'#F4F6FA', mono:'#F6F6F7' };
+  const TC = { pastel:'#F4F3EE', pop:'#FAF6EC', green:'#F4F7F2', red:'#F6F6F7', blue:'#F4F6FA', mono:'#F6F6F7' };
+  // "ป๊อป" ใช้โครงของธีมพาสเทล + data-skin="pop" (css/09-pop.css)
+  function curAccent(){ try{ return localStorage.getItem('tj_accent') || 'pastel'; }catch(e){ return document.documentElement.getAttribute('data-skin')==='pop' ? 'pop' : (document.documentElement.getAttribute('data-accent')||'pastel'); } }
   function setAccent(a){
-    document.documentElement.setAttribute('data-accent', a);
+    document.documentElement.setAttribute('data-accent', a==='pop' ? 'pastel' : a);
+    if(a==='pop') document.documentElement.setAttribute('data-skin','pop'); else document.documentElement.removeAttribute('data-skin');
     try{ localStorage.setItem('tj_accent', a); }catch(e){}
     const m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', TC[a]||TC.pastel);
     document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===a));
@@ -25,7 +28,7 @@
     renderDisc();
   }
   document.querySelectorAll('#tj-accents button').forEach(b=>b.addEventListener('click', ()=>setAccent(b.dataset.a)));
-  document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===(document.documentElement.getAttribute('data-accent')||'pastel')));
+  document.querySelectorAll('#tj-accents button').forEach(b=>b.classList.toggle('active', b.dataset.a===curAccent()));
 
   // ── คำทักทาย ──
   function renderHello(){

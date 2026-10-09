@@ -30,26 +30,28 @@
   
   <script>
     (function(){ try{ if(!localStorage.getItem('tj_style_v40')){ localStorage.setItem('tj_accent','pastel'); localStorage.setItem('tj_style_v40','1'); }
-      var a = localStorage.getItem('tj_accent') || 'pastel'; document.documentElement.setAttribute('data-accent', a);
-      var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', {pastel:'#F4F3EE',green:'#F4F7F2',red:'#F6F6F7',blue:'#F4F6FA',mono:'#F6F6F7'}[a]||'#F4F3EE'); }catch(e){ document.documentElement.setAttribute('data-accent','pastel'); } })();
+      var a = localStorage.getItem('tj_accent') || 'pastel'; document.documentElement.setAttribute('data-accent', a==='pop' ? 'pastel' : a);
+      if(a==='pop') document.documentElement.setAttribute('data-skin','pop');
+      var m = document.querySelector('meta[name="theme-color"]'); if(m) m.setAttribute('content', {pastel:'#F4F3EE',pop:'#FAF6EC',green:'#F4F7F2',red:'#F6F6F7',blue:'#F4F6FA',mono:'#F6F6F7'}[a]||'#F4F3EE'); }catch(e){ document.documentElement.setAttribute('data-accent','pastel'); } })();
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,700..900&family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <script src="js/00-hand-icons.js?v=2026-10-08-v63"></script>
-  <link rel="stylesheet" href="css/01-base.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-08-v63">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-08-v63">
+  <script src="js/00-hand-icons.js?v=2026-10-09-v64"></script>
+  <link rel="stylesheet" href="css/01-base.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-09-v64">
+  <link rel="stylesheet" href="css/09-pop.css?v=2026-10-09-v64">
 </head>
 <body>
 
@@ -983,7 +985,8 @@
           <div class="px-2 pb-3 text-start">
             <div style="font-size:0.9rem;font-weight:700;color:var(--section-title);" class="mb-2">สีหลักของแอป</div>
             <div class="tj-accents" id="tj-accents">
-              <button type="button" data-a="pastel" title="พาสเทล (ใหม่)"><span style="background:conic-gradient(#F6CCCC 0 33%,#EDF8CF 0 66%,#FDE2CF 0)"></span>พาสเทล</button>
+              <button type="button" data-a="pastel" title="พาสเทล"><span style="background:conic-gradient(#F6CCCC 0 33%,#EDF8CF 0 66%,#FDE2CF 0)"></span>พาสเทล</button>
+              <button type="button" data-a="pop" title="ป๊อป (ใหม่)"><span style="background:conic-gradient(#D6F35B 0 25%,#FF9BCB 0 50%,#B39BFF 0 75%,#FFD84A 0);border:2px solid #121212;box-sizing:border-box"></span>ป๊อป</button>
               <button type="button" data-a="green" title="เขียว"><span style="background:#2F8F46"></span>เขียว</button>
               <button type="button" data-a="red" title="แดงเข้ม (เดิม)"><span style="background:#921C1E"></span>แดงเข้ม</button>
               <button type="button" data-a="blue" title="น้ำเงิน"><span style="background:#2563EB"></span>น้ำเงิน</button>
@@ -1205,26 +1208,26 @@
   
   
 
-  <script src="js/01-config.js?v=2026-10-08-v63"></script>
-  <script src="js/02-api.js?v=2026-10-08-v63"></script>
-  <script src="js/03-app.js?v=2026-10-08-v63"></script>
-  <script src="js/04-auth.js?v=2026-10-08-v63"></script>
-  <script src="js/05-theme.js?v=2026-10-08-v63"></script>
-  <script src="js/06-pwa.js?v=2026-10-08-v63"></script>
-  <script src="js/07-filters.js?v=2026-10-08-v63"></script>
-  <script src="js/08-calendar-performance.js?v=2026-10-08-v63"></script>
-  <script src="js/09-chart-page.js?v=2026-10-08-v63"></script>
-  <script src="js/10-session.js?v=2026-10-08-v63"></script>
-  <script src="js/11-news.js?v=2026-10-08-v63"></script>
-  <script src="js/12-discipline.js?v=2026-10-08-v63"></script>
-  <script src="js/13-trade-form.js?v=2026-10-08-v63"></script>
-  <script src="js/14-dashboard.js?v=2026-10-08-v63"></script>
-  <script src="js/15-profile.js?v=2026-10-08-v63"></script>
-  <script src="js/16-my-tradingview.js?v=2026-10-08-v63"></script>
-  <script src="js/17-pastel-ui.js?v=2026-10-08-v63"></script>
-  <script src="js/18-timeframe.js?v=2026-10-08-v63"></script>
-  <script src="js/19-open-trades.js?v=2026-10-08-v63"></script>
-  <script src="js/20-price-questions.js?v=2026-10-08-v63"></script>
-  <script src="js/21-insights.js?v=2026-10-08-v63"></script>
+  <script src="js/01-config.js?v=2026-10-09-v64"></script>
+  <script src="js/02-api.js?v=2026-10-09-v64"></script>
+  <script src="js/03-app.js?v=2026-10-09-v64"></script>
+  <script src="js/04-auth.js?v=2026-10-09-v64"></script>
+  <script src="js/05-theme.js?v=2026-10-09-v64"></script>
+  <script src="js/06-pwa.js?v=2026-10-09-v64"></script>
+  <script src="js/07-filters.js?v=2026-10-09-v64"></script>
+  <script src="js/08-calendar-performance.js?v=2026-10-09-v64"></script>
+  <script src="js/09-chart-page.js?v=2026-10-09-v64"></script>
+  <script src="js/10-session.js?v=2026-10-09-v64"></script>
+  <script src="js/11-news.js?v=2026-10-09-v64"></script>
+  <script src="js/12-discipline.js?v=2026-10-09-v64"></script>
+  <script src="js/13-trade-form.js?v=2026-10-09-v64"></script>
+  <script src="js/14-dashboard.js?v=2026-10-09-v64"></script>
+  <script src="js/15-profile.js?v=2026-10-09-v64"></script>
+  <script src="js/16-my-tradingview.js?v=2026-10-09-v64"></script>
+  <script src="js/17-pastel-ui.js?v=2026-10-09-v64"></script>
+  <script src="js/18-timeframe.js?v=2026-10-09-v64"></script>
+  <script src="js/19-open-trades.js?v=2026-10-09-v64"></script>
+  <script src="js/20-price-questions.js?v=2026-10-09-v64"></script>
+  <script src="js/21-insights.js?v=2026-10-09-v64"></script>
 </body>
 </html>
