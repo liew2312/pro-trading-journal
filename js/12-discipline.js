@@ -15,11 +15,26 @@
     { value:'SMC', name:'SMC / ICT', rules:['มีการกวาด Liquidity ก่อนเข้า','เกิด BOS / CHOCH ใน TF เล็ก','เข้าที่ FVG / Order Block ฝั่งที่ถูก (Premium/Discount)','ทิศทางตรงกับ HTF bias','RR อย่างน้อย 1:2'] },
     { value:'Demand/Supply', name:'Demand / Supply', rules:['โซนสด ยังไม่ถูกทดสอบ','ราคาออกจากโซนแรง (impulse)','มีแท่งยืนยันที่โซน','RR อย่างน้อย 1:2'] },
     { value:'Breakout', name:'Breakout', rules:['เบรกกรอบชัดเจน ปิดแท่งนอกกรอบ','โมเมนตัมหนุน','รอ Retest ก่อนเข้า','ไม่มีข่าวแรงภายใน 30 นาที'] },
-    { value:'Trend Following', name:'Trend Following', rules:['HTF เป็นเทรนด์ชัด (HH/HL หรือ LH/LL)','เข้าตอนย่อ ไม่ไล่ราคา','SL หลัง swing ล่าสุด','RR อย่างน้อย 1:2'] }
+    { value:'Trend Following', name:'Trend Following', rules:['HTF เป็นเทรนด์ชัด (HH/HL หรือ LH/LL)','เข้าตอนย่อ ไม่ไล่ราคา','SL หลัง swing ล่าสุด','RR อย่างน้อย 1:2'] },
+    { value:'BOS Sweep', name:'BOS Sweep (Follow Trend)', rules:['BOS — แท่งปิดเบรก High/Low เดิม โครงสร้างเปลี่ยนตามเทรนด์','Clear Liquidity #1 #2 — กวาดสภาพคล่องฝั่งตรงข้ามแล้ว','BOS Continue — เบรกต่อได้อีกครั้ง ได้ Order Range','LQ $$$ — มี Low/High ย่อยค้างเหนือ Entry Zone ให้เก็บ','ราคากวาด $$$ เข้า Entry Zone ยังไม่ปิดหลุดจุดที่ถูกกวาด','LTF Entry — TF เล็กกลับตัว (CHoCH/BOS) ในโซน','RR ถึงขั้นต่ำ · SL หลังจุดที่ถูกกวาด · TP ที่ High/Low ล่าสุด'] }
   ];
-  const DEFAULT_RULES = { maxRiskPct:1, maxDailyLossR:2, maxLossStreak:2, maxTrades:5, revengeMin:15, xauContract:100 };
+  // Setup ที่เพิ่มทีหลัง → ใส่ให้ผู้ใช้เดิมครั้งเดียว (ลบทิ้งแล้วจะไม่กลับมา)
+  const SEED_SETUPS = ['BOS Sweep'];
+  const DEFAULT_RULES = { maxRiskPct:1, maxDailyLossR:2, maxLossStreak:2, maxTrades:5, revengeMin:15, xauContract:100, minRR:2 };
   let prefs = Object.assign({ rules: Object.assign({}, DEFAULT_RULES), playbook: DEFAULT_PLAYBOOK }, ls.get('tj_prefs', {}));
   prefs.rules = Object.assign({}, DEFAULT_RULES, prefs.rules||{});
+  function seedPlaybook(mark){
+    const done = Array.isArray(prefs.pbSeeded) ? prefs.pbSeeded.slice() : [];
+    let changed = false;
+    SEED_SETUPS.forEach(v=>{
+      if(done.includes(v)) return;
+      if(!prefs.playbook.some(p=>(p.value||p.name)===v)){ const d = DEFAULT_PLAYBOOK.find(p=>p.value===v); if(d){ prefs.playbook = prefs.playbook.concat([JSON.parse(JSON.stringify(d))]); changed = true; } }
+      if(mark){ done.push(v); changed = true; }
+    });
+    if(mark) prefs.pbSeeded = done;
+    return changed;
+  }
+  seedPlaybook(false);
   let authClient = null;
   function auth(){
     if(authClient) return authClient;
@@ -30,14 +45,16 @@
     try{
       const a = auth(); if(!a) return;
       const { data } = await a.auth.getUser();
-      const remote = data && data.user && data.user.user_metadata && data.user.user_metadata.tj_prefs;
+      const user = data && data.user; if(!user) return;
+      const remote = user.user_metadata && user.user_metadata.tj_prefs;
       if(remote && typeof remote==='object'){
         prefs = Object.assign({}, prefs, remote);
+        prefs.pbSeeded = Array.isArray(remote.pbSeeded) ? remote.pbSeeded : [];
         prefs.rules = Object.assign({}, DEFAULT_RULES, remote.rules||{});
         if(!Array.isArray(prefs.playbook) || !prefs.playbook.length) prefs.playbook = DEFAULT_PLAYBOOK;
-        ls.set('tj_prefs', prefs);
-        applyPrefs();
       }
+      if(seedPlaybook(true)) await savePrefs();
+      else if(remote && typeof remote==='object'){ ls.set('tj_prefs', prefs); applyPrefs(); }
     }catch(e){ console.warn('[prefs] load', e); }
   }
   async function savePrefs(){
@@ -182,6 +199,7 @@
       f('maxTrades','จำนวนไม้สูงสุดต่อวัน','1','ไม้','กัน Overtrade') +
       f('revengeMin','นับเป็น Revenge ถ้าเข้าไม้ใหม่ภายใน','1','นาที หลังแพ้','') +
       f('xauContract','ขนาดสัญญาทอง (XAUUSD) ต่อ 1 lot','1','ออนซ์','โบรกส่วนใหญ่ = 100 (ราคาขยับ $1 = $100/lot)') +
+      f('minRR','RR ขั้นต่ำก่อนเข้า','0.5','เท่าของความเสี่ยง (1:x)','ใช้ในหน้า “เช็กก่อนเข้า” — ต่ำกว่านี้ระบบบอกว่าไม่ควรเข้า') +
       '<div class="small text-muted">กฎซิงก์กับบัญชีของคุณ ใช้ได้ทุกเครื่อง · 1R ของไม้ที่ไม่มี Risk$ = พอร์ต × % ความเสี่ยงต่อไม้</div>',
       '<button class="btn btn-primary w-100" id="tj-rules-save">บันทึกกฎ</button>');
     el.querySelector('#tj-rules-save').onclick = async ()=>{
@@ -251,6 +269,8 @@
     host.querySelectorAll('.tj-pb-cb').forEach(c=>c.addEventListener('change', upd)); upd();
   }
   (function(){ const s=$('f_setup'); if(s) s.addEventListener('change', renderChecklist); })();
+  // ให้โมดูลอื่น (22-pre-trade.js) ใช้ Playbook / กฎ / ตัวคำนวณ Risk ชุดเดียวกัน
+  window.tjPB = { prefs: ()=>prefs, riskUSD, balance, gradeOf, gcls };
 
   window.tjOpenPlaybook = function(){
     const draw = list => list.map((p,i)=>`<div class="tj-pb-item" data-i="${i}">

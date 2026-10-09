@@ -77,6 +77,7 @@
       bg = document.createElement('div'); bg.className='tj-sheet-bg'; bg.onclick = close;
       sheet = document.createElement('div'); sheet.className='tj-sheet';
       const items = [
+        ['fa-solid fa-list-check','เช็กก่อนเข้า',()=>tjOpenPreTrade()],
         ['fa-solid fa-file-arrow-up','นำเข้า MT5',()=>tjOpenImport()],
         ['fa-solid fa-chart-simple','กราฟ',()=>switchTab('chart')],
         ['fa-regular fa-newspaper','ข่าว',()=>switchTab('news'),'news'],

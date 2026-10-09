@@ -42,16 +42,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
-  <script src="js/00-hand-icons.js?v=2026-10-09-v64"></script>
-  <link rel="stylesheet" href="css/01-base.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/06-components.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-09-v64">
-  <link rel="stylesheet" href="css/09-pop.css?v=2026-10-09-v64">
+  <script src="js/00-hand-icons.js?v=2026-10-09-v65"></script>
+  <link rel="stylesheet" href="css/01-base.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/02-analytics.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/03-layout.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/04-discipline.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/05-theme.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/06-components.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/07-pastel.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/08-extras.css?v=2026-10-09-v65">
+  <link rel="stylesheet" href="css/09-pop.css?v=2026-10-09-v65">
 </head>
 <body>
 
@@ -62,6 +62,7 @@
       <div><b>LiewTrade</b><span>Journal</span></div>
     </div>
     <button class="tj-side-add" onclick="switchTab('add-trade')"><i class="fa-solid fa-plus"></i> บันทึกเทรด</button>
+    <button class="tj-side-item tj-side-pt" onclick="tjOpenPreTrade()"><i class="fa-solid fa-list-check"></i> เช็กก่อนเข้า</button>
     <div class="tj-side-label">เมนู</div>
     <button class="tj-side-item nav-icon-btn nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i> ภาพรวม</button>
     <button class="tj-side-item nav-icon-btn nav-link" onclick="switchTab('calendar')"><i class="fa-regular fa-calendar"></i> ปฏิทิน</button>
@@ -703,7 +704,7 @@
 
           <div class="row g-3 mb-4">
             <div class="col-sm-6">
-              <label class="form-label d-flex justify-content-between align-items-center">Setup (Playbook) <a href="javascript:void(0)" class="small fw-semibold" onclick="tjOpenPlaybook()"><i class="fa-solid fa-book"></i> แก้ไข Playbook</a></label>
+              <label class="form-label d-flex justify-content-between align-items-center">Setup (Playbook) <span class="d-flex gap-3"><a href="javascript:void(0)" class="small fw-semibold" onclick="tjOpenPreTrade()"><i class="fa-solid fa-list-check"></i> เช็กก่อนเข้า</a><a href="javascript:void(0)" class="small fw-semibold" onclick="tjOpenPlaybook()"><i class="fa-solid fa-book"></i> แก้ไข Playbook</a></span></label>
               <select class="form-select" name="setup" id="f_setup">
                 <option value="" disabled selected>เลือก Setup...</option>
                 <option value="SMC">SMC / ICT</option><option value="Demand/Supply">Demand/Supply</option>
@@ -1208,26 +1209,27 @@
   
   
 
-  <script src="js/01-config.js?v=2026-10-09-v64"></script>
-  <script src="js/02-api.js?v=2026-10-09-v64"></script>
-  <script src="js/03-app.js?v=2026-10-09-v64"></script>
-  <script src="js/04-auth.js?v=2026-10-09-v64"></script>
-  <script src="js/05-theme.js?v=2026-10-09-v64"></script>
-  <script src="js/06-pwa.js?v=2026-10-09-v64"></script>
-  <script src="js/07-filters.js?v=2026-10-09-v64"></script>
-  <script src="js/08-calendar-performance.js?v=2026-10-09-v64"></script>
-  <script src="js/09-chart-page.js?v=2026-10-09-v64"></script>
-  <script src="js/10-session.js?v=2026-10-09-v64"></script>
-  <script src="js/11-news.js?v=2026-10-09-v64"></script>
-  <script src="js/12-discipline.js?v=2026-10-09-v64"></script>
-  <script src="js/13-trade-form.js?v=2026-10-09-v64"></script>
-  <script src="js/14-dashboard.js?v=2026-10-09-v64"></script>
-  <script src="js/15-profile.js?v=2026-10-09-v64"></script>
-  <script src="js/16-my-tradingview.js?v=2026-10-09-v64"></script>
-  <script src="js/17-pastel-ui.js?v=2026-10-09-v64"></script>
-  <script src="js/18-timeframe.js?v=2026-10-09-v64"></script>
-  <script src="js/19-open-trades.js?v=2026-10-09-v64"></script>
-  <script src="js/20-price-questions.js?v=2026-10-09-v64"></script>
-  <script src="js/21-insights.js?v=2026-10-09-v64"></script>
+  <script src="js/01-config.js?v=2026-10-09-v65"></script>
+  <script src="js/02-api.js?v=2026-10-09-v65"></script>
+  <script src="js/03-app.js?v=2026-10-09-v65"></script>
+  <script src="js/04-auth.js?v=2026-10-09-v65"></script>
+  <script src="js/05-theme.js?v=2026-10-09-v65"></script>
+  <script src="js/06-pwa.js?v=2026-10-09-v65"></script>
+  <script src="js/07-filters.js?v=2026-10-09-v65"></script>
+  <script src="js/08-calendar-performance.js?v=2026-10-09-v65"></script>
+  <script src="js/09-chart-page.js?v=2026-10-09-v65"></script>
+  <script src="js/10-session.js?v=2026-10-09-v65"></script>
+  <script src="js/11-news.js?v=2026-10-09-v65"></script>
+  <script src="js/12-discipline.js?v=2026-10-09-v65"></script>
+  <script src="js/13-trade-form.js?v=2026-10-09-v65"></script>
+  <script src="js/14-dashboard.js?v=2026-10-09-v65"></script>
+  <script src="js/15-profile.js?v=2026-10-09-v65"></script>
+  <script src="js/16-my-tradingview.js?v=2026-10-09-v65"></script>
+  <script src="js/17-pastel-ui.js?v=2026-10-09-v65"></script>
+  <script src="js/18-timeframe.js?v=2026-10-09-v65"></script>
+  <script src="js/19-open-trades.js?v=2026-10-09-v65"></script>
+  <script src="js/20-price-questions.js?v=2026-10-09-v65"></script>
+  <script src="js/21-insights.js?v=2026-10-09-v65"></script>
+  <script src="js/22-pre-trade.js?v=2026-10-09-v65"></script>
 </body>
 </html>
