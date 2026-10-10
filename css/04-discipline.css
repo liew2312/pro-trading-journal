@@ -159,3 +159,18 @@ form.tj-wizard #submitBtn{margin-top:4px;}
 .tj-pb-ex-th button{position:absolute;top:3px;right:3px;width:22px;height:22px;border:0;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:.7rem;display:grid;place-items:center;padding:0;}
 .tj-pb-ex-add{width:88px;height:60px;border:1.5px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.7rem;color:var(--muted);cursor:pointer;margin:0;}
 .tj-pb-ex-add.busy{opacity:.5;pointer-events:none;}
+
+/* ══ v68: อารมณ์ตอนเปิด / ปิดออเดอร์ ══ */
+.tj-emo-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.tj-emo{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--ink);border-radius:99px;padding:7px 12px;font-size:.82rem;font-weight:600;cursor:pointer;margin:0;font-family:inherit;line-height:1.2;}
+.tj-emo::before{content:"";width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted);}
+.tj-emo.ok::before{background:var(--profit);} .tj-emo.warn::before{background:var(--ap-warn);} .tj-emo.bad::before{background:var(--loss);}
+.btn-check:checked + .tj-emo, .tj-emo[aria-checked="true"]{border-color:var(--ink);background:var(--ink);color:var(--card-bg);}
+.btn-check:checked + .tj-emo.ok, .tj-emo.ok[aria-checked="true"]{background:var(--profit);border-color:var(--profit);color:#fff;}
+.btn-check:checked + .tj-emo.warn, .tj-emo.warn[aria-checked="true"]{background:var(--ap-warn);border-color:var(--ap-warn);color:#fff;}
+.btn-check:checked + .tj-emo.bad, .tj-emo.bad[aria-checked="true"]{background:var(--loss);border-color:var(--loss);color:#fff;}
+.btn-check:checked + .tj-emo::before, .tj-emo[aria-checked="true"]::before{background:currentColor;}
+.btn-check:focus-visible + .tj-emo, .tj-emo:focus-visible{outline:2px solid var(--brand);outline-offset:2px;}
+.tj-emo-sub{font-size:.78rem;font-weight:700;color:var(--muted);margin-bottom:2px;}
+.tj-emo-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:1px;background:var(--muted);}
+.tj-emo-dot.ok{background:var(--profit);} .tj-emo-dot.warn{background:var(--ap-warn);} .tj-emo-dot.bad{background:var(--loss);}
