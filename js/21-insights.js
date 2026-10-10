@@ -106,6 +106,7 @@
       if((m=/^HTF:(\w+)$/.exec(c))) out.push(['TF วิเคราะห์', m[1]]);
       else if((m=/^LTF:(\w+)$/.exec(c))) out.push(['TF เข้า', m[1]]);
       else if(/^HIT(TP|SL):/.test(c)) return;
+      else if(/^EMO(IN|OUT):/.test(c)){ const e = window.tjEmotions && window.tjEmotions.tokenLabel(c); if(e) out.push(e); }
       else out.push(['ปัจจัย', names[c] || c]);
     });
     return out;

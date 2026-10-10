@@ -14,7 +14,6 @@
 
   const FLAGS = [
     ['chase','ราคาวิ่งไปแล้ว ไม่ได้ลงมาถึงโซน','ไม่ไล่ราคา รอเซ็ตอัพใหม่'],
-    ['tilt','อยากเอาคืน / ใจไม่นิ่ง','ปิดกราฟ พักก่อน'],
     ['news','มีข่าวแรงภายใน 30 นาที','ใช้เมื่อระบบยังโหลดข่าวไม่ได้ ให้เช็กเอง']
   ];
 
@@ -25,7 +24,7 @@
   function defaults(){
     const pb = window.tjPB ? window.tjPB.prefs().playbook : [];
     const bos = pb.find(p=>(p.value||p.name)==='BOS Sweep');
-    return { setup: (bos||pb[0]||{}).value || (bos||pb[0]||{}).name || '', symbol: lastSymbol(), side:'Buy', entry:'', sl:'', tp:'', checks:[], flags:{} };
+    return { setup: (bos||pb[0]||{}).value || (bos||pb[0]||{}).name || '', symbol: lastSymbol(), side:'Buy', entry:'', sl:'', tp:'', checks:[], flags:{}, emo:'' };
   }
   let S = Object.assign(defaults(), ls.get(KEY, {}));
   const save = () => ls.set(KEY, S);
@@ -62,6 +61,7 @@
     out.ok = true; return out;
   }
 
+  function emoInfo(){ return S.emo && window.tjEmotions ? window.tjEmotions.IN.find(e=>e[0]===S.emo) : null; }
   function verdict(){
     const P = window.tjPB, R = P.prefs().rules, pb = setupObj();
     const rules = (pb && pb.rules) || [];
@@ -73,6 +73,8 @@
     const near = newsNear();
     if(near && near.length) stops.push('ข่าวแรงใกล้เวลานี้: '+near.map(e=>e.ccy+' '+e.title).join(', '));
     FLAGS.forEach(f=>{ if(S.flags[f[0]] && !(f[0]==='news' && near)) stops.push(f[1]); });
+    const emo = emoInfo();
+    if(emo && emo[3]==='bad') stops.push('อารมณ์ตอนนี้: '+emo[1]+' — '+emo[2]);
     const c = calc(), minRR = Number(R.minRR)||0;
     if(done < rules.length) waits.push('เงื่อนไขยังไม่ครบ '+done+'/'+rules.length);
     if(!c.ok) waits.push(c.msg);
@@ -125,6 +127,9 @@
         <div class="col-4"><label class="form-label text-success" for="tj-pt-tp">TP</label><input type="number" step="any" inputmode="decimal" class="form-control text-center fw-bold" id="tj-pt-tp" value="${esc(S.tp)}"></div>
       </div>
       <div class="tj-pt-calc" id="tj-pt-calc"></div>
+      ${window.tjEmotions ? `<div class="tj-pt-sec">อารมณ์ตอนนี้</div>
+      <div class="tj-emo-chips tj-pt-emo mb-1" role="radiogroup" aria-label="อารมณ์ตอนนี้">${window.tjEmotions.IN.map(([c,t,h,tone])=>`<button type="button" class="tj-emo ${tone}" data-emo="${c}" role="radio" aria-checked="${S.emo===c}" title="${esc(h)}">${esc(t)}</button>`).join('')}</div>
+      <div class="tj-q-hint mb-3" id="tj-pt-emo-hint"></div>` : ''}
       <div class="tj-pt-sec">ข้อห้าม — ติ๊กข้อไหนก็ไม่เข้า</div>
       <div class="tj-pb-check tj-pt-flags">
         ${FLAGS.filter(f=>!(f[0]==='news' && near)).map(f=>`<label><input type="checkbox" class="form-check-input" data-flag="${f[0]}" ${S.flags[f[0]]?'checked':''}> <span><b>${esc(f[1])}</b><br><small class="text-muted">${esc(f[2])}</small></span></label>`).join('')}
@@ -147,6 +152,8 @@
     else items.push(near.length ? `<div class="tj-pt-row stop"><i class="fa-regular fa-newspaper"></i> ข่าวแรงภายใน ${NEWS_MIN} นาที: ${near.map(e=>'<b>'+esc(e.ccy)+'</b> '+esc(e.title)).join(', ')}</div>`
                                 : `<div class="tj-pt-row ok"><i class="fa-regular fa-newspaper"></i> ไม่มีข่าวแรงของ ${esc(S.symbol||'-')} ใน ${NEWS_MIN} นาที</div>`);
     $('tj-pt-auto').innerHTML = items.join('');
+    const eh = $('tj-pt-emo-hint'), emo = emoInfo();
+    if(eh) eh.textContent = !emo ? 'เลือกตามจริง — ระบบบันทึกลงไม้นี้ให้ด้วย' : emo[3]==='bad' ? 'อารมณ์นี้มักทำให้เสียเงิน — พักก่อน รอเซ็ตอัพถัดไป' : emo[3]==='warn' ? 'ถ้าลังเล / กังวล ลองเช็กว่าเงื่อนไขครบจริงไหม หรือลดล็อตลง' : 'ดี — เข้าตามแผนได้';
     // calc
     const minRR = Number(R.minRR)||0;
     const cell = (l, val, cls) => `<div class="${cls||''}"><small>${l}</small><b>${val}</b></div>`;
@@ -180,6 +187,8 @@
       const i = +cb.dataset.rule; S.checks = S.checks.filter(x=>x!==i); if(cb.checked) S.checks.push(i); update();
     });
     body.querySelectorAll('[data-flag]').forEach(cb=>cb.onchange = ()=>{ S.flags[cb.dataset.flag] = cb.checked; update(); });
+    body.querySelectorAll('[data-emo]').forEach(b=>b.onclick = ()=>{ S.emo = S.emo===b.dataset.emo ? '' : b.dataset.emo;
+      body.querySelectorAll('[data-emo]').forEach(x=>x.setAttribute('aria-checked', String(x.dataset.emo===S.emo))); update(); });
   }
 
   // ── ส่งต่อไปฟอร์มบันทึกเทรด ──
@@ -202,6 +211,7 @@
       setTimeout(()=>{
         document.querySelectorAll('#tj-pb-check .tj-pb-cb').forEach(cb=>{ const want = S.checks.includes(+cb.dataset.i); if(cb.checked!==want){ cb.checked = want; cb.dispatchEvent(new Event('change',{bubbles:true})); } });
         setVal(F('outcome'), 'OPEN');
+        if(S.emo){ const r = document.getElementById('emo_in_'+S.emo); if(r){ r.checked = true; r.dispatchEvent(new Event('change',{bubbles:true})); } }
         toast('กรอกข้อมูลจากเช็กลิสต์ให้แล้ว — ตรวจแล้วกดบันทึก');
       }, 60);
     }, 80);

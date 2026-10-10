@@ -516,7 +516,7 @@
         if (r.revenge === "Yes")   addBehavior("Revenge", pnlOrAmount);
         if (r.lot_respected === "No") addBehavior("Over-lot", pnlOrAmount);
         String(r.confluences || "").split(",").map(s => s.trim()).filter(Boolean)
-          .forEach(cf => { const m = /^(HTF|LTF):(\w+)$/.exec(cf); const q = { 'HITTP:Y':'ราคาวิ่งไปถึง TP (แต่ไม่ได้ชน TP)', 'HITTP:N':'ราคาไม่ถึง TP', 'HITSL:Y':'ราคาย้อนกลับมาชน SL', 'HITSL:N':'ราคาไม่ย้อนกลับมาชน SL' }[cf]; addBehavior(q ? q : m ? (m[1]==='HTF' ? 'TF วิเคราะห์ ' : 'TF เข้า ') + m[2] : "Confluence: " + cf, pnlOrAmount); });
+          .forEach(cf => { const m = /^(HTF|LTF):(\w+)$/.exec(cf); const q = { 'HITTP:Y':'ราคาวิ่งไปถึง TP (แต่ไม่ได้ชน TP)', 'HITTP:N':'ราคาไม่ถึง TP', 'HITSL:Y':'ราคาย้อนกลับมาชน SL', 'HITSL:N':'ราคาไม่ย้อนกลับมาชน SL' }[cf]; const emo = window.tjEmotions && window.tjEmotions.tokenLabel(cf); addBehavior(emo ? emo[0] + ': ' + emo[1] : q ? q : m ? (m[1]==='HTF' ? 'TF วิเคราะห์ ' : 'TF เข้า ') + m[2] : "Confluence: " + cf, pnlOrAmount); });
       }
     }
 
