@@ -262,11 +262,13 @@
     const host = $('tj-pb-check'), sel = $('f_setup'); if(!host || !sel) return;
     const pb = prefs.playbook.find(p=>(p.value||p.name)===sel.value);
     if(!pb || !pb.rules || !pb.rules.length){ host.innerHTML=''; if($('f_grade')) $('f_grade').value=''; return; }
-    host.innerHTML = `<div class="hd"><i class="fa-solid fa-list-check"></i> เช็กลิสต์ ${esc(pb.name)} <span class="tj-grade" id="tj-grade-badge"></span></div>` +
-      pb.rules.map((r,i)=>`<label><input type="checkbox" class="form-check-input tj-pb-cb" data-i="${i}"> <span>${esc(r)}</span></label>`).join('') +
+    const ex = window.tjSetupExamples && window.tjSetupExamples.has(pb);
+    host.innerHTML = `<div class="hd"><i class="fa-solid fa-list-check"></i> เช็กลิสต์ ${esc(pb.name)}${ex ? ' <button type="button" class="tj-linkbtn tj-ex-link" id="tj-pb-ex"><i class="fa-regular fa-image"></i> ดูตัวอย่าง</button>' : ''} <span class="tj-grade" id="tj-grade-badge"></span></div>` +
+      pb.rules.map((r,i)=>`<label><input type="checkbox" class="form-check-input tj-pb-cb" data-i="${i}"> <span><span class="tj-rule-no">${i+1}</span>${esc(r)}</span></label>`).join('') +
       '<div class="small text-muted mt-1" style="font-size:.7rem">ติ๊กเฉพาะข้อที่ “เป็นจริง” ตอนเข้าเทรด · ครบทุกข้อ = A+ · ≥75% = A · ≥50% = B · ต่ำกว่า = C</div>';
     const upd = ()=>{ const cbs=[...host.querySelectorAll('.tj-pb-cb')]; const g = gradeOf(cbs.filter(c=>c.checked).length, cbs.length); $('f_grade').value = g; const b=$('tj-grade-badge'); b.className='tj-grade '+gcls(g); b.textContent='เกรด '+g; };
     host.querySelectorAll('.tj-pb-cb').forEach(c=>c.addEventListener('change', upd)); upd();
+    const exb = $('tj-pb-ex'); if(exb) exb.onclick = ()=>{ const t = (document.querySelector('#tradeForm [name="type"]')||{}).value; window.tjSetupExamples.open(pb, -1, t); };
   }
   (function(){ const s=$('f_setup'); if(s) s.addEventListener('change', renderChecklist); })();
   // ให้โมดูลอื่น (22-pre-trade.js) ใช้ Playbook / กฎ / ตัวคำนวณ Risk ชุดเดียวกัน
@@ -276,19 +278,37 @@
     const draw = list => list.map((p,i)=>`<div class="tj-pb-item" data-i="${i}">
         <div class="d-flex gap-2 mb-2"><input class="form-control fw-bold" data-f="name" value="${esc(p.name)}" placeholder="ชื่อ Setup">
         <button class="btn btn-outline-danger btn-sm" data-del="${i}" title="ลบ"><i class="fa-solid fa-trash"></i></button></div>
-        <textarea class="form-control" data-f="rules" rows="4" placeholder="เงื่อนไขเข้าเทรด บรรทัดละ 1 ข้อ">${esc((p.rules||[]).join('\n'))}</textarea></div>`).join('');
+        <textarea class="form-control" data-f="rules" rows="4" placeholder="เงื่อนไขเข้าเทรด บรรทัดละ 1 ข้อ">${esc((p.rules||[]).join('\n'))}</textarea>
+        <div class="tj-pb-ex">
+          <div class="tj-pb-ex-hd"><i class="fa-regular fa-image"></i> ตัวอย่างกราฟ${window.tjSetupExamples && window.tjSetupExamples.hasDiagram(p) ? ' <span class="text-muted">· มีภาพโครงสร้างในตัวแล้ว</span>' : ''}</div>
+          <div class="tj-pb-ex-row">
+            ${(p.examples||[]).map((u,k)=>`<div class="tj-pb-ex-th"><img src="${esc((window.tjThumb && window.tjThumb(u)) || u)}" alt="" loading="lazy"><button type="button" data-exdel="${i}:${k}" aria-label="ลบภาพ"><i class="fa-solid fa-xmark"></i></button></div>`).join('')}
+            ${(p.examples||[]).length < 4 ? `<label class="tj-pb-ex-add" title="อัปโหลดภาพ"><input type="file" accept="image/*" data-exfile="${i}" hidden><i class="fa-solid fa-plus"></i><span>อัปโหลด</span></label>` : ''}
+          </div>
+          ${(p.examples||[]).length < 4 ? `<div class="input-group input-group-sm mt-2"><input type="url" class="form-control" data-exurl="${i}" placeholder="หรือวางลิงก์ภาพ / ลิงก์ TradingView (tradingview.com/x/…)"><button type="button" class="btn btn-outline-secondary" data-exurladd="${i}">เพิ่ม</button></div>` : ''}
+        </div></div>`).join('');
     let list = JSON.parse(JSON.stringify(prefs.playbook));
     const el = modal('tjPlaybookModal','<i class="fa-solid fa-book me-2"></i> Playbook ของคุณ',
-      '<div class="small text-muted mb-3">กำหนด Setup ที่คุณเทรด และเงื่อนไขที่ต้องครบก่อนเข้า — ฟอร์มจะให้เกรด A+/A/B/C อัตโนมัติ แล้วหน้า Performance จะบอกว่าเกรดไหนทำเงินจริง</div><div id="tj-pb-list"></div><button class="btn btn-outline-secondary w-100" id="tj-pb-add"><i class="fa-solid fa-plus me-1"></i> เพิ่ม Setup</button>',
+      '<div class="small text-muted mb-3">กำหนด Setup ที่คุณเทรด และเงื่อนไขที่ต้องครบก่อนเข้า — ฟอร์มจะให้เกรด A+/A/B/C อัตโนมัติ แล้วหน้า Performance จะบอกว่าเกรดไหนทำเงินจริง · ใส่ภาพกราฟตัวอย่างได้ Setup ละไม่เกิน 4 ภาพ</div><div id="tj-pb-list"></div><button class="btn btn-outline-secondary w-100" id="tj-pb-add"><i class="fa-solid fa-plus me-1"></i> เพิ่ม Setup</button>',
       '<button class="btn btn-primary w-100" id="tj-pb-save">บันทึก Playbook</button>', 'modal-lg');
     const box = el.querySelector('#tj-pb-list');
     const collect = ()=>{ [...box.querySelectorAll('.tj-pb-item')].forEach(it=>{ const i=+it.dataset.i; list[i].name = it.querySelector('[data-f="name"]').value.trim(); list[i].rules = it.querySelector('[data-f="rules"]').value.split('\n').map(x=>x.trim()).filter(Boolean); }); };
-    const render = ()=>{ box.innerHTML = draw(list); box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ collect(); list.splice(+b.dataset.del,1); render(); }); };
+    const addEx = (i, url)=>{ collect(); list[i].examples = (list[i].examples||[]).concat([url]).slice(0,4); render(); };
+    const render = ()=>{ box.innerHTML = draw(list); box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ collect(); list.splice(+b.dataset.del,1); render(); });
+      box.querySelectorAll('[data-exdel]').forEach(b=>b.onclick=()=>{ const [i,k] = b.dataset.exdel.split(':').map(Number); collect(); list[i].examples.splice(k,1); render(); });
+      box.querySelectorAll('[data-exurladd]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.exurladd, inp=box.querySelector('[data-exurl="'+i+'"]'), u=(inp.value||'').trim();
+        if(!/^https?:\/\/\S+$/i.test(u)){ toast('ลิงก์ไม่ถูกต้อง — ต้องขึ้นต้นด้วย https://'); return; } addEx(i, u); });
+      box.querySelectorAll('[data-exfile]').forEach(inp=>inp.onchange=async ()=>{ const f = inp.files && inp.files[0]; if(!f) return; const i=+inp.dataset.exfile;
+        if(!window.api || !window.api.uploadImage){ toast('อัปโหลดไม่ได้ — ลองรีเฟรชหน้า'); return; }
+        const lab = inp.closest('.tj-pb-ex-add'); if(lab) lab.classList.add('busy'); toast('กำลังอัปโหลดภาพ…', 8000);
+        const url = await window.api.uploadImage(f, 'playbook');
+        if(!url){ if(lab) lab.classList.remove('busy'); toast('อัปโหลดไม่สำเร็จ — ลองใหม่อีกครั้ง'); return; }
+        toast('เพิ่มภาพแล้ว · กดบันทึก Playbook เพื่อเก็บ'); addEx(i, url); }); };
     render();
     el.querySelector('#tj-pb-add').onclick = ()=>{ collect(); list.push({ value:'', name:'', rules:[] }); render(); };
     el.querySelector('#tj-pb-save').onclick = async ()=>{
       collect();
-      list = list.filter(p=>p.name).map(p=>({ value: p.value || p.name, name: p.name, rules: p.rules }));
+      list = list.filter(p=>p.name).map(p=>{ const o = { value: p.value || p.name, name: p.name, rules: p.rules }; if(p.examples && p.examples.length) o.examples = p.examples.slice(0,4); return o; });
       if(!list.length){ toast('ต้องมีอย่างน้อย 1 Setup'); return; }
       prefs.playbook = list; await savePrefs(); bootstrap.Modal.getInstance(el).hide(); toast('บันทึก Playbook แล้ว');
     };

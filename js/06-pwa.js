@@ -1,4 +1,4 @@
-window.APP_BUILD = '2026-10-09-v66';
+window.APP_BUILD = '2026-10-10-v67';
 console.log('[APP] LiewTrade Journal build', window.APP_BUILD);
 // แสดงเลขเวอร์ชันในหน้าตั้งค่า
 (function(){ var el = document.getElementById('appVersionLabel'); if (el) el.textContent = 'เวอร์ชัน ' + window.APP_BUILD; })();

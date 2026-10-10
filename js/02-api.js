@@ -25,6 +25,20 @@
     } catch (e) { console.warn("compressImage", e); return blob; }
   }
 
+  /* ---------- helper: อัปโหลดไฟล์ภาพ (File/Blob) ตรงๆ — ใช้กับภาพตัวอย่างใน Playbook ---------- */
+  async function uploadImageBlob(file, folder) {
+    try {
+      if (!file || !/^image\//.test(file.type || "")) return "";
+      const blob = await compressImage(file);
+      const EXT = { "image/webp": "webp", "image/jpeg": "jpg", "image/png": "png", "image/gif": "gif" };
+      const filePath = `${folder || "charts"}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${EXT[blob.type] || "png"}`;
+      const { error } = await sb.storage.from(STORAGE_BUCKET).upload(filePath, blob, { contentType: blob.type || "image/png", upsert: false });
+      if (error) { console.error("Upload error:", error); return ""; }
+      const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+      return urlData.publicUrl || "";
+    } catch (e) { console.error("uploadImageBlob error:", e); return ""; }
+  }
+
   /* ---------- helper: อัปโหลดไฟล์ขึ้น Supabase Storage ---------- */
   async function uploadImageToStorage(fileObj) {
     if (!fileObj || !fileObj.data) return "";
@@ -733,7 +747,7 @@
     return ids.length;
   }
 
-  window.api = { saveTradeData, updateTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
+  window.api = { uploadImage: uploadImageBlob, saveTradeData, updateTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
 
   // Polyfill: ทำให้โค้ดเดิมที่เรียก google.script.run.xxx ใช้งานได้ทันที
   function makeRunner() {
