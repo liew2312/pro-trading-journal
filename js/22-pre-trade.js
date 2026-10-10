@@ -112,9 +112,10 @@
             <button type="button" data-side="Sell" role="radio" aria-checked="${S.side==='Sell'}">Sell</button></div></div>
       </div>
       <div class="tj-pt-auto" id="tj-pt-auto"></div>
+      ${window.tjSetupExamples ? window.tjSetupExamples.html(pb, S.side) : ''}
       <div class="tj-pb-check tj-pt-check">
         <div class="hd"><i class="fa-solid fa-list-check"></i> เงื่อนไข ${esc(pb?pb.name:'')} <span class="tj-grade" id="tj-pt-grade"></span></div>
-        ${rules.length ? rules.map((r,i)=>`<label><input type="checkbox" class="form-check-input" data-rule="${i}" ${S.checks.includes(i)?'checked':''}> <span>${esc(r)}</span></label>`).join('') : '<div class="small text-muted">Setup นี้ยังไม่มีเงื่อนไข — เพิ่มได้ใน Playbook</div>'}
+        ${rules.length ? rules.map((r,i)=>`<label><input type="checkbox" class="form-check-input" data-rule="${i}" ${S.checks.includes(i)?'checked':''}> <span><span class="tj-rule-no">${i+1}</span>${esc(r)}</span></label>`).join('') : '<div class="small text-muted">Setup นี้ยังไม่มีเงื่อนไข — เพิ่มได้ใน Playbook</div>'}
         <div class="small text-muted mt-1" style="font-size:.7rem">ติ๊กเฉพาะข้อที่เป็นจริงตอนนี้ · ${S.side==='Sell'?'ฝั่ง Sell ให้อ่านกลับด้าน (High ↔ Low)':'ฝั่ง Sell ให้อ่านกลับด้าน'}</div>
       </div>
       <div class="tj-pt-sec">ราคา · RR · ขนาดล็อต</div>
@@ -129,6 +130,7 @@
         ${FLAGS.filter(f=>!(f[0]==='news' && near)).map(f=>`<label><input type="checkbox" class="form-check-input" data-flag="${f[0]}" ${S.flags[f[0]]?'checked':''}> <span><b>${esc(f[1])}</b><br><small class="text-muted">${esc(f[2])}</small></span></label>`).join('')}
       </div>`;
     $('tj-pt-setup').value = S.setup;
+    if(window.tjSetupExamples) window.tjSetupExamples.wire($('tj-pt-body'), pb, S.side);
     wire();
     update();
   }
