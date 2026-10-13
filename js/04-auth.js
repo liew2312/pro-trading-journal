@@ -13,6 +13,8 @@
   window._signOut = async function() {
     if (!confirm('ออกจากระบบ?')) return;
     await sbAuth.auth.signOut();
+    // ลบสำเนาข้อมูลเทรด + ร่างฟอร์มที่เก็บไว้ในเครื่องนี้ (กันคนอื่นที่ใช้เครื่องต่อเห็นข้อมูล)
+    try { if (window.tjDropRowsCache) window.tjDropRowsCache(); Object.keys(localStorage).filter(k => k.indexOf('tj_trade_draft_') === 0).forEach(k => localStorage.removeItem(k)); } catch (e) {}
     window.location.reload();
   };
 

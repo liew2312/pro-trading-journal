@@ -1,6 +1,6 @@
 // Service Worker — LiewTrade Journal
 // เวอร์ชัน cache เปลี่ยนทุก release (tools/release.py แก้ให้อัตโนมัติ) → cache เก่าถูกลบทิ้ง
-const CACHE_NAME = 'tradejournal-cache-2026-10-10-v68';
+const CACHE_NAME = 'tradejournal-cache-2026-10-13-v69';
 const PRECACHE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', event => {
@@ -8,9 +8,13 @@ self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(PRECACHE)).catch(() => {}));
 });
 
+// ไลบรารีจาก CDN (ล็อกเวอร์ชันไว้ใน index.html) เก็บแยก cache ถาวร → เปิดแอปได้แม้ออฟไลน์ / เน็ตช้า
+const CDN_CACHE = 'tradejournal-cdn-v1';
+const CDN_HOSTS = ['cdn.jsdelivr.net', 'cdnjs.cloudflare.com', 'fonts.googleapis.com', 'fonts.gstatic.com'];
+
 self.addEventListener('activate', event => {
   event.waitUntil(Promise.all([
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))),
+    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME && k !== CDN_CACHE).map(k => caches.delete(k)))),
     self.clients.claim()
   ]));
 });
@@ -28,6 +32,19 @@ self.addEventListener('fetch', event => {
         return res;
       }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
     );
+    return;
+  }
+
+  // ไลบรารี CDN: cache-first (URL มีเลขเวอร์ชันตายตัว) · ฟอนต์ Google: ใช้ของใน cache แล้วอัปเดตเบื้องหลัง
+  if (CDN_HOSTS.includes(url.hostname)) {
+    event.respondWith(caches.open(CDN_CACHE).then(c => c.match(req).then(hit => {
+      const refresh = () => fetch(req).then(res => {
+        if (res && (res.ok || res.type === 'opaque')) c.put(req, res.clone());
+        return res;
+      });
+      if (hit) { if (url.hostname === 'fonts.googleapis.com') refresh().catch(() => {}); return hit; }
+      return refresh();
+    })));
     return;
   }
 

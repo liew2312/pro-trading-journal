@@ -62,13 +62,14 @@
         contentType: blob.type || fileObj.mimeType || "image/png",
         upsert: false
       });
-      if (error) { console.error("Upload error:", error); return ""; }
+      if (error) { console.error("Upload error:", error); throw new Error("อัปโหลดภาพไม่สำเร็จ (" + (error.message || "เครือข่าย") + ")"); }
 
       const { data: urlData } = sb.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
       return urlData.publicUrl || "";
     } catch (e) {
+      // ไม่บันทึกเทรดต่อโดยเงียบๆ ถ้าภาพอัปโหลดไม่ได้ (ภาพจะหาย) → แจ้งให้ลองใหม่ (ข้อมูลในฟอร์มยังอยู่)
       console.error("uploadImageToStorage error:", e);
-      return "";
+      throw (e instanceof Error && /อัปโหลดภาพ/.test(e.message)) ? e : new Error("อัปโหลดภาพไม่สำเร็จ — ตรวจสอบอินเทอร์เน็ตแล้วลองใหม่");
     }
   }
 
@@ -237,7 +238,50 @@
     try{ document.dispatchEvent(new CustomEvent('tj:open')); }catch(e){}
     return includeOpen === true ? all : all.filter(r => !isSideRow(r));
   }
+  /* ---------- v69: สำเนาข้อมูลในเครื่อง ----------
+     เปิดแอป → แสดงข้อมูลจากสำเนาในเครื่องทันที แล้วดึงของจริงตามหลัง (ถ้าต่างจะรีเฟรชหน้าจอเอง)
+     เน็ตหลุด / ออฟไลน์ → ใช้สำเนาล่าสุด + แจ้งสถานะ (event 'tj:netstate')
+     สำเนาแยกตามบัญชี และถูกลบเมื่อออกจากระบบ */
+  const CACHE_PREFIX = "tj_rows_cache_";
+  const cacheKey = () => window._currentUserId ? CACHE_PREFIX + window._currentUserId : null;
+  function readCache() {
+    try { const k = cacheKey(); if (!k) return null; const v = JSON.parse(localStorage.getItem(k) || "null"); return v && Array.isArray(v.rows) ? v : null; }
+    catch (e) { return null; }
+  }
+  function writeCache(rows) {
+    const k = cacheKey(); if (!k) return;
+    try { localStorage.setItem(k, JSON.stringify({ t: Date.now(), rows })); }
+    catch (e) { try { localStorage.removeItem(k); } catch (_) {} }   // พื้นที่เต็ม → ไม่เก็บสำเนา
+  }
+  function dropCache() { try { Object.keys(localStorage).filter(k => k.indexOf(CACHE_PREFIX) === 0).forEach(k => localStorage.removeItem(k)); } catch (e) {} }
+  function setNetState(online, t) {
+    window._tjNetState = { online, t };
+    try { document.dispatchEvent(new CustomEvent("tj:netstate", { detail: window._tjNetState })); } catch (e) {}
+  }
+  let netFresh = false, bgFetch = null, inflight = null, memo = null;
+  function invalidate() { memo = null; netFresh = true; }
   async function fetchAllRowsRaw() {
+    if (!netFresh) {
+      const c = readCache();
+      if (c) {
+        if (!bgFetch) bgFetch = fetchAllRowsNet().then(rows => {
+          netFresh = true; memo = { rows, t: Date.now() };
+          const changed = JSON.stringify(rows) !== JSON.stringify(c.rows);
+          writeCache(rows); setNetState(true, Date.now());
+          if (changed && typeof window.loadAllData === "function") setTimeout(() => window.loadAllData(), 0);
+        }).catch(() => setNetState(false, c.t)).finally(() => { bgFetch = null; });
+        return c.rows;
+      }
+    }
+    if (memo && Date.now() - memo.t < 2500) return memo.rows;   // หลายส่วนของหน้าขอพร้อมกัน → ดึงครั้งเดียว
+    if (!inflight) inflight = fetchAllRowsNet().then(rows => {
+      netFresh = true; memo = { rows, t: Date.now() }; writeCache(rows); setNetState(true, Date.now()); return rows;
+    }).finally(() => { inflight = null; });
+    try { return await inflight; }
+    catch (e) { const c = readCache(); if (c) { setNetState(false, c.t); return c.rows; } throw e; }
+  }
+  window.tjDropRowsCache = dropCache;
+  async function fetchAllRowsNet() {
     // Supabase default limit 1000; ถ้ามีเยอะกว่านั้นวนดึงเพิ่ม
     const all = [];
     const pageSize = 1000;
@@ -272,6 +316,7 @@
       a.href=url; a.download='trading-journal-backup-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.csv';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(function(){ URL.revokeObjectURL(url); },1000);
+      try{ localStorage.setItem('tj_last_backup', String(Date.now())); document.dispatchEvent(new CustomEvent('tj:backup')); }catch(e){}
     }catch(e){ alert('สำรองข้อมูลไม่สำเร็จ: '+(e.message||e)); }
   }
   function _parseCSV(text){
@@ -299,7 +344,7 @@
           o.user_id=window._currentUserId||o.user_id||null; return o; });
         var res=await sb.from(TABLE_NAME).insert(clean);
         if(res.error) throw new Error(res.error.message);
-        alert('นำเข้าสำเร็จ '+clean.length+' รายการ'); location.reload();
+        dropCache(); alert('นำเข้าสำเร็จ '+clean.length+' รายการ'); location.reload();
       }catch(e){ alert('นำเข้าไม่สำเร็จ: '+(e.message||e)); }
     };
     inp.click();
@@ -311,7 +356,7 @@
       var q=sb.from(TABLE_NAME).delete();
       if(window._currentUserId) q=q.eq('user_id', window._currentUserId); else q=q.not('id','is',null);
       var res=await q; if(res.error) throw new Error(res.error.message);
-      alert('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว'); location.reload();
+      dropCache(); alert('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว'); location.reload();
     }catch(e){ alert('ลบไม่สำเร็จ: '+(e.message||e)); }
   }
   window.exportDataCSV=exportDataCSV; window.importData=importData; window.clearAllData=clearAllData;
@@ -746,6 +791,11 @@
     }
     return ids.length;
   }
+
+  // หลังเขียนข้อมูล ให้รอบถัดไปดึงจากเซิร์ฟเวอร์เสมอ (ไม่ใช้สำเนาเก่า)
+  const afterWrite = fn => async function () { try { return await fn.apply(this, arguments); } finally { invalidate(); } };
+  saveTradeData = afterWrite(saveTradeData); updateTradeData = afterWrite(updateTradeData); saveFundingData = afterWrite(saveFundingData);
+  deleteTrade = afterWrite(deleteTrade); insertRows = afterWrite(insertRows); updateRow = afterWrite(updateRow); deleteMany = afterWrite(deleteMany);
 
   window.api = { uploadImage: uploadImageBlob, saveTradeData, updateTradeData, saveFundingData, getDashboardMetrics, getTradeHistory, getAllRows: fetchAllRows, deleteTrade, insertRows, updateRow, deleteMany };
 
