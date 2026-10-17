@@ -1,7 +1,8 @@
 // Service Worker — A+ Check (แยกจาก LiewTrade, scope เฉพาะโฟลเดอร์ /aplus/)
 // เปลี่ยนเลขเวอร์ชันทุกครั้งที่แก้ไฟล์ในโฟลเดอร์นี้
-const CACHE = 'aplus-check-v1';
-const SHELL = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png'];
+const CACHE = 'aplus-check-v2';
+const SHELL = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png',
+  './guide.html', './guide/ov.jpg', './guide/s1.jpg', './guide/s2.jpg', './guide/s3.jpg', './guide/s4.jpg'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
