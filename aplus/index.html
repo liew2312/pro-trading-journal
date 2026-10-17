@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A+ Check</title>
+<meta name="description" content="เช็กลิสต์ SMC ก่อนเข้าเทรด พร้อมคำนวณ RR และให้เกรด A+/A/B/C">
+<meta name="theme-color" content="#ECEFF3" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F151C" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="A+ Check">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one narrow column, sticky grade bar on top, items grouped by the order you check a chart (HTF → POI → liquidity → LTF → risk → context) */
+:root{
+  --bg:#ECEFF3; --surface:#FFFFFF; --ink:#16202B; --muted:#5A6774; --line:#D2D9E0;
+  --accent:#A86F12; --accent-soft:#F5E8CF;
+  --good:#17805E; --info:#2B5FA8; --warn:#B7791F; --bad:#B4372F;
+  --good-bg:#DDF1E8; --info-bg:#E0EAF7; --warn-bg:#F7ECD7; --bad-bg:#F6E0DE;
+  --display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --body:"IBM Plex Sans Thai",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F151C; --surface:#18212B; --ink:#E5EBF1; --muted:#8E9BA8; --line:#2A3543;
+  --accent:#E3A940; --accent-soft:#3A2E17;
+  --good:#4CC79A; --info:#7AA7EA; --warn:#E3A940; --bad:#EE7A70;
+  --good-bg:#15372B; --info-bg:#1A2B44; --warn-bg:#3A2E17; --bad-bg:#3F1F1C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151C; --surface:#18212B; --ink:#E5EBF1; --muted:#8E9BA8; --line:#2A3543;
+  --accent:#E3A940; --accent-soft:#3A2E17;
+  --good:#4CC79A; --info:#7AA7EA; --warn:#E3A940; --bad:#EE7A70;
+  --good-bg:#15372B; --info-bg:#1A2B44; --warn-bg:#3A2E17; --bad-bg:#3F1F1C; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);-webkit-text-size-adjust:100%}
+body{margin:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;display:flex;flex-direction:column;gap:18px}
+h1{font:700 1.6rem/1.2 var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+.lede{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;margin-block:-10px}
+.grade{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.badge{flex:none;width:64px;height:64px;border-radius:10px;display:grid;place-items:center;font:700 1.7rem/1 var(--display);background:var(--g-bg);color:var(--g)}
+.gtext{min-width:0;flex:1}
+.gtitle{font:600 1rem/1.3 var(--display)}
+.gsub{font-size:.82rem;color:var(--muted)}
+.meter{height:6px;border-radius:3px;background:var(--line);margin-top:8px;overflow:hidden}
+.meter span{display:block;height:100%;background:var(--g);transition:width .25s}
+.score{font:600 .95rem var(--mono);font-variant-numeric:tabular-nums;color:var(--g)}
+.missing{margin:-6px 0 0;padding:8px 12px;border-radius:8px;background:var(--bad-bg);color:var(--bad);font-size:.82rem}
+.missing b{font-weight:600}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.eyebrow{font:600 .72rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.rr-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.rr-grid label{display:flex;flex-direction:column;gap:4px;font-size:.78rem;color:var(--muted);min-width:0}
+input[type=number]{width:100%;min-width:0;font:500 .95rem var(--mono);font-variant-numeric:tabular-nums;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input[type=number]:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.rr-out{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font:500 .85rem var(--mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+.rr-out strong{color:var(--ink)}
+.rr-big{font:700 1.15rem var(--mono);color:var(--accent)}
+
+section h2{font:600 1.05rem/1.3 var(--display);margin:0 0 8px;display:flex;align-items:baseline;gap:8px}
+section h2 .tf{font:500 .75rem var(--mono);color:var(--muted)}
+.items{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.item{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:10px;align-items:start;padding:12px 14px;cursor:pointer;border-top:1px solid var(--line)}
+.item:first-child{border-top:0}
+.item input{appearance:none;width:22px;height:22px;margin:1px 0 0;border:2px solid var(--line);border-radius:6px;display:grid;place-items:center;cursor:pointer;background:var(--bg)}
+.item input:checked{background:var(--good);border-color:var(--good)}
+.item input:checked::after{content:"";width:6px;height:11px;border:solid var(--surface);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.item input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.item input:disabled{cursor:default}
+.t{font-weight:500}
+.n{display:block;font-size:.8rem;color:var(--muted);margin-top:2px}
+.tags{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.must{font:600 .68rem/1 var(--body);padding:4px 7px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.w{font:500 .7rem var(--mono);color:var(--muted);white-space:nowrap}
+.auto{font:500 .68rem var(--body);color:var(--muted)}
+.item.on .t{color:var(--ink)}
+.item:not(.on).req .t{color:var(--ink)}
+
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 .88rem var(--body);padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.example{font-size:.8rem;color:var(--muted)}
+
+.legend{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 12px;font-size:.85rem;align-items:center}
+.lg{font:700 .9rem var(--display);width:40px;text-align:center;padding:4px 0;border-radius:6px}
+.foot{font-size:.78rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.meter span{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>A+ Check</h1>
+    <p class="lede">ติ๊กตามลำดับที่ดูชาร์ต ระบบให้เกรดอัตโนมัติ ข้อที่มีป้าย “ต้องมี” ขาดข้อเดียวจะได้เกรดไม่เกิน B</p>
+  </header>
+
+  <div class="bar">
+    <div class="grade" id="gradeBox">
+      <div class="badge" id="badge">–</div>
+      <div class="gtext">
+        <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline">
+          <div class="gtitle" id="gtitle">–</div>
+          <div class="score" id="score">0%</div>
+        </div>
+        <div class="gsub" id="gsub"></div>
+        <div class="meter"><span id="meter" style="width:0"></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="missing" id="missing" hidden></div>
+
+  <div class="card">
+    <div class="eyebrow">คำนวณ Risk : Reward</div>
+    <div class="rr-grid">
+      <label for="entry">Entry<input id="entry" type="number" inputmode="decimal" step="any"></label>
+      <label for="sl">Stop loss<input id="sl" type="number" inputmode="decimal" step="any"></label>
+      <label for="tp">Take profit<input id="tp" type="number" inputmode="decimal" step="any"></label>
+    </div>
+    <div class="rr-out" id="rrOut"></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="actions">
+    <button class="primary" id="reset" type="button">เริ่มเช็กเทรดใหม่</button>
+  </div>
+
+  <div class="card">
+    <div class="eyebrow" style="margin-bottom:10px">เกณฑ์เกรด</div>
+    <div class="legend">
+      <span class="lg" style="background:var(--good-bg);color:var(--good)">A+</span><span>ครบทุกข้อ “ต้องมี” และคะแนน 90% ขึ้นไป เข้าเต็มความเสี่ยงตามแผน</span>
+      <span class="lg" style="background:var(--info-bg);color:var(--info)">A</span><span>ครบทุกข้อ “ต้องมี” และคะแนน 75% ขึ้นไป เข้าได้ อาจลด size</span>
+      <span class="lg" style="background:var(--warn-bg);color:var(--warn)">B</span><span>ขาดข้อ “ต้องมี” หรือคะแนน 60–74% รอสัญญาณเพิ่ม หรือเข้าครึ่งความเสี่ยง</span>
+      <span class="lg" style="background:var(--bad-bg);color:var(--bad)">C</span><span>ต่ำกว่า 60% ไม่เข้า</span>
+    </div>
+  </div>
+  <p class="foot">ใช้ได้ทั้ง Long และ Short: คำว่า “ใต้/เหนือ” ให้อ่านกลับด้านตามทิศออเดอร์ สถานะที่ติ๊กเก็บไว้ในเครื่องนี้ ใช้งานออฟไลน์ได้ เป็นเครื่องมือช่วยคัดกรอง ไม่ใช่คำแนะนำการลงทุน</p>
+</div>
+
+<script>
+const SECTIONS=[
+ {h:"1. ภาพใหญ่",tf:"D / H4",items:[
+  {id:"htf",t:"ออเดอร์ไปทางเดียวกับเทรนด์ HTF",n:"มี BOS ยืนยันแล้ว ไม่ใช่แค่ CHoCH แรกที่สวนเทรนด์",w:3,must:1},
+  {id:"pd",t:"Entry อยู่ฝั่ง Discount (Long) หรือ Premium (Short)",n:"ต่ำ/สูงกว่า 50% ของ dealing range ล่าสุด",w:2},
+  {id:"target",t:"TP เป็น liquidity หรือ POI ฝั่งตรงข้ามที่ชัดเจน",n:"ถ้ามีโซนขวางระหว่างทาง ให้แบ่งปิดกำไรก่อนถึงโซนนั้น",w:1}
+ ]},
+ {h:"2. จุดเข้า",tf:"H4 → M15",items:[
+  {id:"poi",t:"POI คือ OB/FVG ที่ยังไม่ถูกแตะ และทำให้เกิด BOS/CHoCH",n:"มี displacement แท่งแรงออกจากโซน",w:3,must:1},
+  {id:"sweep",t:"มีการกวาด liquidity ก่อนเข้า",n:"sweep swing high/low, EQH/EQL หรือ IDM แล้วกลับตัว",w:3,must:1},
+  {id:"ltf",t:"เกิด CHoCH ใน LTF ภายใน POI",n:"เข้าที่ OB/FVG ของ LTF ไม่ตั้ง limit รอแบบไม่มีสัญญาณ",w:3,must:1}
+ ]},
+ {h:"3. ความเสี่ยง",tf:"",items:[
+  {id:"rr",t:"RR อย่างน้อย 1:3",n:"ติ๊กอัตโนมัติจากช่องคำนวณด้านบน",w:2,must:1,auto:1},
+  {id:"slpos",t:"SL อยู่เลยจุด sweep ไม่ใช่วางตรง liquidity ที่เห็นชัด",n:"",w:2},
+  {id:"risk",t:"ความเสี่ยงต่อไม้ไม่เกิน 1% ของพอร์ต",n:"",w:2},
+  {id:"news",t:"ไม่มีข่าวแรงใกล้เข้ามา และอยู่ในช่วง London/NY",n:"CPI, NFP, FOMC ห่างอย่างน้อย 1–2 ชั่วโมง",w:1}
+ ]}
+];
+const ALL=SECTIONS.flatMap(s=>s.items), TOTAL=ALL.reduce((a,i)=>a+i.w,0);
+const KEY="aplus-app-v1";
+let state={entry:"",sl:"",tp:"",checked:[],example:false};
+try{const s=JSON.parse(localStorage.getItem(KEY));if(s)state=s;}catch(e){}
+const $=id=>document.getElementById(id);
+const fmt=n=>n.toLocaleString("en-US",{maximumFractionDigits:2});
+
+function render(){
+  $("sections").innerHTML=SECTIONS.map(s=>`<section><h2>${s.h}${s.tf?`<span class="tf">${s.tf}</span>`:""}</h2><div class="items">${
+    s.items.map(i=>`<label class="item${i.must?" req":""}" for="c_${i.id}"><input type="checkbox" id="c_${i.id}" data-id="${i.id}"${i.auto?" disabled":""}><span><span class="t">${i.t}</span>${i.n?`<span class="n">${i.n}</span>`:""}</span><span class="tags">${i.must?'<span class="must">ต้องมี</span>':""}<span class="w">+${i.w}</span>${i.auto?'<span class="auto">อัตโนมัติ</span>':""}</span></label>`).join("")
+  }</div></section>`).join("");
+  document.querySelectorAll(".item input:not([disabled])").forEach(el=>el.addEventListener("change",()=>{
+    const id=el.dataset.id;state.checked=state.checked.filter(x=>x!==id);if(el.checked)state.checked.push(id);state.example=false;update();
+  }));
+  ["entry","sl","tp"].forEach(k=>{$(k).value=state[k]||"";$(k).oninput=()=>{state[k]=$(k).value;state.example=false;update()}});
+}
+
+function rr(){
+  const e=parseFloat(state.entry),s=parseFloat(state.sl),t=parseFloat(state.tp);
+  if([e,s,t].some(isNaN)||e===s)return null;
+  const risk=Math.abs(e-s),reward=Math.abs(t-e),dir=s<e?"Long":"Short";
+  const valid=(dir==="Long"&&t>e)||(dir==="Short"&&t<e);
+  return {risk,reward,ratio:reward/risk,dir,valid};
+}
+
+function update(){
+  const r=rr();
+  const rrOk=!!(r&&r.valid&&r.ratio>=3);
+  state.checked=state.checked.filter(x=>x!=="rr");if(rrOk)state.checked.push("rr");
+  $("rrOut").innerHTML=r?(r.valid?`<span class="rr-big">1 : ${r.ratio.toFixed(2)}</span><span>${r.dir}</span><span>Risk <strong>${fmt(r.risk)}</strong></span><span>Reward <strong>${fmt(r.reward)}</strong></span>`:`<span style="color:var(--bad)">TP อยู่ผิดฝั่งเมื่อเทียบกับ SL ตรวจตัวเลขอีกครั้ง</span>`):`<span>ใส่ Entry, SL และ TP เพื่อคำนวณ</span>`;
+  ALL.forEach(i=>{const el=$("c_"+i.id);const on=state.checked.includes(i.id);el.checked=on;el.closest(".item").classList.toggle("on",on)});
+  const pts=ALL.filter(i=>state.checked.includes(i.id)).reduce((a,i)=>a+i.w,0);
+  const pct=Math.round(pts/TOTAL*100);
+  const miss=ALL.filter(i=>i.must&&!state.checked.includes(i.id));
+  let g,c,bg,title,sub;
+  if(!miss.length&&pct>=90){g="A+";c="--good";bg="--good-bg";title="A+ เข้าได้ตามแผน";sub="ครบทุกเงื่อนไขหลัก"}
+  else if(!miss.length&&pct>=75){g="A";c="--info";bg="--info-bg";title="A เข้าได้";sub="ครบเงื่อนไขหลัก แต่ยังมีจุดเสริมที่ขาด"}
+  else if(pct>=60||(miss.length&&pct>=60)){g="B";c="--warn";bg="--warn-bg";title="B รอสัญญาณเพิ่ม";sub=miss.length?"ขาดเงื่อนไขหลัก เกรดถูกจำกัดไว้ที่ B":"คะแนนยังไม่ถึงเกณฑ์ A"}
+  else{g="C";c="--bad";bg="--bad-bg";title="C ไม่เข้า";sub="เงื่อนไขยังไม่พอ ข้ามไม้นี้"}
+  const box=$("gradeBox");box.style.setProperty("--g",`var(${c})`);box.style.setProperty("--g-bg",`var(${bg})`);
+  $("badge").textContent=g;$("gtitle").textContent=title;$("gsub").textContent=`${sub} · ${pts}/${TOTAL} คะแนน`;
+  $("score").textContent=pct+"%";$("meter").style.width=pct+"%";
+  const m=$("missing");m.hidden=!miss.length;m.innerHTML=miss.length?`<b>ยังขาดข้อ “ต้องมี”:</b> ${miss.map(i=>i.t).join(" · ")}`:"";
+  try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}
+}
+
+$("reset").onclick=()=>{state={entry:"",sl:"",tp:"",checked:[],example:false};render();update();window.scrollTo({top:0})};
+render();update();
+if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
