@@ -1,0 +1,57 @@
+{
+  "name": "A+ Check — เช็กลิสต์ก่อนเข้าเทรด",
+  "short_name": "A+ Check",
+  "description": "เช็กลิสต์ SMC ก่อนเข้าเทรด พร้อมคำนวณ RR และให้เกรด A+/A/B/C",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "th",
+  "background_color": "#ECEFF3",
+  "theme_color": "#ECEFF3",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "คู่มือ A+ Setup",
+      "short_name": "คู่มือ",
+      "url": "./guide.html",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}
