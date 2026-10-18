@@ -300,13 +300,15 @@
       hours.forEach(h=>{
         const c = g[di+'-'+h];
         if(!c){ html += '<div class="tj-hm-c"></div>'; return; }
-        let bg, label, tip;
+        let bg, label, tip, a;
         const wr = c.w/c.n*100;
-        if(metric==='wr'){ const a = .2+.8*Math.min(1,Math.abs(wr-50)/50); bg = wr>=50? rgba('--profit',a): rgba('--loss',a); label = Math.round(wr); }
-        else if(metric==='n'){ bg = rgba('--brand', .15+.85*(c.n/maxN)); label = c.n; }
-        else { const a = .15+.85*(maxAbs? Math.abs(c.p)/maxAbs : 0); bg = c.p>=0? rgba('--profit',a): rgba('--loss',a); label = Math.round(c.p); }
+        if(metric==='wr'){ a = .2+.8*Math.min(1,Math.abs(wr-50)/50); bg = wr>=50? rgba('--profit',a): rgba('--loss',a); label = Math.round(wr); }
+        else if(metric==='n'){ a = .15+.85*(c.n/maxN); bg = rgba('--brand', a); label = c.n; }
+        else { a = .15+.85*(maxAbs? Math.abs(c.p)/maxAbs : 0); bg = c.p>=0? rgba('--profit',a): rgba('--loss',a); label = Math.round(c.p); }
+        // สีตัวเลขตอนแตะ/ชี้: ช่องสีเข้ม → ตัวเลขสีสว่าง, ช่องสีอ่อน → ตัวเลขสีเข้ม (มองเห็นทุกช่อง)
+        const fg = a > .5 ? 'var(--hm-on-strong)' : 'var(--ink)';
         tip = `${DOW_S[di]} ${pad(h)}:00–${pad(h+step-1)}:59 · ${fmt$(c.p,true)} · ${c.n} ไม้ · win ${Math.round(wr)}%`;
-        html += `<div class="tj-hm-c" style="background:${bg}" title="${esc(tip)}">${label}</div>`;
+        html += `<div class="tj-hm-c" style="background:${bg};--hm-fg:${fg}" title="${esc(tip)}">${label}</div>`;
       });
     });
     html += '</div>';

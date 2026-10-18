@@ -156,3 +156,8 @@ html.tj-icon-custom :is(.btn-primary,.btn-dark,.btn-success,.btn-danger,.btn-war
 .tj-net{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top));z-index:2000;background:var(--ink);color:var(--canvas,#fff);font-size:.78rem;font-weight:600;padding:7px 14px;border-radius:999px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5);white-space:nowrap;max-width:calc(100vw - 24px);overflow:hidden;text-overflow:ellipsis;}
 .tj-net[hidden]{display:none;}
 .tj-net i{margin-right:4px;}
+
+/* v70 — Heatmap: ตัวเลขยังขึ้นเมื่อแตะ/ชี้เหมือนเดิม แต่สีตัวเลขตัดกับสีช่อง (ช่องเข้ม = ตัวเลขสีขาว) */
+:root{--hm-on-strong:#FFFFFF;}
+[data-theme="dark"]{--hm-on-strong:#111111;}
+.tj-hm-c:hover{color:var(--hm-fg, var(--ink));font-weight:800;}
