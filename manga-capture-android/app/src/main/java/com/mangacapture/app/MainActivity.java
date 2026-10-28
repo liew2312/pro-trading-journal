@@ -35,6 +35,13 @@ public class MainActivity extends Activity {
     private String filenameScript;
     private String pdfFilename="Manga.pdf";
     private boolean checkingUpdate;
+    private String prepareScript;
+    private boolean preparing,pagePrepared;
+    private int prepareOrigin,prepareIndex,prepareStable,prepareLastHeight,prepareRetry;
+    private int prepareGeneration;
+    private int quality=1;
+    private final String[] qualityNames={"ภาพชัด", "สมดุล", "ไฟล์เล็ก"};
+    private Button qualityButton;
     private static final String UPDATE_BASE = "https://raw.githubusercontent.com/liew2312/pro-trading-journal/main/manga-capture-android/downloads/";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private static final String SAMPLE = "https://www.go-manga.com/pig-slayer-%e0%b8%95%e0%b8%ad%e0%b8%99%e0%b8%97%e0%b8%b5%e0%b9%88-0/";
@@ -42,7 +49,7 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         try {
-            anchorScript=loadScript("capture-anchors.js");cleanupScript=loadScript("capture-cleanup.js");filenameScript=loadScript("capture-filename.js");
+            anchorScript=loadScript("capture-anchors.js");cleanupScript=loadScript("capture-cleanup.js");filenameScript=loadScript("capture-filename.js");prepareScript=loadScript("capture-prepare.js");
         } catch(IOException e){throw new IllegalStateException("Missing selection helper",e);}
         WebView.enableSlowWholeDocumentDraw();
         getWindow().setStatusBarColor(Color.rgb(18, 32, 46));
@@ -51,11 +58,17 @@ public class MainActivity extends Activity {
         setContentView(root);
         controls = new LinearLayout(this); controls.setOrientation(1); root.addView(controls);
         LinearLayout heading=row(controls);
-        TextView title = new TextView(this); title.setText("Manga Capture 0.7"); title.setTextSize(17); title.setPadding(16,8,16,4); heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
-        Button updateButton=new Button(this);updateButton.setText("อัปเดต");updateButton.setTextSize(12);heading.addView(updateButton);updateButton.setOnClickListener(v->{if(!busy)checkUpdate();});
+        quality=getPreferences(MODE_PRIVATE).getInt("quality",1);if(quality<0||quality>2)quality=1;
+        TextView title = new TextView(this); title.setText("Manga Capture 0.8"); title.setTextSize(14); title.setPadding(dp(8),0,0,0); heading.setGravity(Gravity.CENTER_VERTICAL);heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        Button updateButton=compactButton("อัปเดต");heading.addView(updateButton,new LinearLayout.LayoutParams(dp(66),dp(36)));updateButton.setOnClickListener(v->{if(!busy)checkUpdate();});
+        Button linkButton=compactButton("ลิงก์");heading.addView(linkButton,new LinearLayout.LayoutParams(dp(56),dp(36)));
         LinearLayout urlRow = row(controls);
         address = new EditText(this); address.setSingleLine(); address.setText(SAMPLE); address.setTextSize(12); urlRow.addView(address,new LinearLayout.LayoutParams(0,-2,1));
         button(urlRow,"เปิด", () -> open(address.getText().toString()));
+        urlRow.setVisibility(View.GONE);linkButton.setOnClickListener(v->{if(!busy)urlRow.setVisibility(urlRow.getVisibility()==View.VISIBLE?View.GONE:View.VISIBLE);});
+        LinearLayout setup=row(controls);
+        button(setup,"โหลดภาพให้ครบ",this::preparePage);
+        qualityButton=compactButton("คุณภาพ: "+qualityNames[quality]);setup.addView(qualityButton,new LinearLayout.LayoutParams(0,dp(38),1));qualityButton.setOnClickListener(v->{if(!busy)qualityDialog();});
         LinearLayout marks = row(controls);
         button(marks,"เริ่มตรงเส้น", () -> mark(true));
         button(marks,"จบตรงเส้น", () -> mark(false));
@@ -63,8 +76,8 @@ public class MainActivity extends Activity {
         LinearLayout actions = row(controls);
         button(actions,"ดูตัวอย่าง", () -> resolveMarks(this::preview));
         button(actions,"บันทึก PDF", () -> resolveMarks(this::exportDialog));
-        button(actions,"ยกเลิก", () -> cancelled=true);
-        status = new TextView(this); status.setPadding(16,4,16,8); status.setTextSize(12); status.setLines(2); controls.addView(status);
+        button(actions,"ยกเลิก", () -> {cancelled=true;if(preparing)finishPrepare(false,null);});
+        status = new TextView(this); status.setPadding(dp(8),0,dp(8),dp(2)); status.setTextSize(10); status.setLines(2); controls.addView(status);
         FrameLayout frame = new FrameLayout(this); root.addView(frame,new LinearLayout.LayoutParams(-1,0,1));
         web = new WebView(this); frame.addView(web,new FrameLayout.LayoutParams(-1,-1));
         guide = new Guide(); frame.addView(guide,new FrameLayout.LayoutParams(-1,-1));
@@ -81,7 +94,7 @@ public class MainActivity extends Activity {
                 new AlertDialog.Builder(MainActivity.this).setMessage("เปิดเว็บใหม่: "+host+" ?").setPositiveButton("เปิด",(d,w)->open(uri.toString())).setNegativeButton("ยกเลิก",null).show();
                 return true;
             }
-            @Override public void onPageStarted(WebView view,String url,Bitmap icon) { start=end=-1; update(); }
+            @Override public void onPageStarted(WebView view,String url,Bitmap icon) { if(preparing)finishPrepare(false,null);pagePrepared=false;start=end=-1; update(); }
             @Override public void onPageFinished(WebView view,String url) { address.setText(url); update(); }
             @Override public void onReceivedError(WebView view,WebResourceRequest request,WebResourceError error) { if(request.isForMainFrame()) status.setText("เปิดหน้าเว็บไม่ได้: "+error.getDescription()); }
         });
@@ -97,7 +110,53 @@ public class MainActivity extends Activity {
         web.evaluateJavascript(cleanupScript+";window.MangaCaptureClean.setEnabled("+enabled+")",value->{if(next!=null)next.run();});
     }
     private LinearLayout row(LinearLayout parent) { LinearLayout r=new LinearLayout(this); parent.addView(r); return r; }
-    private void button(LinearLayout row,String text,Runnable action) { Button b=new Button(this); b.setText(text); b.setTextSize(12); row.addView(b,new LinearLayout.LayoutParams(0,-2,1)); b.setOnClickListener(v->{ if(!busy || text.equals("ยกเลิก")) action.run(); }); }
+    private int dp(int value){return Math.round(value*getResources().getDisplayMetrics().density);}
+    private Button compactButton(String text){Button b=new Button(this);b.setText(text);b.setTextSize(11);b.setAllCaps(false);b.setMinHeight(0);b.setMinimumHeight(0);b.setMinWidth(0);b.setMinimumWidth(0);b.setPadding(dp(3),0,dp(3),0);return b;}
+    private void button(LinearLayout row,String text,Runnable action) { Button b=compactButton(text); row.addView(b,new LinearLayout.LayoutParams(0,dp(38),1)); b.setOnClickListener(v->{ if(!busy || text.equals("ยกเลิก")) action.run(); }); }
+    private void qualityDialog(){
+        new AlertDialog.Builder(this).setTitle("คุณภาพ PDF").setSingleChoiceItems(new String[]{"ภาพชัด · ความละเอียดหน้าจอเดิม", "สมดุล · กว้างไม่เกิน 1,080 px", "ไฟล์เล็ก · กว้างไม่เกิน 720 px"},quality,(dialog,which)->{
+            quality=which;getPreferences(MODE_PRIVATE).edit().putInt("quality",quality).apply();qualityButton.setText("คุณภาพ: "+qualityNames[quality]);dialog.dismiss();
+        }).setNegativeButton("ปิด",null).show();
+    }
+    private void preparePage(){
+        prepareGeneration++;
+        busy=true;preparing=true;cancelled=false;pagePrepared=false;start=end=-1;prepareOrigin=web.getScrollY();prepareIndex=prepareStable=prepareLastHeight=prepareRetry=0;
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);status.setText("กำลังโหลดภาพก่อนเลือกช่วง… · กดยกเลิกเพื่อหยุด");prepareStep();
+    }
+    private void prepareStep(){
+        if(!preparing||isFinishing()||isDestroyed())return;
+        if(cancelled){finishPrepare(false,null);return;}
+        if(prepareIndex>2000){finishPrepare(false,"หน้าเว็บมีภาพมากเกินไป กรุณาเปิดทีละตอน");return;}
+        final int generation=prepareGeneration;
+        web.evaluateJavascript(prepareScript+";JSON.stringify(window.MangaCapturePrepare.focus("+prepareIndex+"))",value->{
+            if(!preparing||generation!=prepareGeneration)return;
+            handler.postDelayed(()->{if(generation==prepareGeneration)checkPreparedImage();},450);
+        });
+    }
+    private void checkPreparedImage(){
+        if(!preparing||isFinishing()||isDestroyed())return;
+        final int generation=prepareGeneration;
+        web.evaluateJavascript("JSON.stringify(window.MangaCapturePrepare.snapshot())",value->{
+            if(!preparing||generation!=prepareGeneration)return;
+            try{
+                JSONObject state=new JSONObject(new JSONArray("["+value+"]").getString(0));
+                int total=state.getInt("total"),loaded=state.getInt("loaded"),height=state.getInt("height");
+                status.setText("โหลดภาพ "+loaded+" / "+total+" · กดยกเลิกเพื่อหยุด\nรอให้ครบก่อนเลือกจุดเริ่ม–จบ");
+                if(total==0){finishPrepare(false,"ยังไม่พบภาพ กรุณารอหน้าเว็บโหลดแล้วลองใหม่");return;}
+                if(prepareIndex<total){prepareIndex++;prepareStep();return;}
+                if(loaded==total){
+                    prepareStable=height==prepareLastHeight?prepareStable+1:0;prepareLastHeight=height;
+                    if(prepareStable>=2){finishPrepare(true,null);return;}
+                }else{prepareStable=0;}
+                if(++prepareRetry>30){finishPrepare(false,"ภาพโหลดได้ "+loaded+" จาก "+total+" ภาพ กรุณาตรวจอินเทอร์เน็ตแล้วกดโหลดภาพอีกครั้ง");return;}
+                if(loaded<total){prepareIndex=0;}
+                handler.postDelayed(()->{if(generation==prepareGeneration)prepareStep();},500);
+            }catch(Exception e){finishPrepare(false,"อ่านสถานะภาพไม่ได้ กรุณาโหลดหน้าเว็บใหม่");}
+        });
+    }
+    private void finishPrepare(boolean ready,String error){
+        prepareGeneration++;preparing=false;busy=false;pagePrepared=ready;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);web.scrollTo(0,prepareOrigin);update();if(error!=null)new AlertDialog.Builder(this).setTitle("โหลดภาพยังไม่ครบ").setMessage(error).setPositiveButton("ตกลง",null).show();else if(ready)toast("โหลดภาพครบแล้ว เลือกจุดเริ่มและจบได้เลย");
+    }
     private void toast(String s) { Toast.makeText(this,s,Toast.LENGTH_LONG).show(); }
     private void checkUpdate() {
         if(checkingUpdate)return;
@@ -132,6 +191,7 @@ public class MainActivity extends Activity {
         new AlertDialog.Builder(this).setTitle("บันทึกไม่สำเร็จ").setMessage(message).setPositiveButton("ตกลง",null).show();
     }
     private void mark(boolean first) {
+        if(!pagePrepared){toast("กดโหลดภาพให้ครบก่อนเลือกช่วงครับ");return;}
         web.flingScroll(0,0);
         web.evaluateJavascript(anchorScript+";(()=>{try{return Math.round(window.MangaCaptureAnchors.mark('"+(first?"start":"end")+"')*"+web.getWidth()+"/innerWidth)}catch(e){return null}})()",value->{
             try { int position=Integer.parseInt(value); if(position<0)throw new IllegalStateException(); if(first){start=position;end=-1;}else end=position; update(); }
@@ -147,7 +207,7 @@ public class MainActivity extends Activity {
     }
     private String resolveScript(){return "(()=>{try{return window.MangaCaptureAnchors.resolve("+web.getWidth()+")}catch(e){return null}})()";}
     private void open(String url) { if(!url.startsWith("https://") || Uri.parse(url).getHost()==null) { toast("ใส่ลิงก์ https:// ให้ครบ"); return; } web.loadUrl(url); }
-    private void update() { status.setText("เลื่อนให้ตำแหน่งที่ต้องการอยู่ตรงเส้นกลางจอ\nเริ่ม: "+(start<0?"ยังไม่เลือก":start)+" · จบ: "+(end<0?"ยังไม่เลือก":end)+" · ตัดขอบ "+left+"% / "+right+"%"); guide.invalidate(); }
+    private void update() { status.setText((pagePrepared?"ภาพพร้อม · เลือกตำแหน่งตรงเส้นกลางจอ":"กดโหลดภาพให้ครบก่อนเลือกช่วง")+"\nเริ่ม: "+(start<0?"—":start)+" · จบ: "+(end<0?"—":end)+" · ขอบ "+left+"% / "+right+"%"); guide.invalidate(); }
     private boolean valid() { if(start<0 || end<=start) { toast("เลือกจุดสิ้นสุดให้อยู่หลังจุดเริ่มต้น"); return false; } return true; }
     private void cropDialog() {
         LinearLayout panel=new LinearLayout(this); panel.setPadding(24,8,24,8); panel.setOrientation(1);
@@ -207,7 +267,7 @@ public class MainActivity extends Activity {
             try {pdfFilename=new JSONArray("["+value+"]").getString(0);if("null".equals(pdfFilename))throw new IllegalArgumentException();}
             catch(Exception e){pdfFilename="Manga.pdf";}
             if(isFinishing()||isDestroyed())return;
-            new AlertDialog.Builder(this).setTitle("บันทึก PDF").setMessage("ชื่อไฟล์: "+pdfFilename+"\n\nแอปจะเลื่อนโหลดภาพในช่วงที่เลือกก่อนแคป\nสามารถแก้ชื่อได้อีกครั้งในหน้าบันทึกไฟล์").setPositiveButton("แบ่งหน้า A4",(d,w)->begin(false)).setNeutralButton("หน้ายาว",(d,w)->begin(true)).setNegativeButton("ยกเลิก",null).show();
+            new AlertDialog.Builder(this).setTitle("บันทึก PDF").setMessage("ชื่อไฟล์: "+pdfFilename+"\nคุณภาพ: "+qualityNames[quality]+"\n\nสามารถแก้ชื่อได้อีกครั้งในหน้าบันทึกไฟล์").setPositiveButton("แบ่งหน้า A4",(d,w)->begin(false)).setNeutralButton("หน้ายาว",(d,w)->begin(true)).setNegativeButton("ยกเลิก",null).show();
         });
     }
     private void begin(boolean longPage) {
@@ -255,12 +315,21 @@ public class MainActivity extends Activity {
         settle(cursor,()-> capture(cursor,amount,image->{
             try {
                 float h=amount*595f/cropWidth;
-                page.getCanvas().drawBitmap(image,null,new RectF(0,pageFill,595,pageFill+h),null); image.recycle();
+                Bitmap output=pdfImage(image);
+                Paint filter=new Paint(Paint.FILTER_BITMAP_FLAG);
+                page.getCanvas().drawBitmap(output,null,new RectF(0,pageFill,595,pageFill+h),filter);if(output!=image)output.recycle();image.recycle();
                 pageFill+=h; cursor+=amount;
                 if(activePageHeight-pageFill<2 || cursor>=end) { pdf.finishPage(page); page=null; }
                 status.setText("แคป "+((cursor-start)*100/(end-start))+"% · หน้า "+pageNumber+" · ยกเลิกได้"); nextTile();
             } catch(Exception | OutOfMemoryError e) { finishExport(e.getMessage()); }
         }));
+    }
+    private Bitmap pdfImage(Bitmap image) {
+        if(quality==0)return image;
+        int maxWidth=quality==1?1080:720;
+        int width=Math.max(1,Math.min(maxWidth,Math.round(image.getWidth()*(quality==1?0.85f:0.60f))));
+        int height=Math.max(1,Math.round(image.getHeight()*width/(float)image.getWidth()));
+        return Bitmap.createScaledBitmap(image,width,height,true);
     }
     private void finishExport(String result) {
         try {
@@ -284,7 +353,7 @@ public class MainActivity extends Activity {
         }
         pending.delete(); pending=null;
     }
-    @Override public void onBackPressed(){ if(busy){cancelled=true;return;} if(web.canGoBack())web.goBack();else super.onBackPressed(); }
+    @Override public void onBackPressed(){ if(busy){cancelled=true;if(preparing)finishPrepare(false,null);return;} if(web.canGoBack())web.goBack();else super.onBackPressed(); }
     @Override protected void onDestroy(){ handler.removeCallbacksAndMessages(null); if(pdf!=null){if(page!=null)pdf.finishPage(page);pdf.close();} web.destroy();super.onDestroy(); }
     private class Guide extends View {
         private final Paint paint=new Paint(3);

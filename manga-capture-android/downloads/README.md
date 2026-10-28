@@ -1,6 +1,6 @@
 # ดาวน์โหลด Manga Capture สำหรับ Android
 
-[ดาวน์โหลด APK เวอร์ชัน 0.7](https://raw.githubusercontent.com/liew2312/pro-trading-journal/main/manga-capture-android/downloads/MangaCapture-v0.7.apk)
+[ดาวน์โหลด APK เวอร์ชัน 0.8](https://raw.githubusercontent.com/liew2312/pro-trading-journal/main/manga-capture-android/downloads/MangaCapture-v0.8.apk)
 
 รองรับ Android 8 ขึ้นไป ดาวน์โหลดไฟล์ไปมือถือแล้วเปิดเพื่อติดตั้งทับแอปเดิม ไม่ต้องถอนการติดตั้ง Android จะให้กดยืนยันการอัปเดต และอาจถามสิทธิ์ติดตั้งจากเบราว์เซอร์ที่ใช้เปิดไฟล์
 
