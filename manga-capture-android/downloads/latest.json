@@ -1,6 +1,6 @@
 {
-  "versionCode": 5,
-  "versionName": "0.5",
-  "apk": "MangaCapture-v0.5.apk",
-  "notes": "เพิ่มปุ่มอัปเดตจาก GitHub และซ่อนแถบลอยของเว็บขณะบันทึก PDF"
+  "versionCode": 6,
+  "versionName": "0.6",
+  "apk": "MangaCapture-v0.6.apk",
+  "notes": "แก้หน้าสุดท้ายของ PDF แบบหน้ายาว ให้สูงเท่าภาพที่เหลือ ไม่มีพื้นที่ขาวยาวท้ายหน้า"
 }

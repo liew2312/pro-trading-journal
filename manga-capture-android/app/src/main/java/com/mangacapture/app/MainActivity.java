@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
     private File pending;
     private PdfDocument pdf;
     private PdfDocument.Page page;
-    private int cursor, pageNumber, pageHeight, cropWidth;
+    private int cursor, pageNumber, pageHeight, activePageHeight, cropWidth;
     private float pageFill;
     private boolean longPageMode;
     private int warmPass;
@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
         setContentView(root);
         controls = new LinearLayout(this); controls.setOrientation(1); root.addView(controls);
         LinearLayout heading=row(controls);
-        TextView title = new TextView(this); title.setText("Manga Capture 0.5"); title.setTextSize(17); title.setPadding(16,8,16,4); heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        TextView title = new TextView(this); title.setText("Manga Capture 0.6"); title.setTextSize(17); title.setPadding(16,8,16,4); heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
         Button updateButton=new Button(this);updateButton.setText("อัปเดต");updateButton.setTextSize(12);heading.addView(updateButton);updateButton.setOnClickListener(v->{if(!busy)checkUpdate();});
         LinearLayout urlRow = row(controls);
         address = new EditText(this); address.setSingleLine(); address.setText(SAMPLE); address.setTextSize(12); urlRow.addView(address,new LinearLayout.LayoutParams(0,-2,1));
@@ -237,14 +237,18 @@ public class MainActivity extends Activity {
     private void nextTile() {
         if(cancelled) { finishExport(null); return; }
         if(cursor>=end) { finishExport("save"); return; }
-        if(page==null) { page=pdf.startPage(new PdfDocument.PageInfo.Builder(595,pageHeight,++pageNumber).create()); page.getCanvas().drawColor(Color.WHITE); pageFill=0; }
-        final int amount=Math.min(end-cursor,Math.min(web.getHeight(),Math.max(1,(int)Math.floor((pageHeight-pageFill)*cropWidth/595.0))));
+        if(page==null) {
+            // The final long page must fit the remaining image, rather than leave a 14,000-point white tail.
+            activePageHeight=longPageMode?Math.min(pageHeight,Math.max(1,(int)Math.ceil((end-cursor)*595.0/cropWidth))):pageHeight;
+            page=pdf.startPage(new PdfDocument.PageInfo.Builder(595,activePageHeight,++pageNumber).create()); page.getCanvas().drawColor(Color.WHITE); pageFill=0;
+        }
+        final int amount=Math.min(end-cursor,Math.min(web.getHeight(),Math.max(1,(int)Math.floor((activePageHeight-pageFill)*cropWidth/595.0))));
         settle(cursor,()-> capture(cursor,amount,image->{
             try {
                 float h=amount*595f/cropWidth;
                 page.getCanvas().drawBitmap(image,null,new RectF(0,pageFill,595,pageFill+h),null); image.recycle();
                 pageFill+=h; cursor+=amount;
-                if(pageHeight-pageFill<2 || cursor>=end) { pdf.finishPage(page); page=null; }
+                if(activePageHeight-pageFill<2 || cursor>=end) { pdf.finishPage(page); page=null; }
                 status.setText("แคป "+((cursor-start)*100/(end-start))+"% · หน้า "+pageNumber+" · ยกเลิกได้"); nextTile();
             } catch(Exception | OutOfMemoryError e) { finishExport(e.getMessage()); }
         }));
