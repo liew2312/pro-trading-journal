@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
         controls = new LinearLayout(this); controls.setOrientation(1); root.addView(controls);
         LinearLayout heading=row(controls);
         quality=getPreferences(MODE_PRIVATE).getInt("quality",1);if(quality<0||quality>2)quality=1;
-        TextView title = new TextView(this); title.setText("Manga Capture 0.9"); title.setTextSize(14); title.setPadding(dp(8),0,0,0); heading.setGravity(Gravity.CENTER_VERTICAL);heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        TextView title = new TextView(this); title.setText("Manga Capture 0.10"); title.setTextSize(14); title.setPadding(dp(8),0,0,0); heading.setGravity(Gravity.CENTER_VERTICAL);heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
         Button updateButton=compactButton("อัปเดต");heading.addView(updateButton,new LinearLayout.LayoutParams(dp(66),dp(36)));updateButton.setOnClickListener(v->{if(!busy)checkUpdate();else toast("รอให้งานปัจจุบันเสร็จ หรือกดยกเลิกก่อนตรวจอัปเดต");});
         Button linkButton=compactButton("ลิงก์");heading.addView(linkButton,new LinearLayout.LayoutParams(dp(56),dp(36)));
         LinearLayout urlRow = row(controls);
@@ -228,6 +228,10 @@ public class MainActivity extends Activity {
     }
     private interface Captured { void accept(Bitmap bitmap); }
     private void capture(int y,int height,Captured next) {
+        // Recheck after every scroll: some sites create their back-to-top control lazily.
+        setClean(true,()->captureClean(y,height,next));
+    }
+    private void captureClean(int y,int height,Captured next) {
         guide.setVisibility(View.INVISIBLE);
         handler.postDelayed(()-> {
             if(isFinishing()||isDestroyed())return;
