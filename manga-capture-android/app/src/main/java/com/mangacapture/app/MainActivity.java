@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     private final String[] qualityNames={"ภาพชัด", "สมดุล", "ไฟล์เล็ก"};
     private Button qualityButton;
     private static final String UPDATE_BASE = "https://raw.githubusercontent.com/liew2312/pro-trading-journal/main/manga-capture-android/downloads/";
+    private static final String UPDATE_API = "https://api.github.com/repos/liew2312/pro-trading-journal/contents/manga-capture-android/downloads/latest.json?ref=main";
     private final Handler handler = new Handler(Looper.getMainLooper());
     private static final String SAMPLE = "https://www.go-manga.com/pig-slayer-%e0%b8%95%e0%b8%ad%e0%b8%99%e0%b8%97%e0%b8%b5%e0%b9%88-0/";
 
@@ -59,8 +60,8 @@ public class MainActivity extends Activity {
         controls = new LinearLayout(this); controls.setOrientation(1); root.addView(controls);
         LinearLayout heading=row(controls);
         quality=getPreferences(MODE_PRIVATE).getInt("quality",1);if(quality<0||quality>2)quality=1;
-        TextView title = new TextView(this); title.setText("Manga Capture 0.8"); title.setTextSize(14); title.setPadding(dp(8),0,0,0); heading.setGravity(Gravity.CENTER_VERTICAL);heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
-        Button updateButton=compactButton("อัปเดต");heading.addView(updateButton,new LinearLayout.LayoutParams(dp(66),dp(36)));updateButton.setOnClickListener(v->{if(!busy)checkUpdate();});
+        TextView title = new TextView(this); title.setText("Manga Capture 0.9"); title.setTextSize(14); title.setPadding(dp(8),0,0,0); heading.setGravity(Gravity.CENTER_VERTICAL);heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        Button updateButton=compactButton("อัปเดต");heading.addView(updateButton,new LinearLayout.LayoutParams(dp(66),dp(36)));updateButton.setOnClickListener(v->{if(!busy)checkUpdate();else toast("รอให้งานปัจจุบันเสร็จ หรือกดยกเลิกก่อนตรวจอัปเดต");});
         Button linkButton=compactButton("ลิงก์");heading.addView(linkButton,new LinearLayout.LayoutParams(dp(56),dp(36)));
         LinearLayout urlRow = row(controls);
         address = new EditText(this); address.setSingleLine(); address.setText(SAMPLE); address.setTextSize(12); urlRow.addView(address,new LinearLayout.LayoutParams(0,-2,1));
@@ -164,9 +165,12 @@ public class MainActivity extends Activity {
         new Thread(()-> {
             HttpsURLConnection connection=null;
             try {
-                connection=(HttpsURLConnection)new URL(UPDATE_BASE+"latest.json?t="+System.currentTimeMillis()).openConnection();
+                connection=(HttpsURLConnection)new URL(UPDATE_API+"&t="+System.currentTimeMillis()).openConnection();
                 connection.setConnectTimeout(15000);connection.setReadTimeout(15000);connection.setInstanceFollowRedirects(false);
-                connection.setRequestProperty("Accept","application/json");
+                connection.setUseCaches(false);
+                connection.setRequestProperty("Accept","application/vnd.github.raw+json");
+                connection.setRequestProperty("Cache-Control","no-cache");
+                connection.setRequestProperty("User-Agent","MangaCapture-Android");
                 if(connection.getResponseCode()!=200)throw new IOException("GitHub ตอบกลับ "+connection.getResponseCode());
                 ByteArrayOutputStream bytes=new ByteArrayOutputStream();
                 try(InputStream stream=connection.getInputStream()) {
