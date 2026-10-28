@@ -21,7 +21,9 @@ Check
 Check
 $manifest = (Get-Content "$project/app/src/main/AndroidManifest.xml" -Raw).Replace('<manifest ', '<manifest package="com.mangacapture.app" ')
 [IO.File]::WriteAllText("$out/AndroidManifest.xml", $manifest)
-& "$tools/aapt2.exe" link -I $androidJar -A "$project/app/src/main/assets" --manifest "$out/AndroidManifest.xml" --min-sdk-version 26 --target-sdk-version 35 --version-code 6 --version-name '0.6' -o "$out/unsigned.apk"
+& "$tools/aapt2.exe" compile --dir "$project/app/src/main/res" -o "$out/resources.zip"
+Check
+& "$tools/aapt2.exe" link -I $androidJar -A "$project/app/src/main/assets" --manifest "$out/AndroidManifest.xml" --min-sdk-version 26 --target-sdk-version 35 --version-code 7 --version-name '0.7' -o "$out/unsigned.apk" "$out/resources.zip"
 Check
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [IO.Compression.ZipFile]::Open("$out/unsigned.apk", 'Update')

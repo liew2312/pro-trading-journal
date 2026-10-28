@@ -32,6 +32,8 @@ public class MainActivity extends Activity {
     private int warmPass;
     private String anchorScript;
     private String cleanupScript;
+    private String filenameScript;
+    private String pdfFilename="Manga.pdf";
     private boolean checkingUpdate;
     private static final String UPDATE_BASE = "https://raw.githubusercontent.com/liew2312/pro-trading-journal/main/manga-capture-android/downloads/";
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -40,7 +42,7 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         try {
-            anchorScript=loadScript("capture-anchors.js");cleanupScript=loadScript("capture-cleanup.js");
+            anchorScript=loadScript("capture-anchors.js");cleanupScript=loadScript("capture-cleanup.js");filenameScript=loadScript("capture-filename.js");
         } catch(IOException e){throw new IllegalStateException("Missing selection helper",e);}
         WebView.enableSlowWholeDocumentDraw();
         getWindow().setStatusBarColor(Color.rgb(18, 32, 46));
@@ -49,7 +51,7 @@ public class MainActivity extends Activity {
         setContentView(root);
         controls = new LinearLayout(this); controls.setOrientation(1); root.addView(controls);
         LinearLayout heading=row(controls);
-        TextView title = new TextView(this); title.setText("Manga Capture 0.6"); title.setTextSize(17); title.setPadding(16,8,16,4); heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
+        TextView title = new TextView(this); title.setText("Manga Capture 0.7"); title.setTextSize(17); title.setPadding(16,8,16,4); heading.addView(title,new LinearLayout.LayoutParams(0,-2,1));
         Button updateButton=new Button(this);updateButton.setText("อัปเดต");updateButton.setTextSize(12);heading.addView(updateButton);updateButton.setOnClickListener(v->{if(!busy)checkUpdate();});
         LinearLayout urlRow = row(controls);
         address = new EditText(this); address.setSingleLine(); address.setText(SAMPLE); address.setTextSize(12); urlRow.addView(address,new LinearLayout.LayoutParams(0,-2,1));
@@ -199,7 +201,14 @@ public class MainActivity extends Activity {
     }
     private void exportDialog() {
         if(!valid()) return;
-        new AlertDialog.Builder(this).setTitle("บันทึก PDF").setMessage("แอปจะเลื่อนโหลดภาพในช่วงที่เลือกก่อนแคป\nหากภาพโหลดช้า ให้เลื่อนอ่านจนภาพครบก่อนบันทึก\nโฆษณาที่ทับเนื้อหาจะติดอยู่ในภาพ ควรปิดก่อน").setPositiveButton("แบ่งหน้า A4",(d,w)->begin(false)).setNeutralButton("หน้ายาว",(d,w)->begin(true)).setNegativeButton("ยกเลิก",null).show();
+        busy=true;
+        web.evaluateJavascript(filenameScript+";window.MangaCaptureFilename.create()",value->{
+            busy=false;
+            try {pdfFilename=new JSONArray("["+value+"]").getString(0);if("null".equals(pdfFilename))throw new IllegalArgumentException();}
+            catch(Exception e){pdfFilename="Manga.pdf";}
+            if(isFinishing()||isDestroyed())return;
+            new AlertDialog.Builder(this).setTitle("บันทึก PDF").setMessage("ชื่อไฟล์: "+pdfFilename+"\n\nแอปจะเลื่อนโหลดภาพในช่วงที่เลือกก่อนแคป\nสามารถแก้ชื่อได้อีกครั้งในหน้าบันทึกไฟล์").setPositiveButton("แบ่งหน้า A4",(d,w)->begin(false)).setNeutralButton("หน้ายาว",(d,w)->begin(true)).setNegativeButton("ยกเลิก",null).show();
+        });
     }
     private void begin(boolean longPage) {
         busy=true; cancelled=false; longPageMode=longPage; warmPass=0; oldY=web.getScrollY(); cursor=start; pageNumber=0; pageFill=0;
@@ -260,7 +269,7 @@ public class MainActivity extends Activity {
                 pending=new File(getCacheDir(),"capture.pdf");
                 try(OutputStream out=new FileOutputStream(pending)){ pdf.writeTo(out); }
                 Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/pdf").addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(Intent.EXTRA_TITLE,"Manga-"+System.currentTimeMillis()+".pdf"); startActivityForResult(intent,10);
+                intent.putExtra(Intent.EXTRA_TITLE,pdfFilename); startActivityForResult(intent,10);
             } else { if(result==null)toast("ยกเลิกแล้ว");else showError(result); }
         } catch(Exception e){ showError("บันทึกไฟล์ไม่ได้: "+e.getMessage()); }
         finally { if(pdf!=null)pdf.close(); pdf=null; busy=false; getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); setClean(false,()->web.scrollTo(0,oldY)); update(); }
