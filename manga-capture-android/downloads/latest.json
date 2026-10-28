@@ -1,0 +1,6 @@
+{
+  "versionCode": 5,
+  "versionName": "0.5",
+  "apk": "MangaCapture-v0.5.apk",
+  "notes": "เพิ่มปุ่มอัปเดตจาก GitHub และซ่อนแถบลอยของเว็บขณะบันทึก PDF"
+}
